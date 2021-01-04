@@ -1,10 +1,5 @@
 const R = require('ramda');
 
-// const classyGreeting = (firstName, lastName) => "The name's " + lastName + ", " + firstName + " " + lastName
-// const yellGreeting = R.compose(R.toUpper, classyGreeting);
-
-// // console.log(yellGreeting('James', 'Bond'))
-
 let cars = [
   {
     name: 'Aston Martin One-77',
