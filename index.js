@@ -35,3 +35,12 @@ const fastestCar = R.concat(
   R.compose(R.prop('name'), R.last, R.sortBy(R.prop('horsepower')))(cars),
   ' is the fastest',
 );
+
+//accounts' total payout
+const data = [{ acc_1: 1 }, { acc_1: 2 }, { acc_2: 3 }];
+
+const totalPayout = R.compose(
+  R.values,
+  R.map(R.reduce(R.mergeWith(R.add), 0)),
+  R.groupBy(R.keys),
+)(data);
