@@ -36,8 +36,7 @@ const averageDollarValue = R.compose(
 )(cars);
 
 //Fastest Car
-const fastestCar = (cars) => {
-  const fastest = R.compose(R.last, R.sortBy(R.prop('horsepower')))(cars);
-
-  return R.concat(fastest.name, ' is the fastest');
-};
+const fastestCar = R.concat(
+  R.compose(R.prop('name'), R.last, R.sortBy(R.prop('horsepower')))(cars),
+  ' is the fastest',
+);
