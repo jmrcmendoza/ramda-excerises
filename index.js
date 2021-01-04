@@ -17,13 +17,29 @@ let cars = [ {
   horsepower: 800,
   dollarValue: 1900000,
   inStock: false,
-}]
+},
+{
+  name: 'Aston Martin One-110',
+  horsepower: 770,
+  dollarValue: 1700000,
+  inStock: false,
+}
+]
 
 
 
 //Last In Stock
 const isLastInStock  = R.compose(R.prop('inStock'),R.last)(cars)
 
+
+
+//Fastest Car
+const fastestCar = (cars) => {
+
+  const fastest = R.compose(R.last,R.sortBy(R.prop('horsepower')))(cars)
+
+  return R.concat(fastest.name, ' is the fastest');
+};
 
 
 
