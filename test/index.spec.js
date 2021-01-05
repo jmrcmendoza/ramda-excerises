@@ -37,9 +37,7 @@ describe('RamdaJS - exercises', () => {
 
   describe('averageDollarValue', () => {
     it('should return the cars average dollar value', () => {
-      expect(averageDollarValue(cars)).to.equal(
-        1816666.6666666666666666666666667,
-      );
+      expect(averageDollarValue(cars)).to.equal(1775000);
     });
   });
 
