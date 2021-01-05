@@ -30,10 +30,12 @@ const averageDollarValue = R.compose(
   R.pluck('dollarValue'),
 )(cars);
 
-const fastestCar = R.concat(
-  R.compose(R.prop('name'), R.last, R.sortBy(R.prop('horsepower')))(cars),
-  ' is the fastest',
-);
+const fastestCar = R.compose(
+  R.flip(R.concat)(' is fastest car'),
+  R.prop('name'),
+  R.last,
+  R.sortBy(R.prop('horsepower')),
+)(cars);
 
 const totalPayout = R.compose(
   R.values,
