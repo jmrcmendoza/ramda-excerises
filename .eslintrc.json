@@ -23,9 +23,14 @@
     "func-names": "off",
     "max-classes-per-file": "off",
     "max-len": ["error", 140],
-    "linebreak-style": ["error"],
+    "linebreak-style": ["error", "windows"],
     "import/prefer-default-export": "off",
-    "prettier/prettier": "error"
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
   "settings": {
     "import/resolver": {
