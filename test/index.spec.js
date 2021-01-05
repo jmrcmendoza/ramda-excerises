@@ -31,7 +31,7 @@ describe('RamdaJS - exercises', () => {
 
   describe('isLastInStock', () => {
     it('should return last car stock status', async function () {
-      expect(isLastInStock(cars)).to.equal(false);
+      expect(isLastInStock(cars)).to.be.false;
     });
   });
 
