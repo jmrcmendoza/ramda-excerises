@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { isLastInStock, averageDollarValue } from '..';
+import { isLastInStock, averageDollarValue, fastestCar } from '..';
 
 describe('RamdaJS - exercise', () => {
   it('should return last car stock status', async function () {
@@ -8,5 +8,9 @@ describe('RamdaJS - exercise', () => {
 
   it('should return the cars average dollar value', () => {
     expect(averageDollarValue).to.equal(1816666.6666666666666666666666667);
+  });
+
+  it('should retrieve the fastest car', () => {
+    expect(fastestCar).to.equal('Aston Martin One-100 is the fastest');
   });
 });
