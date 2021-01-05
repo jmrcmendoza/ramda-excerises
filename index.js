@@ -23,22 +23,17 @@ const cars = [
 
 const data = [{ acc_1: 1 }, { acc_1: 2 }, { acc_2: 3 }];
 
-// Last In Stock
 const isLastInStock = R.compose(R.prop('inStock'), R.last)(cars);
 
-// Dollar Average
 const averageDollarValue = R.compose(
   R.converge(R.divide, [R.sum, R.length]),
   R.pluck('dollarValue'),
 )(cars);
 
-// Fastest Car
 const fastestCar = R.concat(
   R.compose(R.prop('name'), R.last, R.sortBy(R.prop('horsepower')))(cars),
   ' is the fastest',
 );
-
-// accounts' total payout
 
 const totalPayout = R.compose(
   R.values,
