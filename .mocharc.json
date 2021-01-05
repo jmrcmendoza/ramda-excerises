@@ -4,5 +4,5 @@
   "recursive": true,
   "bail": true,
   "require": "ts-node/register/transpile-only",
-  "spec": "test/**/*.spec.js"
+  "spec": "test/**/*.spec.ts"
 }
