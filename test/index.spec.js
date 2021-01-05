@@ -51,7 +51,7 @@ describe('RamdaJS - exercises', () => {
     const data = [{ acc_1: 1 }, { acc_1: 2 }, { acc_2: 3 }];
 
     it('should return the accounts total payout', () => {
-      expect(totalPayout(data)).to.deep.equal([{ acc_1: 3 }, { acc_2: 3 }]);
+      expect(totalPayout(data)).to.eqls([{ acc_1: 3 }, { acc_2: 3 }]);
     });
   });
 });
