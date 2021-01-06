@@ -21,9 +21,16 @@ export default function vendorsQueries({ vendors }): any {
     return result;
   }
 
+  async function deleteVendor(_id: string) {
+    const result = await vendors.deleteOne({ _id });
+
+    return result;
+  }
+
   return Object.freeze({
     listVendors,
     createVendor,
     updateVendor,
+    deleteVendor,
   });
 }
