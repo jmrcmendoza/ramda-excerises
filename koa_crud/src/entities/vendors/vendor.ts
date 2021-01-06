@@ -1,5 +1,18 @@
+enum VendorType {
+  Seamless = 'SEAMLESS',
+  Transfer = 'TRANSFER',
+}
+
+type Vendor = {
+  _id: string;
+  name: string;
+  type: VendorType;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export default function buildVendor() {
-  return async function makeVendor(vendorInfo: { name: any; type: any }) {
+  return async function makeVendor(vendorInfo: Vendor): Promise<any> {
     const { name, type } = vendorInfo;
 
     if (!name) {
