@@ -1,5 +1,5 @@
-import buildAddVendor from './add_vendor';
+import buildVendor from './vendor';
 
-const addVendor = buildAddVendor();
+const makeVendor = buildVendor();
 
-export { addVendor };
+export { makeVendor };

@@ -1,5 +1,5 @@
-export default function buildAddVendor() {
-  return async function makeAddVendor(vendorInfo: { name: any; type: any }) {
+export default function buildVendor() {
+  return async function makeVendor(vendorInfo: { name: any; type: any }) {
     const { name, type } = vendorInfo;
 
     if (!name) {
