@@ -1,11 +1,12 @@
 import Router from 'koa-router';
 
-import { getVendors } from '../../controllers/vendors';
+import { getVendors, postVendor } from '../../controllers/vendors';
 
 import { serialize } from '../../serialize';
 
 const router = new Router();
 
-router.get('/test', serialize(getVendors));
+router.get('/api/vendors', serialize(getVendors));
+router.post('/api/vendors/create', serialize(postVendor));
 
 export default router;
