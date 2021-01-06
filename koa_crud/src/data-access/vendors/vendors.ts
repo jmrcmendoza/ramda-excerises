@@ -5,6 +5,12 @@ export default function vendorsQueries({ vendors }): any {
     return result;
   }
 
+  async function selectOneVendor(_id: string) {
+    const result = await vendors.findById(_id);
+
+    return result;
+  }
+
   async function createVendor(vendorInfo: any) {
     const result = await vendors.create(vendorInfo);
 
@@ -29,6 +35,7 @@ export default function vendorsQueries({ vendors }): any {
 
   return Object.freeze({
     listVendors,
+    selectOneVendor,
     createVendor,
     updateVendor,
     deleteVendor,
