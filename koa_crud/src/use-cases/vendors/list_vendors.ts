@@ -1,6 +1,6 @@
-export default function makeListVendors({ vendor }) {
+export default function makeListVendors(vendorsDB) {
   return async function listVendors(): Promise<any> {
-    const allVendors = await vendor.find({});
+    const allVendors = await vendorsDB.listVendors();
 
     const data = {
       message: 'Successfull..',
