@@ -11,8 +11,19 @@ export default function vendorsQueries({ vendors }): any {
     return result;
   }
 
+  async function updateVendor(_id: string, vendorInfo: any) {
+    const result = await vendors.findOneAndUpdate(
+      { _id },
+      { ...vendorInfo },
+      { useFindAndModify: false },
+    );
+
+    return result;
+  }
+
   return Object.freeze({
     listVendors,
     createVendor,
+    updateVendor,
   });
 }
