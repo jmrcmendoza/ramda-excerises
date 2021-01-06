@@ -1,8 +1,8 @@
-import { addVendor } from '../../entities/vendors';
+import { makeVendor } from '../../entities/vendors';
 
 export default function makeInsertVendor(vendorsDB) {
   return async function insertVendor(vendorInfo): Promise<any> {
-    await addVendor(vendorInfo);
+    await makeVendor(vendorInfo);
 
     const createVendor = await vendorsDB.createVendor(vendorInfo);
 
