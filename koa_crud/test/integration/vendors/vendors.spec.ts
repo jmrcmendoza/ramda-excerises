@@ -1,10 +1,8 @@
 /* eslint-disable no-unused-expressions */
-import chai from 'chai';
+import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 chai.use(chaiHttp);
-
-const { expect } = chai;
 
 describe('Vendors', () => {
   let createdVendorId = null;
