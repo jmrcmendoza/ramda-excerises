@@ -167,9 +167,20 @@ describe('Vendors', () => {
 
   describe('Delete vendor', () => {
     it('should delete one vendor', async function () {
+      const data = {
+        name: 'Vendor 5',
+        type: 'TRANSFER',
+      };
+
+      const createResponse = await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data);
+
       const response = await chai
         .request('http://localhost:3000')
-        .delete(`/api/vendors/${createdVendorId}`);
+        .delete(`/api/vendors/${createResponse.body.result._id}`);
 
       expect(response.status).to.equal(200);
       expect(response.body.result).to.exist;
