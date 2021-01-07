@@ -6,158 +6,156 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Koa CRUD', () => {
-  describe('Vendors', () => {
-    let createdVendorId = null;
+describe('Vendors', () => {
+  let createdVendorId = null;
 
-    describe('Add vendor', () => {
-      it('should return error for null vendor name', async function () {
-        const data = {
-          name: undefined,
-          type: 'SEEMLESS',
-        };
+  describe('Add vendor', () => {
+    it('should return error for null vendor name', async function () {
+      const data = {
+        name: undefined,
+        type: 'SEEMLESS',
+      };
 
-        await chai
-          .request('http://localhost:3000')
-          .post('/api/vendors')
-          .type('json')
-          .send(data)
-          .then((res) => {
-            expect(res.status).to.equal(400);
-            expect(res.body.errorMsg).to.equal('Vendor name must be provided.');
-          });
-      });
-
-      it('should return error for null vendor type', async function () {
-        const data = {
-          name: 'Vendor 2',
-          type: undefined,
-        };
-
-        await chai
-          .request('http://localhost:3000')
-          .post('/api/vendors')
-          .type('json')
-          .send(data)
-          .then((res) => {
-            expect(res.status).to.equal(400);
-            expect(res.body.errorMsg).to.equal('Vendor type must be provided.');
-          });
-      });
-
-      it('should insert new vendor', async function () {
-        const data = {
-          name: 'Vendor 2',
-          type: 'SEEMLESS',
-        };
-
-        await chai
-          .request('http://localhost:3000')
-          .post('/api/vendors')
-          .type('json')
-          .send(data)
-          .then((res) => {
-            expect(res.status).to.equal(201);
-            expect(res.body.result).to.exist;
-            expect(res.body.result).to.be.an('object');
-
-            createdVendorId = res.body.result._id;
-          });
-      });
+      await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data)
+        .then((res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errorMsg).to.equal('Vendor name must be provided.');
+        });
     });
 
-    describe('List vendors', () => {
-      it('should return all vendors', async function () {
-        await chai
-          .request('http://localhost:3000')
-          .get('/api/vendors')
-          .then((res) => {
-            expect(res.body.vendors).to.exist;
-            expect(res.body.vendors)
-              .to.be.an('array')
-              .that.has.length.greaterThan(0);
-          });
-      });
+    it('should return error for null vendor type', async function () {
+      const data = {
+        name: 'Vendor 2',
+        type: undefined,
+      };
 
-      it('should return one vendor', async function () {
-        const id = '5ff679a79de0a13d142d9fce';
-
-        await chai
-          .request('http://localhost:3000')
-          .get(`/api/vendors/${id}`)
-          .then((res) => {
-            expect(res.body.vendor).to.exist;
-          });
-      });
+      await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data)
+        .then((res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errorMsg).to.equal('Vendor type must be provided.');
+        });
     });
 
-    describe('Edit vendor', () => {
-      it('should return error for null vendor name', async function () {
-        const data = {
-          name: undefined,
-          type: 'SEEMLESS',
-        };
+    it('should insert new vendor', async function () {
+      const data = {
+        name: 'Vendor 2',
+        type: 'SEEMLESS',
+      };
 
-        await chai
-          .request('http://localhost:3000')
-          .put(`/api/vendors/${createdVendorId}`)
-          .send(data)
-          .then((res) => {
-            expect(res.status).to.equal(400);
-            expect(res.body.errorMsg).to.equal('Vendor name must be provided.');
-          });
-      });
+      await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data)
+        .then((res) => {
+          expect(res.status).to.equal(201);
+          expect(res.body.result).to.exist;
+          expect(res.body.result).to.be.an('object');
 
-      it('should return error for null vendor type', async function () {
-        const data = {
-          name: 'Vendor 2',
-          type: undefined,
-        };
+          createdVendorId = res.body.result._id;
+        });
+    });
+  });
 
-        await chai
-          .request('http://localhost:3000')
-          .put(`/api/vendors/${createdVendorId}`)
-          .send(data)
-          .then((res) => {
-            expect(res.status).to.equal(400);
-            expect(res.body.errorMsg).to.equal('Vendor type must be provided.');
-          });
-      });
-
-      it('should update vendor type', async function () {
-        const data = {
-          name: 'Vendor 2',
-          type: 'TRANSFER',
-        };
-
-        await chai
-          .request('http://localhost:3000')
-          .put(`/api/vendors/${createdVendorId}`)
-          .send(data)
-          .then((res) => {
-            expect(res.status).to.equal(200);
-            expect(res.body.result).to.exist;
-            expect(res.body.result).to.be.an('object');
-          });
-      });
+  describe('List vendors', () => {
+    it('should return all vendors', async function () {
+      await chai
+        .request('http://localhost:3000')
+        .get('/api/vendors')
+        .then((res) => {
+          expect(res.body.vendors).to.exist;
+          expect(res.body.vendors)
+            .to.be.an('array')
+            .that.has.length.greaterThan(0);
+        });
     });
 
-    describe('Delete vendor', () => {
-      it('should delete one vendor', async function () {
-        await chai
-          .request('http://localhost:3000')
-          .delete(`/api/vendors/${createdVendorId}`)
-          .then((res) => {
-            expect(res.status).to.equal(200);
-            expect(res.body.result).to.exist;
-            expect(res.body.result).to.be.an('object');
-            expect(res.body.result).to.eqls({
-              n: 1,
-              ok: 1,
-              deletedCount: 1,
-            });
+    it('should return one vendor', async function () {
+      const id = '5ff679a79de0a13d142d9fce';
+
+      await chai
+        .request('http://localhost:3000')
+        .get(`/api/vendors/${id}`)
+        .then((res) => {
+          expect(res.body.vendor).to.exist;
+        });
+    });
+  });
+
+  describe('Edit vendor', () => {
+    it('should return error for null vendor name', async function () {
+      const data = {
+        name: undefined,
+        type: 'SEEMLESS',
+      };
+
+      await chai
+        .request('http://localhost:3000')
+        .put(`/api/vendors/${createdVendorId}`)
+        .send(data)
+        .then((res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errorMsg).to.equal('Vendor name must be provided.');
+        });
+    });
+
+    it('should return error for null vendor type', async function () {
+      const data = {
+        name: 'Vendor 2',
+        type: undefined,
+      };
+
+      await chai
+        .request('http://localhost:3000')
+        .put(`/api/vendors/${createdVendorId}`)
+        .send(data)
+        .then((res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body.errorMsg).to.equal('Vendor type must be provided.');
+        });
+    });
+
+    it('should update vendor type', async function () {
+      const data = {
+        name: 'Vendor 2',
+        type: 'TRANSFER',
+      };
+
+      await chai
+        .request('http://localhost:3000')
+        .put(`/api/vendors/${createdVendorId}`)
+        .send(data)
+        .then((res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.result).to.exist;
+          expect(res.body.result).to.be.an('object');
+        });
+    });
+  });
+
+  describe('Delete vendor', () => {
+    it('should delete one vendor', async function () {
+      await chai
+        .request('http://localhost:3000')
+        .delete(`/api/vendors/${createdVendorId}`)
+        .then((res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.result).to.exist;
+          expect(res.body.result).to.be.an('object');
+          expect(res.body.result).to.eqls({
+            n: 1,
+            ok: 1,
+            deletedCount: 1,
           });
-      });
+        });
     });
   });
 });
