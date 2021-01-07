@@ -5,8 +5,6 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 
 describe('Vendors', () => {
-  let createdVendorId = null;
-
   describe('Add vendor', () => {
     it('should return error for null vendor name', async function () {
       const data = {
@@ -55,8 +53,6 @@ describe('Vendors', () => {
       expect(response.status).to.equal(201);
       expect(response.body.result).to.exist;
       expect(response.body.result).to.be.an('object');
-
-      createdVendorId = response.body.result._id;
     });
   });
 
