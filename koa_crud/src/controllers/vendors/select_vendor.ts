@@ -1,5 +1,14 @@
-export default function cSelectVendor({ selectVendor }) {
-  return async function getOneVendor(httpRequest: any) {
+import { Context } from 'koa';
+import { VendorDocument } from '../../models/vendor';
+
+export default function SelectVendorController({
+  selectVendor,
+}: {
+  selectVendor: (arg0: string) => Promise<VendorDocument>;
+}) {
+  return async function getOneVendor(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
       const _id: string = httpRequest.params;
 
