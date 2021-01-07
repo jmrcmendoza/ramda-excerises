@@ -1,6 +1,6 @@
 export default function makeSelectVendor(vendorsDB: Record<string, any>) {
-  return async function selectVendor(_id: string): Promise<any> {
-    const vendor = await vendorsDB.selectOneVendor(_id);
+  return async function selectVendor(id: string): Promise<any> {
+    const vendor = await vendorsDB.selectOneVendor(id);
 
     const data = {
       message: 'Successfull..',
