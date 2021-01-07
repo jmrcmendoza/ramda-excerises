@@ -1,4 +1,10 @@
-export default function vendorsQueries({ vendors }): any {
+import VendorModel from '../../models/vendor';
+
+export default function vendorsQueries({
+  vendors,
+}: {
+  vendors: typeof VendorModel;
+}): any {
   async function listVendors() {
     const result = await vendors.find({});
 
