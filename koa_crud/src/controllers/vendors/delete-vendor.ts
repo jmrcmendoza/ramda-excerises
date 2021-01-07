@@ -4,7 +4,7 @@ import { VendorDocument } from '../../models/vendor';
 export default function deleteVendorController({
   deleteVendor,
 }: {
-  deleteVendor: (arg0: string) => Promise<VendorDocument>;
+  deleteVendor: (id: string) => Promise<VendorDocument>;
 }) {
   return async function makeDeleteVendor(
     httpRequest: Context,
