@@ -10,9 +10,9 @@ export default function deleteVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const _id: string = httpRequest.params;
+      const id: string = httpRequest.params;
 
-      const result = await deleteVendor(_id);
+      const result = await deleteVendor(id);
 
       return {
         headers: {

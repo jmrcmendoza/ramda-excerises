@@ -10,9 +10,9 @@ export default function SelectVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const _id: string = httpRequest.params;
+      const id: string = httpRequest.params;
 
-      const result = await selectVendor(_id);
+      const result = await selectVendor(id);
 
       return {
         headers: {

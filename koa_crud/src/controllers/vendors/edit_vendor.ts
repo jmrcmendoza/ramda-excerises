@@ -10,11 +10,11 @@ export default function updateVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const _id: string = httpRequest.params;
+      const id: string = httpRequest.params;
 
       const vendorInfo = httpRequest.body;
 
-      const result = await updateVendor(_id, vendorInfo);
+      const result = await updateVendor(id, vendorInfo);
 
       return {
         headers: {
