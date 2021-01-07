@@ -11,8 +11,8 @@ export default function vendorsQueries({
     return result;
   }
 
-  async function selectOneVendor(_id: string) {
-    const result = await vendors.findById(_id);
+  async function selectOneVendor(id: string) {
+    const result = await vendors.findById({ _id: id });
 
     return result;
   }
@@ -23,9 +23,9 @@ export default function vendorsQueries({
     return result;
   }
 
-  async function updateVendor(_id: string, vendorInfo: any) {
+  async function updateVendor(id: string, vendorInfo: any) {
     const result = await vendors.findOneAndUpdate(
-      { _id },
+      { _id: id },
       { ...vendorInfo },
       { useFindAndModify: false },
     );
@@ -33,8 +33,8 @@ export default function vendorsQueries({
     return result;
   }
 
-  async function deleteVendor(_id: string) {
-    const result = await vendors.deleteOne({ _id });
+  async function deleteVendor(id: string) {
+    const result = await vendors.deleteOne({ _id: id });
 
     return result;
   }
