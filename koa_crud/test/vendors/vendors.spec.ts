@@ -141,5 +141,23 @@ describe('Koa CRUD', () => {
           });
       });
     });
+
+    describe('Delete vendor', () => {
+      it('should delete one vendor', async function () {
+        await chai
+          .request('http://localhost:3000')
+          .delete(`/api/vendors/${createdVendorId}`)
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            expect(res.body.result).to.exist;
+            expect(res.body.result).to.be.an('object');
+            expect(res.body.result).to.eqls({
+              n: 1,
+              ok: 1,
+              deletedCount: 1,
+            });
+          });
+      });
+    });
   });
 });
