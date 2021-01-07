@@ -1,5 +1,11 @@
-export default function clistVendors({ listVendors }) {
-  return async function getListVendors(httpRequest: any) {
+import { VendorDocument } from '../../models/vendor';
+
+export default function listVendorsController({
+  listVendors,
+}: {
+  listVendors: () => Promise<VendorDocument>;
+}) {
+  return async function getListVendors(): Promise<Record<string, any>> {
     try {
       const result = await listVendors();
 
