@@ -8,11 +8,9 @@ export default function makeSelectVendor(vendorsDB: VendorQueries) {
 
     const vendor = await vendorsDB.selectOneVendor(id);
 
-    const data = {
-      message: 'Successfull..',
+    return {
+      message: 'Successful',
       vendor,
     };
-
-    return data;
   };
 }
