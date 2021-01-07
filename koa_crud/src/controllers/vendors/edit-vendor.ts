@@ -4,7 +4,10 @@ import { VendorDocument } from '../../models/vendor';
 export default function updateVendorController({
   updateVendor,
 }: {
-  updateVendor: (arg0: string, arg1: VendorDocument) => Promise<VendorDocument>;
+  updateVendor: (
+    id: string,
+    document: VendorDocument,
+  ) => Promise<VendorDocument>;
 }) {
   return async function postInsertVendor(
     httpRequest: Context,
