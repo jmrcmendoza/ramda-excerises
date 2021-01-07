@@ -11,7 +11,7 @@ describe('Vendors', () => {
     it('should return error for null vendor name', async function () {
       const data = {
         name: undefined,
-        type: 'SEEMLESS',
+        type: 'SEAMLESS',
       };
 
       const response = await chai
@@ -43,7 +43,7 @@ describe('Vendors', () => {
     it('should insert new vendor', async function () {
       const data = {
         name: 'Vendor 1',
-        type: 'SEEMLESS',
+        type: 'SEAMLESS',
       };
 
       const response = await chai
@@ -86,14 +86,25 @@ describe('Vendors', () => {
 
   describe('Edit vendor', () => {
     it('should return error for null vendor name', async function () {
-      const data = {
-        name: undefined,
-        type: 'SEEMLESS',
+      let data = {
+        name: 'Vendor 2',
+        type: 'SEAMLESS',
+      };
+
+      const createResponse = await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data);
+
+      data = {
+        name: '',
+        type: 'SEAMLESS',
       };
 
       const response = await chai
         .request('http://localhost:3000')
-        .put(`/api/vendors/${createdVendorId}`)
+        .put(`/api/vendors/${createResponse.body.result._id}`)
         .send(data);
 
       expect(response.status).to.equal(400);
@@ -101,14 +112,25 @@ describe('Vendors', () => {
     });
 
     it('should return error for null vendor type', async function () {
-      const data = {
-        name: 'Vendor 2',
-        type: undefined,
+      let data = {
+        name: 'Vendor 3',
+        type: 'SEAMLESS',
+      };
+
+      const createResponse = await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data);
+
+      data = {
+        name: 'Vendor 3',
+        type: '',
       };
 
       const response = await chai
         .request('http://localhost:3000')
-        .put(`/api/vendors/${createdVendorId}`)
+        .put(`/api/vendors/${createResponse.body.result._id}`)
         .send(data);
 
       expect(response.status).to.equal(400);
@@ -116,14 +138,25 @@ describe('Vendors', () => {
     });
 
     it('should update vendor type', async function () {
-      const data = {
-        name: 'Vendor 3',
-        type: 'SEEMLESS',
+      let data = {
+        name: 'Vendor 4',
+        type: 'SEAMLESS',
+      };
+
+      const createResponse = await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data);
+
+      data = {
+        name: 'Vendor 4',
+        type: 'TRANSFER',
       };
 
       const response = await chai
         .request('http://localhost:3000')
-        .put(`/api/vendors/${createdVendorId}`)
+        .put(`/api/vendors/${createResponse.body.result._id}`)
         .send(data);
 
       expect(response.status).to.equal(200);
