@@ -8,6 +8,64 @@ const { expect } = chai;
 
 describe('Koa CRUD', () => {
   describe('Vendors', () => {
+    let createdVendorId = null;
+
+    describe('Add vendor', () => {
+      it('should return error for null vendor name', async function () {
+        const data = {
+          name: undefined,
+          type: 'SEEMLESS',
+        };
+
+        await chai
+          .request('http://localhost:3000')
+          .post('/api/vendors')
+          .type('json')
+          .send(data)
+          .then((res) => {
+            expect(res.status).to.equal(400);
+            expect(res.body.errorMsg).to.equal('Vendor name must be provided.');
+          });
+      });
+
+      it('should return error for null vendor type', async function () {
+        const data = {
+          name: 'Vendor 2',
+          type: undefined,
+        };
+
+        await chai
+          .request('http://localhost:3000')
+          .post('/api/vendors')
+          .type('json')
+          .send(data)
+          .then((res) => {
+            expect(res.status).to.equal(400);
+            expect(res.body.errorMsg).to.equal('Vendor type must be provided.');
+          });
+      });
+
+      it('should insert new vendor', async function () {
+        const data = {
+          name: 'Vendor 2',
+          type: 'SEEMLESS',
+        };
+
+        await chai
+          .request('http://localhost:3000')
+          .post('/api/vendors')
+          .type('json')
+          .send(data)
+          .then((res) => {
+            expect(res.status).to.equal(201);
+            expect(res.body.result).to.exist;
+            expect(res.body.result).to.be.an('object');
+
+            createdVendorId = res.body.result._id;
+          });
+      });
+    });
+
     describe('List vendors', () => {
       it('should return all vendors', async function () {
         await chai
