@@ -1,4 +1,4 @@
-export default function makeListVendors(vendorsDB) {
+export default function makeListVendors(vendorsDB: Record<string, any>) {
   return async function listVendors(): Promise<any> {
     const allVendors = await vendorsDB.listVendors();
 
