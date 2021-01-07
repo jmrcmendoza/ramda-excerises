@@ -1,7 +1,7 @@
-import { vendors } from '../../models/vendors';
+import VendorModel from '../../models/vendor';
 
 import vendorsQueries from './vendors';
 
-const vendorsDB = vendorsQueries({ vendors });
+const vendorsDB = vendorsQueries({ vendors: VendorModel });
 
 export default vendorsDB;
