@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import { VendorDocument } from '../../models/vendor';
 
-export default function SelectVendorController({
+export default function selectVendorController({
   selectVendor,
 }: {
   selectVendor: (id: string) => Promise<VendorDocument>;
