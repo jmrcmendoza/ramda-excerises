@@ -1,5 +1,14 @@
-export default function cUpdateVendor({ updateVendor }) {
-  return async function postInsertVendor(httpRequest: any) {
+import { Context } from 'koa';
+import { VendorDocument } from '../../models/vendor';
+
+export default function updateVendorController({
+  updateVendor,
+}: {
+  updateVendor: (arg0: string, arg1: VendorDocument) => Promise<VendorDocument>;
+}) {
+  return async function postInsertVendor(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
       const _id: string = httpRequest.params;
 
