@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import { Schema, model, Document } from 'mongoose';
 
 export enum VendorType {
@@ -20,7 +21,7 @@ export default model<VendorDocument>(
       },
       type: {
         type: String,
-        enum: [typeof VendorType],
+        enum: [VendorType.Seamless, VendorType.Transfer],
         required: true,
       },
     },
