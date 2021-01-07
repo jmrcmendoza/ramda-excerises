@@ -1,5 +1,14 @@
-export default function cinsertVendor({ insertVendor }) {
-  return async function postInsertVendor(httpRequest: any) {
+import { Context } from 'koa';
+import { VendorDocument } from '../../models/vendor';
+
+export default function insertVendorController({
+  insertVendor,
+}: {
+  insertVendor: (arg0: VendorDocument) => Promise<VendorDocument>;
+}) {
+  return async function postInsertVendor(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
       const vendorInfo = httpRequest.body;
       const result = await insertVendor(vendorInfo);
