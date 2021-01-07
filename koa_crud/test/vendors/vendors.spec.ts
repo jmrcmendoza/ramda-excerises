@@ -20,6 +20,17 @@ describe('Koa CRUD', () => {
               .that.has.length.greaterThan(0);
           });
       });
+
+      it('should return one vendor', async function () {
+        const id = '5ff679a79de0a13d142d9fce';
+
+        await chai
+          .request('http://localhost:3000')
+          .get(`/api/vendors/${id}`)
+          .then((res) => {
+            expect(res.body.vendor).to.exist;
+          });
+      });
     });
   });
 });
