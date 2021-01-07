@@ -1,10 +1,21 @@
-import VendorModel from '../../models/vendor';
+import VendorModel, { VendorDocument } from '../../models/vendor';
 
-export default function vendorsQueries({
+export type VendorQueries = {
+  listVendors: () => Promise<VendorDocument>;
+  selectOneVendor: (id: string) => Promise<VendorDocument>;
+  createVendor: (document: VendorDocument) => Promise<VendorDocument>;
+  updateVendor: (
+    id: string,
+    document: VendorDocument,
+  ) => Promise<VendorDocument>;
+  deleteVendor: (id: string) => any;
+};
+
+export default function ({
   vendors,
 }: {
   vendors: typeof VendorModel;
-}): any {
+}): VendorQueries {
   return Object.freeze({
     listVendors() {
       return vendors.find({}).lean();
@@ -12,10 +23,10 @@ export default function vendorsQueries({
     selectOneVendor(id: string) {
       return vendors.findById(id).lean();
     },
-    createVendor(vendorInfo: any) {
+    createVendor(vendorInfo: VendorDocument) {
       return vendors.create(vendorInfo);
     },
-    updateVendor(id: string, vendorInfo: any) {
+    updateVendor(id: string, vendorInfo: VendorDocument) {
       return vendors.findOneAndUpdate(
         { _id: id },
         { ...vendorInfo },
