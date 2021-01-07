@@ -1,5 +1,14 @@
-export default function cDeleteVendor({ deleteVendor }) {
-  return async function makeDeleteVendor(httpRequest: any) {
+import { Context } from 'koa';
+import { VendorDocument } from '../../models/vendor';
+
+export default function deleteVendorController({
+  deleteVendor,
+}: {
+  deleteVendor: (arg0: string) => Promise<VendorDocument>;
+}) {
+  return async function makeDeleteVendor(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
       const _id: string = httpRequest.params;
 
