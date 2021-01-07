@@ -1,7 +1,8 @@
 import { VendorDocument } from '../../models/vendor';
 import { makeVendor } from '../../entities/vendors';
+import { VendorQueries } from '../../data-access/vendors/vendors';
 
-export default function makeUpdateVendor(vendorsDB: Record<string, any>) {
+export default function makeUpdateVendor(vendorsDB: VendorQueries) {
   return async function updateVendor(
     id: string,
     vendorInfo: VendorDocument,
