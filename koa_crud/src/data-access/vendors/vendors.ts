@@ -6,15 +6,13 @@ export default function vendorsQueries({
   vendors: typeof VendorModel;
 }): any {
   async function listVendors() {
-    const result = await vendors.find({});
+    const result = await vendors.find({}).lean();
 
     return result;
   }
 
   async function selectOneVendor(id: string) {
-    const result = await vendors.findById(id);
-
-    return result;
+    return vendors.findById(id).lean();
   }
 
   async function createVendor(vendorInfo: any) {
