@@ -15,11 +15,9 @@ export default function makeUpdateVendor(vendorsDB: VendorQueries) {
 
     const result = await vendorsDB.updateVendor(id, vendorInfo);
 
-    const data = {
-      message: 'Successfull..',
+    return {
+      message: 'Successful',
       result,
     };
-
-    return data;
   };
 }
