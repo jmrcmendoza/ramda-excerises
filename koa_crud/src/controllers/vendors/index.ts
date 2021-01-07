@@ -6,16 +6,16 @@ import {
   deleteVendor,
 } from '../../use-cases/vendors/index';
 
-import clistVendors from './list_vendors';
-import cSelectVendor from './select_vendor';
-import cinsertVendor from './add_vendor';
-import cUpdateVendor from './edit_vendor';
-import cDeleteVendor from './delete_vendor';
+import listVendorsController from './list_vendors';
+import selectVendorController from './select_vendor';
+import insertVendorController from './add_vendor';
+import updateVendorController from './edit_vendor';
+import deleteVendorController from './delete_vendor';
 
-const getVendors = clistVendors({ listVendors });
-const getOneVendor = cSelectVendor({ selectVendor });
-const postVendor = cinsertVendor({ insertVendor });
-const putVendor = cUpdateVendor({ updateVendor });
-const delVendor = cDeleteVendor({ deleteVendor });
+const getVendors = listVendorsController({ listVendors });
+const getOneVendor = selectVendorController({ selectVendor });
+const postVendor = insertVendorController({ insertVendor });
+const putVendor = updateVendorController({ updateVendor });
+const delVendor = deleteVendorController({ deleteVendor });
 
 export { getVendors, getOneVendor, postVendor, putVendor, delVendor };
