@@ -14,8 +14,14 @@ export default model<VendorDocument>(
   'Vendor',
   new Schema(
     {
-      name: String,
-      type: String,
+      name: {
+        type: String,
+        required: true,
+      },
+      type: {
+        type: String,
+        required: true,
+      },
     },
     { timestamps: true },
   ),
