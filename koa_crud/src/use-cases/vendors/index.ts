@@ -1,8 +1,8 @@
-import makeListVendors from './list_vendors';
-import makeSelectVendor from './select_vendor';
-import makeInsertVendor from './add_vendor';
-import makeUpdateVendor from './edit_vendor';
-import makeDeleteVendor from './delete_vendor';
+import makeListVendors from './list-vendors';
+import makeSelectVendor from './select-vendor';
+import makeInsertVendor from './add-vendor';
+import makeUpdateVendor from './edit-vendor';
+import makeDeleteVendor from './delete-vendor';
 
 import vendorsDB from '../../data-access/vendors';
 
