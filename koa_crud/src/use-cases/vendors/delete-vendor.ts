@@ -8,11 +8,9 @@ export default function makeDeleteVendor(vendorsDB: VendorQueries) {
 
     const result = await vendorsDB.deleteVendor(id);
 
-    const data = {
-      message: 'Successfull..',
+    return {
+      message: 'Successful',
       result,
     };
-
-    return data;
   };
 }
