@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import { VendorType } from '../../../src/models/vendor';
 
 chai.use(chaiHttp);
 
@@ -13,7 +14,7 @@ describe('Vendors', () => {
     it('should return error for null vendor name', async function () {
       const data = {
         name: undefined,
-        type: 'SEEMLESS',
+        type: VendorType.Seamless,
       };
 
       const response = await chai
@@ -45,7 +46,7 @@ describe('Vendors', () => {
     it('should insert new vendor', async function () {
       const data = {
         name: 'Vendor 2',
-        type: 'SEEMLESS',
+        type: VendorType.Seamless,
       };
 
       const response = await chai
@@ -90,7 +91,7 @@ describe('Vendors', () => {
     it('should return error for null vendor name', async function () {
       const data = {
         name: undefined,
-        type: 'SEEMLESS',
+        type: VendorType.Seamless,
       };
 
       const response = await chai
@@ -120,7 +121,7 @@ describe('Vendors', () => {
     it('should update vendor type', async function () {
       const data = {
         name: 'Vendor 2',
-        type: 'TRANSFER',
+        type: VendorType.Transfer,
       };
 
       const response = await chai
