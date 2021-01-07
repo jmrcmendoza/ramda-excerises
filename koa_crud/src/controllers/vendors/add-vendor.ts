@@ -4,7 +4,7 @@ import { VendorDocument } from '../../models/vendor';
 export default function insertVendorController({
   insertVendor,
 }: {
-  insertVendor: (arg0: VendorDocument) => Promise<VendorDocument>;
+  insertVendor: (document: VendorDocument) => Promise<VendorDocument>;
 }) {
   return async function postInsertVendor(
     httpRequest: Context,
