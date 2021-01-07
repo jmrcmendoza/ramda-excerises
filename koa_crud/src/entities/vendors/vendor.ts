@@ -1,19 +1,10 @@
-enum VendorType {
-  Seamless = 'SEAMLESS',
-  Transfer = 'TRANSFER',
-}
-
-type Vendor = {
-  _id: string;
-  name: string;
-  type: VendorType;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { VendorDocument } from '../../models/vendor';
 
 export default function buildVendor() {
-  return async function makeVendor(vendorInfo: Vendor): Promise<any> {
-    const { name, type } = vendorInfo;
+  return async function makeVendor(
+    vendor: VendorDocument,
+  ): Promise<void | Error> {
+    const { name, type } = vendor;
 
     if (!name) {
       throw new Error('Vendor name must be provided.');
