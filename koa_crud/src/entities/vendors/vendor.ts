@@ -1,6 +1,6 @@
 import { VendorDocument } from '../../models/vendor';
 
-export default function buildVendor() {
+export default function () {
   return async function makeVendor(
     vendor: VendorDocument,
   ): Promise<void | Error> {
