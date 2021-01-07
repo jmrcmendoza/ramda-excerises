@@ -93,14 +93,13 @@ describe('Vendors', () => {
         type: 'SEEMLESS',
       };
 
-      await chai
+      const response = await chai
         .request('http://localhost:3000')
         .put(`/api/vendors/${createdVendorId}`)
-        .send(data)
-        .then((res) => {
-          expect(res.status).to.equal(400);
-          expect(res.body.errorMsg).to.equal('Vendor name must be provided.');
-        });
+        .send(data);
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errorMsg).to.equal('Vendor name must be provided.');
     });
 
     it('should return error for null vendor type', async function () {
@@ -109,14 +108,13 @@ describe('Vendors', () => {
         type: undefined,
       };
 
-      await chai
+      const response = await chai
         .request('http://localhost:3000')
         .put(`/api/vendors/${createdVendorId}`)
-        .send(data)
-        .then((res) => {
-          expect(res.status).to.equal(400);
-          expect(res.body.errorMsg).to.equal('Vendor type must be provided.');
-        });
+        .send(data);
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errorMsg).to.equal('Vendor type must be provided.');
     });
 
     it('should update vendor type', async function () {
@@ -125,15 +123,14 @@ describe('Vendors', () => {
         type: 'TRANSFER',
       };
 
-      await chai
+      const response = await chai
         .request('http://localhost:3000')
         .put(`/api/vendors/${createdVendorId}`)
-        .send(data)
-        .then((res) => {
-          expect(res.status).to.equal(200);
-          expect(res.body.result).to.exist;
-          expect(res.body.result).to.be.an('object');
-        });
+        .send(data);
+
+      expect(response.status).to.equal(200);
+      expect(response.body.result).to.exist;
+      expect(response.body.result).to.be.an('object');
     });
   });
 
