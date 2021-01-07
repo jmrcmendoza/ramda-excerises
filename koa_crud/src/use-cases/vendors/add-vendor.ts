@@ -8,11 +8,9 @@ export default function makeInsertVendor(vendorsDB: VendorQueries) {
 
     const createVendor = await vendorsDB.createVendor(vendorInfo);
 
-    const data = {
-      message: 'Successfull..',
+    return {
+      message: 'Successful',
       result: createVendor,
     };
-
-    return data;
   };
 }
