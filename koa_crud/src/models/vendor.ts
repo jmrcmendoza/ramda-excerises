@@ -20,6 +20,7 @@ export default model<VendorDocument>(
       },
       type: {
         type: String,
+        enum: [typeof VendorType],
         required: true,
       },
     },
