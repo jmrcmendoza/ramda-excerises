@@ -12,7 +12,7 @@ export default function vendorsQueries({
   }
 
   async function selectOneVendor(id: string) {
-    const result = await vendors.findById({ _id: id });
+    const result = await vendors.findById(id);
 
     return result;
   }
