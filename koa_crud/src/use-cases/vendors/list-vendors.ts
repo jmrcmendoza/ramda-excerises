@@ -4,11 +4,9 @@ export default function makeListVendors(vendorsDB: VendorQueries) {
   return async function listVendors(): Promise<any> {
     const allVendors = await vendorsDB.listVendors();
 
-    const data = {
-      message: 'Successfull..',
+    return {
+      message: 'Successful',
       vendors: allVendors,
     };
-
-    return data;
   };
 }
