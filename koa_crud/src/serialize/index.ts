@@ -1,7 +1,9 @@
-export function serialize(controller: any) {
-  return async (ctx: any) => {
+import { Context } from 'koa';
+
+export function serialize(controller: (params: any) => Promise<any>) {
+  return async (ctx: Context): Promise<void> => {
     const httpRequest = {
-      body: ctx.request.body,
+      body: (ctx.request as any).body,
       query: ctx.query,
       params: ctx.params,
       ip: ctx.ip,
