@@ -6,9 +6,7 @@ export default function vendorsQueries({
   vendors: typeof VendorModel;
 }): any {
   async function listVendors() {
-    const result = await vendors.find({}).lean();
-
-    return result;
+    return vendors.find({}).lean();
   }
 
   async function selectOneVendor(id: string) {
@@ -16,25 +14,19 @@ export default function vendorsQueries({
   }
 
   async function createVendor(vendorInfo: any) {
-    const result = await vendors.create(vendorInfo);
-
-    return result;
+    return vendors.create(vendorInfo);
   }
 
   async function updateVendor(id: string, vendorInfo: any) {
-    const result = await vendors.findOneAndUpdate(
+    return vendors.findOneAndUpdate(
       { _id: id },
       { ...vendorInfo },
       { useFindAndModify: false },
     );
-
-    return result;
   }
 
   async function deleteVendor(id: string) {
-    const result = await vendors.deleteOne({ _id: id });
-
-    return result;
+    return vendors.deleteOne({ _id: id });
   }
 
   return Object.freeze({
