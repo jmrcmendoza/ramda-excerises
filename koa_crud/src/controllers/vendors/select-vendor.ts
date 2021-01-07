@@ -4,7 +4,7 @@ import { VendorDocument } from '../../models/vendor';
 export default function SelectVendorController({
   selectVendor,
 }: {
-  selectVendor: (arg0: string) => Promise<VendorDocument>;
+  selectVendor: (id: string) => Promise<VendorDocument>;
 }) {
   return async function getOneVendor(
     httpRequest: Context,
