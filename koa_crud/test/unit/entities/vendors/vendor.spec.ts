@@ -6,7 +6,7 @@ import { makeVendor } from '../../../../src/entities/vendors';
 chai.use(chaiAsPromised);
 
 describe('Entities - Vendor', () => {
-  it('should throw an error for null vendor name', async () => {
+  it('should throw an error for null vendor name', () => {
     const data = {
       name: '',
       type: 'SEAMLESS',
@@ -17,7 +17,7 @@ describe('Entities - Vendor', () => {
     );
   });
 
-  it('should throw an error for null vendor type', async () => {
+  it('should throw an error for null vendor type', () => {
     const data = {
       name: 'Vendor 1',
       type: '',
@@ -26,5 +26,14 @@ describe('Entities - Vendor', () => {
     expect(makeVendor(data)).to.eventually.rejectedWith(
       'Vendor type must be provided.',
     );
+  });
+
+  it('should return undefined', () => {
+    const data = {
+      name: 'Vendor 1',
+      type: 'SEAMLESS',
+    };
+
+    return expect(makeVendor(data)).to.eventually.be.undefined;
   });
 });
