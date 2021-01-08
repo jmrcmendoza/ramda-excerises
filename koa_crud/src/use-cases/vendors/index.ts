@@ -6,10 +6,8 @@ import makeDeleteVendor from './delete-vendor';
 
 import vendorsDB from '../../data-access/vendors';
 
-const listVendors = makeListVendors(vendorsDB);
-const selectVendor = makeSelectVendor(vendorsDB);
-const insertVendor = makeInsertVendor(vendorsDB);
-const updateVendor = makeUpdateVendor(vendorsDB);
-const deleteVendor = makeDeleteVendor(vendorsDB);
-
-export { listVendors, selectVendor, insertVendor, updateVendor, deleteVendor };
+export const listVendors = makeListVendors(vendorsDB);
+export const selectVendor = makeSelectVendor(vendorsDB);
+export const insertVendor = makeInsertVendor(vendorsDB);
+export const updateVendor = makeUpdateVendor(vendorsDB);
+export const deleteVendor = makeDeleteVendor(vendorsDB);
