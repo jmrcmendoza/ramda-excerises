@@ -12,6 +12,8 @@ import {
   updateVendor,
 } from '../../../../src/use-cases/vendors';
 
+import { VendorType } from '../../../../src/models/vendor';
+
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
@@ -25,7 +27,7 @@ describe('Vendor Use Case', () => {
       it('should throw an error for null vendor name', async () => {
         const data = {
           name: '',
-          type: 'SEAMLESS',
+          type: VendorType.Seamless,
         };
 
         await expect(insertVendor(data)).to.eventually.rejectedWith(
@@ -49,7 +51,7 @@ describe('Vendor Use Case', () => {
       it('should insert and return vendor values', async () => {
         const data = {
           name: 'Use Case Vendor 2',
-          type: 'TRANSFER',
+          type: VendorType.Transfer,
         };
 
         const res = await insertVendor(data);
@@ -71,7 +73,7 @@ describe('Vendor Use Case', () => {
     it('should return one vendors', async () => {
       const data = {
         name: 'Use Case Vendor 3',
-        type: 'SEAMLESS',
+        type: VendorType.Seamless,
       };
 
       const createdVendor = await insertVendor(data);
@@ -88,14 +90,14 @@ describe('Vendor Use Case', () => {
       it('should throw an error for null vendor name', async () => {
         let data = {
           name: 'Use Case Vendor 4',
-          type: 'SEAMLESS',
+          type: VendorType.Seamless,
         };
 
         const createdVendor = await insertVendor(data);
 
         data = {
           name: '',
-          type: 'SEAMLESS',
+          type: VendorType.Seamless,
         };
 
         await expect(
@@ -106,7 +108,7 @@ describe('Vendor Use Case', () => {
       it('should throw an error for null vendor type', async () => {
         let data = {
           name: 'Use Case Vendor 5',
-          type: 'SEAMLESS',
+          type: VendorType.Seamless,
         };
 
         const createdVendor = await insertVendor(data);
@@ -134,7 +136,8 @@ describe('Vendor Use Case', () => {
         const createdVendor = await insertVendor(data);
 
         const res = await deleteVendor(createdVendor.result._id);
-        expect(res).to.eql({ n: 1, ok: 1, deletedCount: 1 });
+
+        expect(res.result).to.eql({ n: 1, ok: 1, deletedCount: 1 });
       });
     });
   });
