@@ -12,10 +12,8 @@ import insertVendorController from './add-vendor';
 import updateVendorController from './edit-vendor';
 import deleteVendorController from './delete-vendor';
 
-const getVendors = listVendorsController({ listVendors });
-const getOneVendor = selectVendorController({ selectVendor });
-const postVendor = insertVendorController({ insertVendor });
-const putVendor = updateVendorController({ updateVendor });
-const delVendor = deleteVendorController({ deleteVendor });
-
-export { getVendors, getOneVendor, postVendor, putVendor, delVendor };
+export const getVendors = listVendorsController({ listVendors });
+export const getOneVendor = selectVendorController({ selectVendor });
+export const postVendor = insertVendorController({ insertVendor });
+export const putVendor = updateVendorController({ updateVendor });
+export const delVendor = deleteVendorController({ deleteVendor });

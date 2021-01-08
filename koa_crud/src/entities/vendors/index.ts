@@ -1,5 +1,3 @@
 import buildVendor from './vendor';
 
-const makeVendor = buildVendor();
-
-export { makeVendor };
+export const makeVendor = buildVendor();
