@@ -28,12 +28,12 @@ describe('Entities - Vendor', () => {
     );
   });
 
-  it('should return undefined', () => {
+  it('should return undefined', async () => {
     const data = {
       name: 'Vendor 1',
       type: VendorType.Transfer,
     };
 
-    return expect(makeVendor(data)).to.eventually.be.undefined;
+    await expect(makeVendor(data)).to.eventually.be.fulfilled;
   });
 });
