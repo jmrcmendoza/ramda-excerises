@@ -1,16 +1,63 @@
 /* eslint-disable no-unused-expressions */
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+import chaiAsPromised from 'chai-as-promised';
 import server from '../../../../src';
-import { listVendors, selectVendor } from '../../../../src/use-cases/vendors';
+
+import {
+  insertVendor,
+  listVendors,
+  selectVendor,
+} from '../../../../src/use-cases/vendors';
 
 chai.use(chaiHttp);
+chai.use(chaiAsPromised);
 
 before(function () {
   this.request = () => chai.request(server);
 });
 
 describe('Vendor Use Case', () => {
+  describe('Add Vendor', () => {
+    context('Given incorrect values', () => {
+      it('should throw an error for null vendor name', async () => {
+        const data = {
+          name: '',
+          type: 'SEAMLESS',
+        };
+
+        await expect(insertVendor(data)).to.eventually.rejectedWith(
+          'Vendor name must be provided.',
+        );
+      });
+
+      it('should throw an error for null vendor type', async () => {
+        const data = {
+          name: 'Use Case Vendor 1',
+          type: '',
+        };
+
+        await expect(insertVendor(data)).to.eventually.rejectedWith(
+          'Vendor type must be provided.',
+        );
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should insert and return vendor values', async () => {
+        const data = {
+          name: 'Use Case Vendor 2',
+          type: 'TRANSFER',
+        };
+
+        const res = await insertVendor(data);
+
+        expect(res.result).to.exist;
+        expect(res.result).to.be.an('object');
+      });
+    });
+  });
+
   describe('List Vendors', () => {
     it('should return all vendors', async () => {
       const result = await listVendors();
