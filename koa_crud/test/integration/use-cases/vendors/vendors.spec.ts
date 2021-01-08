@@ -8,6 +8,7 @@ import {
   insertVendor,
   listVendors,
   selectVendor,
+  updateVendor,
 } from '../../../../src/use-cases/vendors';
 
 chai.use(chaiHttp);
@@ -72,6 +73,46 @@ describe('Vendor Use Case', () => {
 
       expect(result.vendor).to.exist;
       expect(result.vendor).to.be.an('object');
+    });
+  });
+
+  describe('Edit Vendor', () => {
+    context('Given invalid values', () => {
+      it('should throw an error for null vendor name', async () => {
+        let data = {
+          name: 'Use Case Vendor 3',
+          type: 'SEAMLESS',
+        };
+
+        const createdVendor = await insertVendor(data);
+
+        data = {
+          name: '',
+          type: 'SEAMLESS',
+        };
+
+        await expect(
+          updateVendor(createdVendor.result._id, data),
+        ).to.eventually.rejectedWith('Vendor name must be provided.');
+      });
+
+      it('should throw an error for null vendor type', async () => {
+        let data = {
+          name: 'Use Case Vendor 4',
+          type: 'SEAMLESS',
+        };
+
+        const createdVendor = await insertVendor(data);
+
+        data = {
+          name: 'Use Case Vendor 4',
+          type: '',
+        };
+
+        await expect(
+          updateVendor(createdVendor.result._id, data),
+        ).to.eventually.rejectedWith('Vendor type must be provided.');
+      });
     });
   });
 });
