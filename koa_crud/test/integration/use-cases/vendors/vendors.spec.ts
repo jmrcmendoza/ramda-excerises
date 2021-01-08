@@ -68,8 +68,14 @@ describe('Vendor Use Case', () => {
     });
 
     it('should return one vendors', async () => {
-      const vendorId = '5ff7c54fd563991e1464d50d';
-      const result = await selectVendor(vendorId);
+      const data = {
+        name: 'Use Case Vendor 3',
+        type: 'SEAMLESS',
+      };
+
+      const createdVendor = await insertVendor(data);
+
+      const result = await selectVendor(createdVendor.result._id);
 
       expect(result.vendor).to.exist;
       expect(result.vendor).to.be.an('object');
@@ -80,7 +86,7 @@ describe('Vendor Use Case', () => {
     context('Given invalid values', () => {
       it('should throw an error for null vendor name', async () => {
         let data = {
-          name: 'Use Case Vendor 3',
+          name: 'Use Case Vendor 4',
           type: 'SEAMLESS',
         };
 
@@ -98,14 +104,14 @@ describe('Vendor Use Case', () => {
 
       it('should throw an error for null vendor type', async () => {
         let data = {
-          name: 'Use Case Vendor 4',
+          name: 'Use Case Vendor 5',
           type: 'SEAMLESS',
         };
 
         const createdVendor = await insertVendor(data);
 
         data = {
-          name: 'Use Case Vendor 4',
+          name: 'Use Case Vendor 5',
           type: '',
         };
 
