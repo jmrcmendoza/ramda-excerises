@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import server from '../../../../src';
 
 import {
+  deleteVendor,
   insertVendor,
   listVendors,
   selectVendor,
@@ -118,6 +119,22 @@ describe('Vendor Use Case', () => {
         await expect(
           updateVendor(createdVendor.result._id, data),
         ).to.eventually.rejectedWith('Vendor type must be provided.');
+      });
+    });
+  });
+
+  describe('Delete Vendor', () => {
+    context('Given correct values', () => {
+      it('should delete one vendor', async () => {
+        const data = {
+          name: 'Use Case Vendor 6',
+          type: 'SEAMLESS',
+        };
+
+        const createdVendor = await insertVendor(data);
+
+        const res = await deleteVendor(createdVendor.result._id);
+        expect(res).to.eql({ n: 1, ok: 1, deletedCount: 1 });
       });
     });
   });
