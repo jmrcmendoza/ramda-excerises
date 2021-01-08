@@ -81,4 +81,27 @@ describe('Vendor Data Access', () => {
       expect(result).to.have.property('name', data.name);
     });
   });
+
+  describe('Update Vendor', () => {
+    context('Given values are correct', () => {
+      it('should throw validation error for empty name', async () => {
+        let data = {
+          name: 'Data Access Vendor 5',
+          type: 'SEAMLESS',
+        };
+
+        const vendor = await vendorsDB.createVendor(data);
+
+        data = {
+          name: `Data Access Vendor 5`,
+          type: 'TRANSFER',
+        };
+
+        const result = await vendorsDB.updateVendor(vendor._id, data);
+
+        expect(result).to.exist;
+        expect(result).to.be.an('object');
+      });
+    });
+  });
 });
