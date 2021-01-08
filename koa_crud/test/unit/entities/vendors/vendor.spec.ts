@@ -6,24 +6,24 @@ import { VendorType } from '../../../../src/models/vendor';
 chai.use(chaiAsPromised);
 
 describe('Entities - Vendor', () => {
-  it('should throw an error for null vendor name', () => {
+  it('should throw an error for null vendor name', async () => {
     const data = {
       name: '',
       type: VendorType.Seamless,
     };
 
-    expect(makeVendor(data)).to.eventually.rejectedWith(
+    await expect(makeVendor(data)).to.eventually.rejectedWith(
       'Vendor name must be provided.',
     );
   });
 
-  it('should throw an error for null vendor type', () => {
+  it('should throw an error for null vendor type', async () => {
     const data = {
       name: 'Vendor 1',
       type: '',
     };
 
-    expect(makeVendor(data)).to.eventually.rejectedWith(
+    await expect(makeVendor(data)).to.eventually.rejectedWith(
       'Vendor type must be provided.',
     );
   });
