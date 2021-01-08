@@ -57,4 +57,28 @@ describe('Vendor Data Access', () => {
       });
     });
   });
+
+  describe('List Vendors', () => {
+    it('should retrieve all vendors', async () => {
+      const result = await vendorsDB.listVendors();
+
+      expect(result).to.be.an('array');
+      expect(result).has.length.greaterThan(0);
+    });
+
+    it('should retrieve one vendor', async () => {
+      const data = {
+        name: 'Data Access Vendor 4',
+        type: 'SEAMLESS',
+      };
+
+      const vendor = await vendorsDB.createVendor(data);
+
+      const result = await vendorsDB.selectOneVendor(vendor._id);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+      expect(result).to.have.property('name', data.name);
+    });
+  });
 });
