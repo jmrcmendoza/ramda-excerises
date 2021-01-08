@@ -17,11 +17,11 @@ import { VendorType } from '../../../../src/models/vendor';
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
-before(function () {
-  this.request = () => chai.request(server);
-});
-
 describe('Vendor Use Case', () => {
+  before(function () {
+    this.request = () => chai.request(server);
+  });
+
   describe('Add Vendor', () => {
     context('Given incorrect values', () => {
       it('should throw an error for null vendor name', async () => {
@@ -68,6 +68,7 @@ describe('Vendor Use Case', () => {
 
       expect(result.vendors).to.exist;
       expect(result.vendors).to.be.an('array');
+      expect(result.vendors).to.have.length.greaterThan(0);
     });
 
     it('should return one vendors', async () => {
