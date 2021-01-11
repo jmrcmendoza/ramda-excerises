@@ -105,4 +105,21 @@ describe('Vendor Data Access', () => {
       });
     });
   });
+
+  describe('Delete Vendor', () => {
+    it('should delete created vendor', async () => {
+      const data = {
+        name: 'Data Access Vendor 5',
+        type: VendorType.Seamless,
+      };
+
+      const vendor = await vendorsDB.createVendor(data);
+
+      const result = await vendorsDB.deleteVendor(vendor._id, data);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+      expect(result).to.eql({ n: 1, ok: 1, deletedCount: 1 });
+    });
+  });
 });
