@@ -9,11 +9,11 @@ import { VendorType } from '../../../../src/models/vendor';
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
-before(function () {
-  this.request = () => chai.request(server);
-});
-
 describe('Vendor Data Access', () => {
+  before(function () {
+    this.request = () => chai.request(server);
+  });
+
   describe('Create a Vendor', async () => {
     context('Given values are incorrect', () => {
       it('should throw a validation error for empty vendor name', async () => {
