@@ -27,11 +27,9 @@ export default function ({
       return vendors.create(vendorInfo);
     },
     updateVendor(id: string, vendorInfo: VendorDocument) {
-      return vendors.findByIdAndUpdate(
-        { _id: id },
-        { ...vendorInfo },
-        { useFindAndModify: false },
-      );
+      return vendors.findOneAndUpdate({ _id: id }, vendorInfo, {
+        useFindAndModify: false,
+      });
     },
     async deleteVendor(id: string) {
       const result = await vendors.findByIdAndDelete({ _id: id });
