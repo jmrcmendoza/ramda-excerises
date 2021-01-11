@@ -73,11 +73,20 @@ describe('Vendors', () => {
     });
 
     it('should return one vendor', async function () {
-      const id = '5ff679a79de0a13d142d9fce';
+      const data = {
+        name: chance.name(),
+        type: VendorType.Seamless,
+      };
+
+      const createResponse = await chai
+        .request('http://localhost:3000')
+        .post('/api/vendors')
+        .type('json')
+        .send(data);
 
       const response = await chai
         .request('http://localhost:3000')
-        .get(`/api/vendors/${id}`);
+        .get(`/api/vendors/${createResponse.body.result._id}`);
 
       expect(response.body.vendor).to.exist;
       expect(response.body.vendor).to.be.an('object');
@@ -86,7 +95,7 @@ describe('Vendors', () => {
 
   describe('Edit vendor', () => {
     it('should return error for null vendor name', async function () {
-      let data = {
+      const data = {
         name: chance.name(),
         type: VendorType.Seamless,
       };
@@ -109,7 +118,7 @@ describe('Vendors', () => {
     });
 
     it('should return error for null vendor type', async function () {
-      let data = {
+      const data = {
         name: chance.name(),
         type: VendorType.Transfer,
       };
