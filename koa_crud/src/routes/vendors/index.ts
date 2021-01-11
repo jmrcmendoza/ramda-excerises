@@ -13,9 +13,9 @@ import { serialize } from '../../serialize';
 const router = new Router();
 
 router.get('/api/vendors', serialize(getVendors));
-router.get('/api/vendors/:_id', serialize(getOneVendor));
+router.get('/api/vendors/:id', serialize(getOneVendor));
 router.post('/api/vendors/', serialize(postVendor));
-router.put('/api/vendors/:_id', serialize(putVendor));
-router.delete('/api/vendors/:_id', serialize(delVendor));
+router.put('/api/vendors/:id', serialize(putVendor));
+router.delete('/api/vendors/:id', serialize(delVendor));
 
 export default router;
