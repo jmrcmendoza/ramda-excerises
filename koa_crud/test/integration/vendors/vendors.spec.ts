@@ -2,6 +2,9 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import { VendorType } from '../../../src/models/vendor';
+import Chance from 'chance';
+
+const chance = new Chance();
 
 chai.use(chaiHttp);
 
@@ -25,7 +28,7 @@ describe('Vendors', () => {
 
     it('should return error for null vendor type', async function () {
       const data = {
-        name: 'Vendor 2',
+        name: chance.name(),
         type: undefined,
       };
 
@@ -41,7 +44,7 @@ describe('Vendors', () => {
 
     it('should insert new vendor', async function () {
       const data = {
-        name: 'Vendor 1',
+        name: chance.name(),
         type: VendorType.Seamless,
       };
 
@@ -84,7 +87,7 @@ describe('Vendors', () => {
   describe('Edit vendor', () => {
     it('should return error for null vendor name', async function () {
       let data = {
-        name: 'Vendor 2',
+        name: chance.name(),
         type: VendorType.Seamless,
       };
 
@@ -94,10 +97,7 @@ describe('Vendors', () => {
         .type('json')
         .send(data);
 
-      data = {
-        name: '',
-        type: 'SEAMLESS',
-      };
+      data.name = '';
 
       const response = await chai
         .request('http://localhost:3000')
@@ -110,7 +110,7 @@ describe('Vendors', () => {
 
     it('should return error for null vendor type', async function () {
       let data = {
-        name: 'Vendor 3',
+        name: chance.name(),
         type: VendorType.Transfer,
       };
 
@@ -120,10 +120,7 @@ describe('Vendors', () => {
         .type('json')
         .send(data);
 
-      data = {
-        name: 'Vendor 3',
-        type: '',
-      };
+      data.type = '';
 
       const response = await chai
         .request('http://localhost:3000')
@@ -136,7 +133,7 @@ describe('Vendors', () => {
 
     it('should update vendor type', async function () {
       let data = {
-        name: 'Vendor 4',
+        name: chance.name(),
         type: VendorType.Seamless,
       };
 
@@ -146,10 +143,7 @@ describe('Vendors', () => {
         .type('json')
         .send(data);
 
-      data = {
-        name: 'Vendor 4',
-        type: VendorType.Transfer,
-      };
+      data.type = VendorType.Transfer;
 
       const response = await chai
         .request('http://localhost:3000')
@@ -165,7 +159,7 @@ describe('Vendors', () => {
   describe('Delete vendor', () => {
     it('should delete one vendor', async function () {
       const data = {
-        name: 'Vendor 5',
+        name: chance.name(),
         type: VendorType.Transfer,
       };
 
