@@ -89,6 +89,29 @@ describe('Vendor Controller', () => {
       expect(result).property('status', 200);
       expect(result.body.vendors).length.greaterThan(0);
     });
+
+    it('should retrieve one vendors and return 200 status code', async () => {
+      const data = {
+        params: {},
+        body: {
+          name: 'Vendor Controller 2',
+          type: VendorType.Seamless,
+        },
+        headers: {
+          'Content-Type': null,
+          Referer: null,
+          'User-Agent': null,
+        },
+      };
+
+      const vendor = await postVendor(data);
+
+      data.params = { id: vendor.body.result._id };
+
+      const result = await getVendors();
+
+      expect(result).property('status', 200);
+    });
   });
 
   describe('Edit Vendor', () => {
@@ -122,7 +145,10 @@ describe('Vendor Controller', () => {
           },
         };
 
-        await expect(putVendor(data)).to.fulfilled.property('status', 400);
+        await expect(putVendor(data)).to.eventually.fulfilled.property(
+          'status',
+          400,
+        );
       });
 
       it('should return 400 status code for empty name', async () => {
@@ -154,7 +180,10 @@ describe('Vendor Controller', () => {
           },
         };
 
-        await expect(putVendor(data)).to.fulfilled.property('status', 400);
+        await expect(putVendor(data)).to.eventually.fulfilled.property(
+          'status',
+          400,
+        );
       });
     });
   });
