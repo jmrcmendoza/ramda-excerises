@@ -10,7 +10,7 @@ export default function deleteVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const id: string = httpRequest.params;
+      const { id } = httpRequest.params;
 
       const result = await deleteVendor(id);
 
