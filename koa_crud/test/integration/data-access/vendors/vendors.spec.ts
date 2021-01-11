@@ -2,9 +2,12 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
+import Chance from 'chance';
 import server from '../../../../src';
 import vendorsDB from '../../../../src/data-access/vendors';
 import { VendorType } from '../../../../src/models/vendor';
+
+const chance = new Chance();
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
@@ -27,7 +30,7 @@ describe('Vendor Data Access', () => {
 
       it('should throw a validation error for empty vendor type', async () => {
         const data = {
-          name: 'Data Access Vendor 1',
+          name: chance.name(),
           type: '',
         };
 
@@ -36,7 +39,7 @@ describe('Vendor Data Access', () => {
 
       it('should throw a validation error for invalid vendor type', async () => {
         const data = {
-          name: 'Data Access Vendor 2',
+          name: chance.name(),
           type: 'Test Type',
         };
 
@@ -47,7 +50,7 @@ describe('Vendor Data Access', () => {
     context('Given the values are correct', () => {
       it('should insert vendor and return the values', async () => {
         const data = {
-          name: 'Data Access Vendor 3',
+          name: chance.name(),
           type: VendorType.Transfer,
         };
 
@@ -69,7 +72,7 @@ describe('Vendor Data Access', () => {
 
     it('should retrieve one vendor', async () => {
       const data = {
-        name: 'Data Access Vendor 4',
+        name: chance.name(),
         type: VendorType.Seamless,
       };
 
@@ -86,17 +89,14 @@ describe('Vendor Data Access', () => {
   describe('Update Vendor', () => {
     context('Given values are correct', () => {
       it('should update vendor type', async () => {
-        let data = {
-          name: 'Data Access Vendor 5',
+        const data = {
+          name: chance.name(),
           type: VendorType.Seamless,
         };
 
         const vendor = await vendorsDB.createVendor(data);
 
-        data = {
-          name: `Data Access Vendor 5`,
-          type: VendorType.Transfer,
-        };
+        data.type = VendorType.Transfer;
 
         const result = await vendorsDB.updateVendor(vendor._id, data);
 
@@ -109,7 +109,7 @@ describe('Vendor Data Access', () => {
   describe('Delete Vendor', () => {
     it('should delete created vendor', async () => {
       const data = {
-        name: 'Data Access Vendor 5',
+        name: chance.name(),
         type: VendorType.Seamless,
       };
 
@@ -118,7 +118,6 @@ describe('Vendor Data Access', () => {
       const result = await vendorsDB.deleteVendor(vendor._id, data);
 
       expect(result).to.exist;
-      expect(result).to.be.an('object');
       expect(result).to.be.true;
     });
   });

@@ -2,6 +2,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
+import Chance from 'chance';
 import server from '../../../../src';
 
 import {
@@ -13,6 +14,8 @@ import {
 } from '../../../../src/use-cases/vendors';
 
 import { VendorType } from '../../../../src/models/vendor';
+
+const chance = new Chance();
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
@@ -37,7 +40,7 @@ describe('Vendor Use Case', () => {
 
       it('should throw an error for null vendor type', async () => {
         const data = {
-          name: 'Use Case Vendor 1',
+          name: chance.name(),
           type: '',
         };
 
@@ -50,7 +53,7 @@ describe('Vendor Use Case', () => {
     context('Given correct values', () => {
       it('should insert and return vendor values', async () => {
         const data = {
-          name: 'Use Case Vendor 2',
+          name: chance.name(),
           type: VendorType.Transfer,
         };
 
@@ -73,7 +76,7 @@ describe('Vendor Use Case', () => {
 
     it('should return one vendors', async () => {
       const data = {
-        name: 'Use Case Vendor 3',
+        name: chance.name(),
         type: VendorType.Seamless,
       };
 
@@ -90,7 +93,7 @@ describe('Vendor Use Case', () => {
     context('Given invalid values', () => {
       it('should throw an error for null vendor name', async () => {
         let data = {
-          name: 'Use Case Vendor 4',
+          name: chance.name(),
           type: VendorType.Seamless,
         };
 
@@ -108,16 +111,13 @@ describe('Vendor Use Case', () => {
 
       it('should throw an error for null vendor type', async () => {
         let data = {
-          name: 'Use Case Vendor 5',
+          name: chance.name(),
           type: VendorType.Seamless,
         };
 
         const createdVendor = await insertVendor(data);
 
-        data = {
-          name: 'Use Case Vendor 5',
-          type: '',
-        };
+        data.type = '';
 
         await expect(
           updateVendor(createdVendor.result._id, data),
@@ -130,7 +130,7 @@ describe('Vendor Use Case', () => {
     context('Given correct values', () => {
       it('should delete one vendor', async () => {
         const data = {
-          name: 'Use Case Vendor 6',
+          name: chance.name(),
           type: 'SEAMLESS',
         };
 
@@ -138,7 +138,7 @@ describe('Vendor Use Case', () => {
 
         const res = await deleteVendor(createdVendor.result._id);
 
-        expect(res.result).to.eql({ n: 1, ok: 1, deletedCount: 1 });
+        expect(res.result).to.be.true;
       });
     });
   });
