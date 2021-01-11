@@ -33,8 +33,10 @@ export default function ({
         { useFindAndModify: false },
       );
     },
-    deleteVendor(id: string) {
-      return vendors.deleteOne({ _id: id });
+    async deleteVendor(id: string) {
+      const result = await vendors.deleteOne({ _id: id });
+
+      return result.deletedCount > 0;
     },
   });
 }
