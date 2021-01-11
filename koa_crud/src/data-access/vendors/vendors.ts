@@ -33,7 +33,7 @@ export default function ({
         { useFindAndModify: false },
       );
     },
-    async deleteVendor(id: anu) {
+    async deleteVendor(id: any) {
       const result = await vendors.deleteOne({ ...id });
 
       return result.deletedCount > 0;
