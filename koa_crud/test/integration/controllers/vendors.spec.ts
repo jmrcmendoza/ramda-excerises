@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import server from '../../../src';
 import { VendorType } from '../../../src/models/vendor';
 import {
+  delVendor,
   getOneVendor,
   getVendors,
   postVendor,
@@ -222,6 +223,32 @@ describe('Vendor Controller', () => {
           200,
         );
       });
+    });
+  });
+
+  describe('Delete Vendor', () => {
+    it('should create and delete vendor and return status code of 200', async () => {
+      const data = {
+        params: {},
+        body: {
+          name: 'Vendor Controller 6',
+          type: VendorType.Seamless,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Referer: null,
+          'User-Agent': null,
+        },
+      };
+
+      const vendor = await postVendor(data);
+
+      data.params = { id: vendor.body.result._id };
+
+      await expect(delVendor(data)).to.eventually.fulfilled.property(
+        'status',
+        200,
+      );
     });
   });
 });
