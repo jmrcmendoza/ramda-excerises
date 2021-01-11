@@ -88,5 +88,23 @@ describe('Vendor Model', () => {
     });
   });
 
-  describe('Edit Vendor', () => {});
+  describe('Edit Vendor', () => {
+    it('should update and return vendor values', async () => {
+      const data = {
+        name: chance.name(),
+        type: VendorType.Seamless,
+      };
+
+      const vendor = await VendorModel.create(data);
+
+      data.type = VendorType.Transfer;
+
+      const result = await VendorModel.findByIdAndUpdate(vendor._id, data, {
+        useFindAndModify: false,
+      });
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+    });
+  });
 });
