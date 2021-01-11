@@ -12,6 +12,10 @@ import {
   putVendor,
 } from '../../../src/controllers/vendors';
 
+import Chance from 'chance';
+
+const chance = new Chance();
+
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
@@ -24,7 +28,7 @@ describe('Vendor Controller', () => {
     context('Given incorrect values', () => {
       it('should return 400 status code for empty type', async () => {
         const data = {
-          body: { name: 'Controller Vendor', type: '' },
+          body: { name: chance.name(), type: '' },
           headers: {
             'Content-Type': null,
             Referer: null,
@@ -58,7 +62,7 @@ describe('Vendor Controller', () => {
     context('Given correct values', () => {
       it('should insert vendor and return 201 status code', async () => {
         const data = {
-          body: { name: 'Vendor Controller 1', type: VendorType.Seamless },
+          body: { name: chance.name(), type: VendorType.Seamless },
           headers: {
             'Content-Type': null,
             Referer: null,
@@ -95,7 +99,7 @@ describe('Vendor Controller', () => {
       const data = {
         params: {},
         body: {
-          name: 'Vendor Controller 2',
+          name: chance.name(),
           type: VendorType.Seamless,
         },
         headers: {
@@ -109,6 +113,8 @@ describe('Vendor Controller', () => {
 
       data.params = { id: vendor.body.result._id };
 
+      const test = await getOneVendor(data);
+
       await expect(getOneVendor(data)).to.eventually.fulfilled.property(
         'status',
         200,
@@ -119,10 +125,10 @@ describe('Vendor Controller', () => {
   describe('Edit Vendor', () => {
     context('Given incorrect values', async () => {
       it('should return 400 status code for empty type', async () => {
-        let data = {
+        const data = {
           params: {},
           body: {
-            name: 'Vendor Controller 3',
+            name: chance.name(),
             type: VendorType.Seamless,
           },
           headers: {
@@ -134,18 +140,8 @@ describe('Vendor Controller', () => {
 
         const vendor = await postVendor(data);
 
-        data = {
-          params: { id: vendor.body.result._id },
-          body: {
-            name: 'Vendor Controller 3',
-            type: '',
-          },
-          headers: {
-            'Content-Type': null,
-            Referer: null,
-            'User-Agent': null,
-          },
-        };
+        data.params = { id: vendor.body.result._id };
+        data.body.type = '';
 
         await expect(putVendor(data)).to.eventually.fulfilled.property(
           'status',
@@ -154,10 +150,10 @@ describe('Vendor Controller', () => {
       });
 
       it('should return 400 status code for empty name', async () => {
-        let data = {
+        const data = {
           params: {},
           body: {
-            name: 'Vendor Controller 3',
+            name: chance.name(),
             type: VendorType.Seamless,
           },
           headers: {
@@ -169,18 +165,8 @@ describe('Vendor Controller', () => {
 
         const vendor = await postVendor(data);
 
-        data = {
-          params: { id: vendor.body.result._id },
-          body: {
-            name: '',
-            type: VendorType.Transfer,
-          },
-          headers: {
-            'Content-Type': null,
-            Referer: null,
-            'User-Agent': null,
-          },
-        };
+        data.params = { id: vendor.body.result._id };
+        data.body.name = '';
 
         await expect(putVendor(data)).to.eventually.fulfilled.property(
           'status',
@@ -191,10 +177,10 @@ describe('Vendor Controller', () => {
 
     context('Given correct values', () => {
       it('should create and update vendor', async () => {
-        let data = {
+        const data = {
           params: {},
           body: {
-            name: 'Vendor Controller 5',
+            name: chance.name(),
             type: VendorType.Seamless,
           },
           headers: {
@@ -206,18 +192,8 @@ describe('Vendor Controller', () => {
 
         const vendor = await postVendor(data);
 
-        data = {
-          params: { id: vendor.body.result._id },
-          body: {
-            name: 'Vendor Controller 5',
-            type: VendorType.Transfer,
-          },
-          headers: {
-            'Content-Type': 'application/json',
-            Referer: null,
-            'User-Agent': null,
-          },
-        };
+        data.params = { id: vendor.body.result._id };
+        data.body.type = VendorType.Transfer;
 
         await expect(putVendor(data)).to.eventually.fulfilled.property(
           'status',
@@ -232,7 +208,7 @@ describe('Vendor Controller', () => {
       const data = {
         params: {},
         body: {
-          name: 'Vendor Controller 6',
+          name: chance.name(),
           type: VendorType.Seamless,
         },
         headers: {
