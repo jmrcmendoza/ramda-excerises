@@ -26,15 +26,15 @@ export default function ({
     createVendor(vendorInfo: VendorDocument) {
       return vendors.create(vendorInfo);
     },
-    updateVendor(id: string, vendorInfo: VendorDocument) {
+    updateVendor(id: any, vendorInfo: VendorDocument) {
       return vendors.findOneAndUpdate(
-        { _id: id },
+        { ...id },
         { ...vendorInfo },
         { useFindAndModify: false },
       );
     },
-    async deleteVendor(id: string) {
-      const result = await vendors.deleteOne({ _id: id });
+    async deleteVendor(id: anu) {
+      const result = await vendors.deleteOne({ ...id });
 
       return result.deletedCount > 0;
     },
