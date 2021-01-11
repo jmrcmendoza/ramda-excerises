@@ -26,15 +26,15 @@ export default function ({
     createVendor(vendorInfo: VendorDocument) {
       return vendors.create(vendorInfo);
     },
-    updateVendor(id: string, vendorInfo: VendorDocument) {
+    updateVendor(id: any, vendorInfo: VendorDocument) {
       return vendors.findOneAndUpdate(
-        { _id: id },
+        { ...id },
         { ...vendorInfo },
         { useFindAndModify: false },
       );
     },
-    deleteVendor(id: string) {
-      return vendors.deleteOne({ _id: id });
+    deleteVendor(id: any) {
+      return vendors.deleteOne({ ...id });
     },
   });
 }
