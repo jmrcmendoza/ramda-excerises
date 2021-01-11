@@ -13,7 +13,7 @@ export default function listVendorsController({
         headers: {
           'Content-Type': 'application/json',
         },
-        status: 201,
+        status: 200,
         body: result,
       };
     } catch (e) {

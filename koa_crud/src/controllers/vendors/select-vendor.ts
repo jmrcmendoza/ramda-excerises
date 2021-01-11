@@ -18,7 +18,7 @@ export default function selectVendorController({
         headers: {
           'Content-Type': 'application/json',
         },
-        status: 201,
+        status: 200,
         body: result,
       };
     } catch (e) {
