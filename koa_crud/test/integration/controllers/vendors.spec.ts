@@ -109,9 +109,10 @@ describe('Vendor Controller', () => {
 
       data.params = { id: vendor.body.result._id };
 
-      const result = await getVendors();
-
-      expect(result).property('status', 200);
+      await expect(getOneVendor(data)).to.eventually.fulfilled.property(
+        'status',
+        200,
+      );
     });
   });
 
