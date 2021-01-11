@@ -184,12 +184,7 @@ describe('Vendors', () => {
 
       expect(response.status).to.equal(200);
       expect(response.body.result).to.exist;
-      expect(response.body.result).to.be.an('object');
-      expect(response.body.result).to.eqls({
-        n: 1,
-        ok: 1,
-        deletedCount: 1,
-      });
+      expect(response.body.result).to.be.true;
     });
   });
 });
