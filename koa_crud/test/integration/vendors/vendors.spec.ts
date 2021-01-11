@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+import { VendorType } from '../../../src/models/vendor';
 
 chai.use(chaiHttp);
 
@@ -9,7 +10,7 @@ describe('Vendors', () => {
     it('should return error for null vendor name', async function () {
       const data = {
         name: undefined,
-        type: 'SEAMLESS',
+        type: VendorType.Seamless,
       };
 
       const response = await chai
@@ -41,7 +42,7 @@ describe('Vendors', () => {
     it('should insert new vendor', async function () {
       const data = {
         name: 'Vendor 1',
-        type: 'SEAMLESS',
+        type: VendorType.Seamless,
       };
 
       const response = await chai
@@ -84,7 +85,7 @@ describe('Vendors', () => {
     it('should return error for null vendor name', async function () {
       let data = {
         name: 'Vendor 2',
-        type: 'SEAMLESS',
+        type: VendorType.Seamless,
       };
 
       const createResponse = await chai
@@ -110,7 +111,7 @@ describe('Vendors', () => {
     it('should return error for null vendor type', async function () {
       let data = {
         name: 'Vendor 3',
-        type: 'SEAMLESS',
+        type: VendorType.Transfer,
       };
 
       const createResponse = await chai
@@ -136,7 +137,7 @@ describe('Vendors', () => {
     it('should update vendor type', async function () {
       let data = {
         name: 'Vendor 4',
-        type: 'SEAMLESS',
+        type: VendorType.Seamless,
       };
 
       const createResponse = await chai
@@ -147,7 +148,7 @@ describe('Vendors', () => {
 
       data = {
         name: 'Vendor 4',
-        type: 'TRANSFER',
+        type: VendorType.Transfer,
       };
 
       const response = await chai
@@ -165,7 +166,7 @@ describe('Vendors', () => {
     it('should delete one vendor', async function () {
       const data = {
         name: 'Vendor 5',
-        type: 'TRANSFER',
+        type: VendorType.Transfer,
       };
 
       const createResponse = await chai
