@@ -55,4 +55,27 @@ describe('Vendor Model', () => {
       });
     });
   });
+
+  describe('List Vendors', () => {
+    it('should retrieve all vendors', async () => {
+      const result = await VendorModel.find({}).lean();
+
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
+    });
+
+    it('should retrieve one vendor', async () => {
+      const data = {
+        name: chance.name(),
+        type: VendorType.Seamless,
+      };
+
+      const vendor = await VendorModel.create(data);
+
+      const result = await VendorModel.findById(vendor._id);
+
+      expect(result).to.be.an('object');
+      expect(result.name).to.equal(data.name);
+    });
+  });
 });
