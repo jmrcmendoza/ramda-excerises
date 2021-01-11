@@ -4,6 +4,7 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import server from '../../../../src';
 import vendorsDB from '../../../../src/data-access/vendors';
+import { VendorType } from '../../../../src/models/vendor';
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
@@ -18,7 +19,7 @@ describe('Vendor Data Access', () => {
       it('should throw a validation error for empty vendor name', async () => {
         const data = {
           name: '',
-          type: 'SEAMLESS',
+          type: VendorType.Seamless,
         };
 
         await expect(vendorsDB.createVendor(data)).to.eventually.rejected;
@@ -47,7 +48,7 @@ describe('Vendor Data Access', () => {
       it('should insert vendor and return the values', async () => {
         const data = {
           name: 'Data Access Vendor 3',
-          type: 'TRANSFER',
+          type: VendorType.Transfer,
         };
 
         const result = await vendorsDB.createVendor(data);
@@ -69,7 +70,7 @@ describe('Vendor Data Access', () => {
     it('should retrieve one vendor', async () => {
       const data = {
         name: 'Data Access Vendor 4',
-        type: 'SEAMLESS',
+        type: VendorType.Seamless,
       };
 
       const vendor = await vendorsDB.createVendor(data);
@@ -87,14 +88,14 @@ describe('Vendor Data Access', () => {
       it('should throw validation error for empty name', async () => {
         let data = {
           name: 'Data Access Vendor 5',
-          type: 'SEAMLESS',
+          type: VendorType.Seamless,
         };
 
         const vendor = await vendorsDB.createVendor(data);
 
         data = {
           name: `Data Access Vendor 5`,
-          type: 'TRANSFER',
+          type: VendorType.Transfer,
         };
 
         const result = await vendorsDB.updateVendor(vendor._id, data);
