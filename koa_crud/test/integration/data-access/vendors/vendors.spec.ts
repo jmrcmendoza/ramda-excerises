@@ -119,7 +119,7 @@ describe('Vendor Data Access', () => {
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
-      expect(result).to.eql({ n: 1, ok: 1, deletedCount: 1 });
+      expect(result).to.be.true;
     });
   });
 });
