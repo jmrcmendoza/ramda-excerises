@@ -107,4 +107,20 @@ describe('Vendor Model', () => {
       expect(result).to.be.an('object');
     });
   });
+
+  describe('Delete Vendor', () => {
+    it('should create and delete vendor', async () => {
+      const data = {
+        name: chance.name(),
+        type: VendorType.Seamless,
+      };
+
+      const vendor = await VendorModel.create(data);
+
+      const result = await VendorModel.findByIdAndDelete(vendor._id);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+    });
+  });
 });
