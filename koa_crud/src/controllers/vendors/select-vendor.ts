@@ -10,7 +10,7 @@ export default function selectVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const id: string = httpRequest.params;
+      const { id } = httpRequest.params;
 
       const result = await selectVendor(id);
 
@@ -18,7 +18,7 @@ export default function selectVendorController({
         headers: {
           'Content-Type': 'application/json',
         },
-        status: 201,
+        status: 200,
         body: result,
       };
     } catch (e) {

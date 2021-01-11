@@ -27,16 +27,14 @@ export default function ({
       return vendors.create(vendorInfo);
     },
     updateVendor(id: string, vendorInfo: VendorDocument) {
-      return vendors.findOneAndUpdate(
-        { _id: id },
-        { ...vendorInfo },
-        { useFindAndModify: false },
-      );
+      return vendors.findByIdAndUpdate(id, vendorInfo, {
+        useFindAndModify: false,
+      });
     },
     async deleteVendor(id: string) {
-      const result = await vendors.deleteOne({ _id: id });
+      const result = await vendors.findByIdAndDelete(id);
 
-      return result.deletedCount > 0;
+      return !!result;
     },
   });
 }

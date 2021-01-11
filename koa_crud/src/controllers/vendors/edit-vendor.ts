@@ -13,7 +13,7 @@ export default function updateVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const id: string = httpRequest.params;
+      const { id } = httpRequest.params;
 
       const vendorInfo = httpRequest.body;
 
