@@ -85,7 +85,7 @@ describe('Vendor Data Access', () => {
 
   describe('Update Vendor', () => {
     context('Given values are correct', () => {
-      it('should throw validation error for empty name', async () => {
+      it('should update vendor type', async () => {
         let data = {
           name: 'Data Access Vendor 5',
           type: VendorType.Seamless,
