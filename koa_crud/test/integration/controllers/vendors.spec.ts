@@ -186,5 +186,42 @@ describe('Vendor Controller', () => {
         );
       });
     });
+
+    context('Given correct values', () => {
+      it('should create and update vendor', async () => {
+        let data = {
+          params: {},
+          body: {
+            name: 'Vendor Controller 5',
+            type: VendorType.Seamless,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Referer: null,
+            'User-Agent': null,
+          },
+        };
+
+        const vendor = await postVendor(data);
+
+        data = {
+          params: { id: vendor.body.result._id },
+          body: {
+            name: 'Vendor Controller 5',
+            type: VendorType.Transfer,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Referer: null,
+            'User-Agent': null,
+          },
+        };
+
+        await expect(putVendor(data)).to.eventually.fulfilled.property(
+          'status',
+          200,
+        );
+      });
+    });
   });
 });
