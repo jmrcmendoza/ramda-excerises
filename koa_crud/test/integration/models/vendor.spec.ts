@@ -39,6 +39,15 @@ describe('Vendor Model', () => {
           'Vendor validation failed: name: Path `name` is required.',
         );
       });
+
+      it('should throw an error for invalid type', async () => {
+        const data = {
+          name: chance.name(),
+          type: 'Test',
+        };
+
+        await expect(VendorModel.create(data)).to.eventually.rejected;
+      });
     });
 
     context('Given correct values', () => {
@@ -78,4 +87,6 @@ describe('Vendor Model', () => {
       expect(result.name).to.equal(data.name);
     });
   });
+
+  describe('Edit Vendor', () => {});
 });
