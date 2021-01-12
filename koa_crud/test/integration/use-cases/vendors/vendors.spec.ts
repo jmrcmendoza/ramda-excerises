@@ -124,16 +124,11 @@ describe('Vendor Use Case', () => {
   describe('Delete Vendor', () => {
     context('Given correct values', () => {
       it('should delete one vendor', async () => {
-        const data = {
-          name: chance.name(),
-          type: 'SEAMLESS',
-        };
+        const vendors = await listVendors();
 
-        const createdVendor = await insertVendor(data);
+        const lastVendor = R.last(vendors);
 
-        const res = await deleteVendor(createdVendor.result._id);
-
-        expect(res.result).to.be.true;
+        await expect(deleteVendor(lastVendor._id)).to.be.eventually.true;
       });
     });
   });
