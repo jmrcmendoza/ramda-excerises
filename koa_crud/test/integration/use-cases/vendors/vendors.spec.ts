@@ -90,35 +90,32 @@ describe('Vendor Use Case', () => {
   describe('Edit Vendor', () => {
     context('Given invalid values', () => {
       it('should throw an error for null vendor name', async () => {
-        let data = {
-          name: chance.name(),
-          type: VendorType.Seamless,
-        };
+        const vendors = await listVendors();
 
-        const createdVendor = await insertVendor(data);
+        const lastVendor = R.last(vendors);
 
-        data = {
+        const data = {
           name: '',
           type: VendorType.Seamless,
         };
 
         await expect(
-          updateVendor(createdVendor.result._id, data),
+          updateVendor(lastVendor._id, data),
         ).to.eventually.rejectedWith('Vendor name must be provided.');
       });
 
       it('should throw an error for null vendor type', async () => {
-        let data = {
-          name: chance.name(),
-          type: VendorType.Seamless,
+        const vendors = await listVendors();
+
+        const lastVendor = R.last(vendors);
+
+        const data = {
+          name: lastVendor.name,
+          type: '',
         };
 
-        const createdVendor = await insertVendor(data);
-
-        data.type = '';
-
         await expect(
-          updateVendor(createdVendor.result._id, data),
+          updateVendor(lastVendor._id, data),
         ).to.eventually.rejectedWith('Vendor type must be provided.');
       });
     });
