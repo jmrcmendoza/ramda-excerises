@@ -6,11 +6,6 @@ export default function makeInsertVendor(vendorsDB: VendorQueries) {
   return async function insertVendor(vendorInfo: VendorDocument): Promise<any> {
     await makeVendor(vendorInfo);
 
-    const createVendor = await vendorsDB.createVendor(vendorInfo);
-
-    return {
-      message: 'Successful',
-      result: createVendor,
-    };
+    return vendorsDB.createVendor(vendorInfo);
   };
 }

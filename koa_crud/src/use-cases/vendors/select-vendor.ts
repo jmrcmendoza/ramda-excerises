@@ -6,11 +6,6 @@ export default function makeSelectVendor(vendorsDB: VendorQueries) {
       throw new Error('ID must be provided.');
     }
 
-    const vendor = await vendorsDB.selectOneVendor(id);
-
-    return {
-      message: 'Successful',
-      vendor,
-    };
+    return vendorsDB.selectOneVendor(id);
   };
 }
