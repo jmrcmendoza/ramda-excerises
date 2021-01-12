@@ -212,9 +212,11 @@ describe('Vendor Controller', () => {
         },
       };
 
-      const vendor = await postVendor(data);
+      const vendors = await getVendors();
 
-      data.params = { id: vendor.body.result._id };
+      const lastVendor = R.last(vendors.body);
+
+      data.params = { id: lastVendor._id };
 
       await expect(delVendor(data)).to.eventually.fulfilled.property(
         'status',
