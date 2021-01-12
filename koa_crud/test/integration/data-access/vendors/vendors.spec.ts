@@ -106,9 +106,9 @@ describe('Vendor Data Access', () => {
     it('should delete created vendor', async () => {
       const vendors = await vendorsDB.listVendors();
 
-      const lastVendor = R.last(vendors);
-
-      const result = await vendorsDB.deleteVendor(lastVendor._id);
+      const result = await vendorsDB.deleteVendor(
+        R.compose(R.prop('_id'), R.last)(vendors),
+      );
 
       expect(result).to.exist;
       expect(result).to.be.true;
