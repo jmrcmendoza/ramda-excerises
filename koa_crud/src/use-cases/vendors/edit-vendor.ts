@@ -13,11 +13,6 @@ export default function makeUpdateVendor(vendorsDB: VendorQueries) {
       throw new Error('ID must be provided.');
     }
 
-    const result = await vendorsDB.updateVendor(id, vendorInfo);
-
-    return {
-      message: 'Successful',
-      result,
-    };
+    return vendorsDB.updateVendor(id, vendorInfo);
   };
 }
