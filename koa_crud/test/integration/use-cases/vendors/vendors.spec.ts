@@ -2,6 +2,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
+import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
 
@@ -57,10 +58,10 @@ describe('Vendor Use Case', () => {
           type: VendorType.Transfer,
         };
 
-        const res = await insertVendor(data);
+        const result = await insertVendor(data);
 
-        expect(res.result).to.exist;
-        expect(res.result).to.be.an('object');
+        expect(result).to.exist;
+        expect(result).to.be.true;
       });
     });
   });
