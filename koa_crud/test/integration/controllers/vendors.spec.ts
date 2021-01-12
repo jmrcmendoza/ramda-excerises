@@ -90,15 +90,13 @@ describe('Vendor Controller', () => {
       const vendors = await getVendors();
 
       const data = {
-        params: {},
+        params: { id: R.compose(R.prop('_id'), R.last)(vendors.body) },
         headers: {
           'Content-Type': null,
           Referer: null,
           'User-Agent': null,
         },
       };
-
-      data.params = { id: vendors.body[0]._id };
 
       await expect(getOneVendor(data)).to.eventually.fulfilled.property(
         'status',
@@ -199,24 +197,17 @@ describe('Vendor Controller', () => {
 
   describe('Delete Vendor', () => {
     it('should create and delete vendor and return status code of 200', async () => {
+      const vendors = await getVendors();
+
       const data = {
-        params: {},
-        body: {
-          name: chance.name(),
-          type: VendorType.Seamless,
-        },
+        params: { id: R.compose(R.prop('_id'), R.last)(vendors.body) },
+
         headers: {
           'Content-Type': 'application/json',
           Referer: null,
           'User-Agent': null,
         },
       };
-
-      const vendors = await getVendors();
-
-      const lastVendor = R.last(vendors.body);
-
-      data.params = { id: lastVendor._id };
 
       await expect(delVendor(data)).to.eventually.fulfilled.property(
         'status',
