@@ -78,9 +78,9 @@ describe('Vendor Use Case', () => {
     it('should return one vendors', async () => {
       const vendors = await listVendors();
 
-      const lastVendor = R.last(vendors);
-
-      const result = await selectVendor(lastVendor._id);
+      const result = await selectVendor(
+        R.compose(R.prop('_id'), R.last)(vendors),
+      );
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
@@ -96,7 +96,7 @@ describe('Vendor Use Case', () => {
 
         const data = {
           name: '',
-          type: VendorType.Seamless,
+          type: lastVendor.type,
         };
 
         await expect(
@@ -126,9 +126,8 @@ describe('Vendor Use Case', () => {
       it('should delete one vendor', async () => {
         const vendors = await listVendors();
 
-        const lastVendor = R.last(vendors);
-
-        await expect(deleteVendor(lastVendor._id)).to.be.eventually.true;
+        await expect(deleteVendor(R.compose(R.prop('_id'), R.last)(vendors))).to
+          .be.eventually.true;
       });
     });
   });
