@@ -71,18 +71,15 @@ describe('Vendor Data Access', () => {
     });
 
     it('should retrieve one vendor', async () => {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
+      const vendors = await vendorsDB.listVendors();
 
-      const vendor = await vendorsDB.createVendor(data);
+      const lastVendor = R.last(vendors);
 
-      const result = await vendorsDB.selectOneVendor(vendor._id);
+      const result = await vendorsDB.selectOneVendor(lastVendor._id);
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
-      expect(result).to.have.property('name', data.name);
+      expect(result).to.have.property('name', lastVendor.name);
     });
   });
 
