@@ -86,19 +86,18 @@ describe('Vendor Data Access', () => {
   describe('Update Vendor', () => {
     context('Given values are correct', () => {
       it('should update vendor type', async () => {
+        const vendors = await vendorsDB.listVendors();
+
+        const lastVendor = R.last(vendors);
+
         const data = {
-          name: chance.name(),
-          type: VendorType.Seamless,
+          name: lastVendor.name,
+          type: VendorType.Transfer,
         };
 
-        const vendor = await vendorsDB.createVendor(data);
+        const result = await vendorsDB.updateVendor(lastVendor._id, data);
 
-        data.type = VendorType.Transfer;
-
-        const result = await vendorsDB.updateVendor(vendor._id, data);
-
-        expect(result).to.exist;
-        expect(result).to.be.an('object');
+        expect(result).to.be.true;
       });
     });
   });
