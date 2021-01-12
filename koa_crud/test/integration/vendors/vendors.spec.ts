@@ -67,30 +67,23 @@ describe('Vendors', () => {
         .request('http://localhost:3000')
         .get('/api/vendors');
 
-      expect(response.body.vendors).to.exist;
-      expect(response.body.vendors)
-        .to.be.an('array')
-        .that.has.length.greaterThan(0);
+      expect(response.body).to.exist;
+      expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
     });
 
     it('should return one vendor', async function () {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
-
-      const createResponse = await chai
+      const vendors = await chai
         .request('http://localhost:3000')
-        .post('/api/vendors')
-        .type('json')
-        .send(data);
+        .get('/api/vendors');
+
+      const lastVendor = R.last(vendors.body);
 
       const response = await chai
         .request('http://localhost:3000')
-        .get(`/api/vendors/${createResponse.body.result._id}`);
+        .get(`/api/vendors/${lastVendor._id}`);
 
-      expect(response.body.vendor).to.exist;
-      expect(response.body.vendor).to.be.an('object');
+      expect(response.body).to.exist;
+      expect(response.body).to.be.an('object');
     });
   });
 
