@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
+import R from 'ramda';
 import server from '../../../../src';
 import vendorsDB from '../../../../src/data-access/vendors';
 import { VendorType } from '../../../../src/models/vendor';
@@ -56,8 +57,7 @@ describe('Vendor Data Access', () => {
 
         const result = await vendorsDB.createVendor(data);
 
-        expect(result).to.exist;
-        expect(result).to.be.an('object');
+        expect(result).to.be.true;
       });
     });
   });
