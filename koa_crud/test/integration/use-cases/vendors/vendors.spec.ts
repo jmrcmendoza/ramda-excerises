@@ -70,23 +70,20 @@ describe('Vendor Use Case', () => {
     it('should return all vendors', async () => {
       const result = await listVendors();
 
-      expect(result.vendors).to.exist;
-      expect(result.vendors).to.be.an('array');
-      expect(result.vendors).to.have.length.greaterThan(0);
+      expect(result).to.exist;
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
     });
 
     it('should return one vendors', async () => {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
+      const vendors = await listVendors();
 
-      const createdVendor = await insertVendor(data);
+      const lastVendor = R.last(vendors);
 
-      const result = await selectVendor(createdVendor.result._id);
+      const result = await selectVendor(lastVendor._id);
 
-      expect(result.vendor).to.exist;
-      expect(result.vendor).to.be.an('object');
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
     });
   });
 
