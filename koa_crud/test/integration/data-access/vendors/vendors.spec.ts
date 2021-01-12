@@ -104,14 +104,11 @@ describe('Vendor Data Access', () => {
 
   describe('Delete Vendor', () => {
     it('should delete created vendor', async () => {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
+      const vendors = await vendorsDB.listVendors();
 
-      const vendor = await vendorsDB.createVendor(data);
+      const lastVendor = R.last(vendors);
 
-      const result = await vendorsDB.deleteVendor(vendor._id, data);
+      const result = await vendorsDB.deleteVendor(lastVendor._id);
 
       expect(result).to.exist;
       expect(result).to.be.true;
