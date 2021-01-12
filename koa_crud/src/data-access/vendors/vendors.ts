@@ -3,12 +3,9 @@ import VendorModel, { VendorDocument } from '../../models/vendor';
 export type VendorQueries = {
   listVendors: () => Promise<VendorDocument>;
   selectOneVendor: (id: string) => Promise<VendorDocument>;
-  createVendor: (document: VendorDocument) => Promise<VendorDocument>;
-  updateVendor: (
-    id: string,
-    document: VendorDocument,
-  ) => Promise<VendorDocument>;
-  deleteVendor: (id: string) => any;
+  createVendor: (document: VendorDocument) => Promise<boolean>;
+  updateVendor: (id: string, document: VendorDocument) => Promise<boolean>;
+  deleteVendor: (id: string) => Promise<boolean>;
 };
 
 export default function ({
@@ -23,13 +20,17 @@ export default function ({
     selectOneVendor(id: string) {
       return vendors.findById(id).lean();
     },
-    createVendor(vendorInfo: VendorDocument) {
-      return vendors.create(vendorInfo);
+    async createVendor(vendorInfo: VendorDocument) {
+      const result = await vendors.create(vendorInfo);
+
+      return !!result;
     },
-    updateVendor(id: string, vendorInfo: VendorDocument) {
-      return vendors.findByIdAndUpdate(id, vendorInfo, {
+    async updateVendor(id: string, vendorInfo: VendorDocument) {
+      const result = await vendors.findByIdAndUpdate(id, vendorInfo, {
         useFindAndModify: false,
       });
+
+      return !!result;
     },
     async deleteVendor(id: string) {
       const result = await vendors.findByIdAndDelete(id);
