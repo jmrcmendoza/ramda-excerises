@@ -2,6 +2,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
+import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
 
@@ -57,10 +58,10 @@ describe('Vendor Use Case', () => {
           type: VendorType.Transfer,
         };
 
-        const res = await insertVendor(data);
+        const result = await insertVendor(data);
 
-        expect(res.result).to.exist;
-        expect(res.result).to.be.an('object');
+        expect(result).to.exist;
+        expect(result).to.be.true;
       });
     });
   });
@@ -69,58 +70,52 @@ describe('Vendor Use Case', () => {
     it('should return all vendors', async () => {
       const result = await listVendors();
 
-      expect(result.vendors).to.exist;
-      expect(result.vendors).to.be.an('array');
-      expect(result.vendors).to.have.length.greaterThan(0);
+      expect(result).to.exist;
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
     });
 
     it('should return one vendors', async () => {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
+      const vendors = await listVendors();
 
-      const createdVendor = await insertVendor(data);
+      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
 
-      const result = await selectVendor(createdVendor.result._id);
+      const result = await selectVendor(lastVendorId);
 
-      expect(result.vendor).to.exist;
-      expect(result.vendor).to.be.an('object');
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
     });
   });
 
   describe('Edit Vendor', () => {
     context('Given invalid values', () => {
       it('should throw an error for null vendor name', async () => {
-        let data = {
-          name: chance.name(),
-          type: VendorType.Seamless,
-        };
+        const vendors = await listVendors();
 
-        const createdVendor = await insertVendor(data);
+        const lastVendor = R.last(vendors);
 
-        data = {
+        const data = {
           name: '',
-          type: VendorType.Seamless,
+          type: lastVendor.type,
         };
 
         await expect(
-          updateVendor(createdVendor.result._id, data),
+          updateVendor(lastVendor._id, data),
         ).to.eventually.rejectedWith('Vendor name must be provided.');
       });
 
       it('should throw an error for null vendor type', async () => {
-        let data = {
-          name: chance.name(),
-          type: VendorType.Seamless,
+        const vendors = await listVendors();
+
+        const lastVendor = R.last(vendors);
+
+        const data = {
+          name: lastVendor.name,
+          type: '',
         };
 
-        const createdVendor = await insertVendor(data);
-
-        data.type = '';
-
         await expect(
-          updateVendor(createdVendor.result._id, data),
+          updateVendor(lastVendor._id, data),
         ).to.eventually.rejectedWith('Vendor type must be provided.');
       });
     });
@@ -129,16 +124,11 @@ describe('Vendor Use Case', () => {
   describe('Delete Vendor', () => {
     context('Given correct values', () => {
       it('should delete one vendor', async () => {
-        const data = {
-          name: chance.name(),
-          type: 'SEAMLESS',
-        };
+        const vendors = await listVendors();
 
-        const createdVendor = await insertVendor(data);
+        const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
 
-        const res = await deleteVendor(createdVendor.result._id);
-
-        expect(res.result).to.be.true;
+        await expect(deleteVendor(lastVendorId)).to.be.eventually.true;
       });
     });
   });

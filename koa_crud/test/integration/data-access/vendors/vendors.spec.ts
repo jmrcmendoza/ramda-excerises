@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
+import R from 'ramda';
 import server from '../../../../src';
 import vendorsDB from '../../../../src/data-access/vendors';
 import { VendorType } from '../../../../src/models/vendor';
@@ -56,8 +57,7 @@ describe('Vendor Data Access', () => {
 
         const result = await vendorsDB.createVendor(data);
 
-        expect(result).to.exist;
-        expect(result).to.be.an('object');
+        expect(result).to.be.true;
       });
     });
   });
@@ -71,51 +71,44 @@ describe('Vendor Data Access', () => {
     });
 
     it('should retrieve one vendor', async () => {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
+      const vendors = await vendorsDB.listVendors();
 
-      const vendor = await vendorsDB.createVendor(data);
+      const lastVendor = R.last(vendors);
 
-      const result = await vendorsDB.selectOneVendor(vendor._id);
+      const result = await vendorsDB.selectOneVendor(lastVendor._id);
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
-      expect(result).to.have.property('name', data.name);
+      expect(result).to.have.property('name', lastVendor.name);
     });
   });
 
   describe('Update Vendor', () => {
     context('Given values are correct', () => {
       it('should update vendor type', async () => {
+        const vendors = await vendorsDB.listVendors();
+
+        const lastVendor = R.last(vendors);
+
         const data = {
-          name: chance.name(),
-          type: VendorType.Seamless,
+          name: lastVendor.name,
+          type: VendorType.Transfer,
         };
 
-        const vendor = await vendorsDB.createVendor(data);
+        const result = await vendorsDB.updateVendor(lastVendor._id, data);
 
-        data.type = VendorType.Transfer;
-
-        const result = await vendorsDB.updateVendor(vendor._id, data);
-
-        expect(result).to.exist;
-        expect(result).to.be.an('object');
+        expect(result).to.be.true;
       });
     });
   });
 
   describe('Delete Vendor', () => {
     it('should delete created vendor', async () => {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Seamless,
-      };
+      const vendors = await vendorsDB.listVendors();
 
-      const vendor = await vendorsDB.createVendor(data);
+      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
 
-      const result = await vendorsDB.deleteVendor(vendor._id, data);
+      const result = await vendorsDB.deleteVendor(lastVendorId);
 
       expect(result).to.exist;
       expect(result).to.be.true;

@@ -2,6 +2,8 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
+import Chance from 'chance';
+import R from 'ramda';
 import server from '../../../src';
 import { VendorType } from '../../../src/models/vendor';
 import {
@@ -11,8 +13,6 @@ import {
   postVendor,
   putVendor,
 } from '../../../src/controllers/vendors';
-
-import Chance from 'chance';
 
 const chance = new Chance();
 
@@ -80,40 +80,23 @@ describe('Vendor Controller', () => {
 
   describe('List Vendors', () => {
     it('should retrieve all vendors and return 200 status code', async () => {
-      const data = {
-        body: {},
-        headers: {
-          'Content-Type': null,
-          Referer: null,
-          'User-Agent': null,
-        },
-      };
-
       const result = await getVendors();
 
       expect(result).property('status', 200);
-      expect(result.body.vendors).length.greaterThan(0);
+      expect(result.body).length.greaterThan(0);
     });
 
     it('should retrieve one vendors and return 200 status code', async () => {
+      const vendors = await getVendors();
+
       const data = {
-        params: {},
-        body: {
-          name: chance.name(),
-          type: VendorType.Seamless,
-        },
+        params: { id: R.compose(R.prop('_id'), R.last)(vendors.body) },
         headers: {
           'Content-Type': null,
           Referer: null,
           'User-Agent': null,
         },
       };
-
-      const vendor = await postVendor(data);
-
-      data.params = { id: vendor.body.result._id };
-
-      const test = await getOneVendor(data);
 
       await expect(getOneVendor(data)).to.eventually.fulfilled.property(
         'status',
@@ -138,10 +121,15 @@ describe('Vendor Controller', () => {
           },
         };
 
-        const vendor = await postVendor(data);
+        const vendors = await getVendors();
 
-        data.params = { id: vendor.body.result._id };
-        data.body.type = '';
+        const lastVendor = R.last(vendors.body);
+
+        data.params = { id: lastVendor._id };
+        data.body = {
+          name: lastVendor.name,
+          type: '',
+        };
 
         await expect(putVendor(data)).to.eventually.fulfilled.property(
           'status',
@@ -152,10 +140,7 @@ describe('Vendor Controller', () => {
       it('should return 400 status code for empty name', async () => {
         const data = {
           params: {},
-          body: {
-            name: chance.name(),
-            type: VendorType.Seamless,
-          },
+          body: {},
           headers: {
             'Content-Type': null,
             Referer: null,
@@ -163,10 +148,15 @@ describe('Vendor Controller', () => {
           },
         };
 
-        const vendor = await postVendor(data);
+        const vendors = await getVendors();
 
-        data.params = { id: vendor.body.result._id };
-        data.body.name = '';
+        const lastVendor = R.last(vendors.body);
+
+        data.params = { id: lastVendor._id };
+        data.body = {
+          name: '',
+          type: lastVendor.type,
+        };
 
         await expect(putVendor(data)).to.eventually.fulfilled.property(
           'status',
@@ -179,10 +169,7 @@ describe('Vendor Controller', () => {
       it('should create and update vendor', async () => {
         const data = {
           params: {},
-          body: {
-            name: chance.name(),
-            type: VendorType.Seamless,
-          },
+          body: {},
           headers: {
             'Content-Type': 'application/json',
             Referer: null,
@@ -190,10 +177,15 @@ describe('Vendor Controller', () => {
           },
         };
 
-        const vendor = await postVendor(data);
+        const vendors = await getVendors();
 
-        data.params = { id: vendor.body.result._id };
-        data.body.type = VendorType.Transfer;
+        const lastVendor = R.last(vendors.body);
+
+        data.params = { id: lastVendor._id };
+        data.body = {
+          name: lastVendor.name,
+          type: VendorType.Transfer,
+        };
 
         await expect(putVendor(data)).to.eventually.fulfilled.property(
           'status',
@@ -205,22 +197,17 @@ describe('Vendor Controller', () => {
 
   describe('Delete Vendor', () => {
     it('should create and delete vendor and return status code of 200', async () => {
+      const vendors = await getVendors();
+
       const data = {
-        params: {},
-        body: {
-          name: chance.name(),
-          type: VendorType.Seamless,
-        },
+        params: { id: R.compose(R.prop('_id'), R.last)(vendors.body) },
+
         headers: {
           'Content-Type': 'application/json',
           Referer: null,
           'User-Agent': null,
         },
       };
-
-      const vendor = await postVendor(data);
-
-      data.params = { id: vendor.body.result._id };
 
       await expect(delVendor(data)).to.eventually.fulfilled.property(
         'status',
