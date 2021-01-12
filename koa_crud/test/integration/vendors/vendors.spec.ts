@@ -76,11 +76,11 @@ describe('Vendors', () => {
         .request('http://localhost:3000')
         .get('/api/vendors');
 
-      const lastVendor = R.last(vendors.body);
+      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors.body);
 
       const response = await chai
         .request('http://localhost:3000')
-        .get(`/api/vendors/${lastVendor._id}`);
+        .get(`/api/vendors/${lastVendorId}`);
 
       expect(response.body).to.exist;
       expect(response.body).to.be.an('object');
@@ -159,11 +159,11 @@ describe('Vendors', () => {
         .request('http://localhost:3000')
         .get('/api/vendors');
 
-      const lastVendor = R.last(vendors.body);
+      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors.body);
 
       const response = await chai
         .request('http://localhost:3000')
-        .delete(`/api/vendors/${lastVendor._id}`);
+        .delete(`/api/vendors/${lastVendorId}`);
 
       expect(response.status).to.equal(200);
       expect(response.body).to.exist;
