@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-expressions */
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
-import { VendorType } from '../../../src/models/vendor';
 import Chance from 'chance';
+import R from 'ramda';
+import { VendorType } from '../../../src/models/vendor';
 
 const chance = new Chance();
 
@@ -55,8 +56,8 @@ describe('Vendors', () => {
         .send(data);
 
       expect(response.status).to.equal(201);
-      expect(response.body.result).to.exist;
-      expect(response.body.result).to.be.an('object');
+      expect(response.body).to.exist;
+      expect(response.body).to.be.true;
     });
   });
 
