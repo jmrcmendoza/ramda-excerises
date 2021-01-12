@@ -155,24 +155,19 @@ describe('Vendors', () => {
 
   describe('Delete vendor', () => {
     it('should delete one vendor', async function () {
-      const data = {
-        name: chance.name(),
-        type: VendorType.Transfer,
-      };
-
-      const createResponse = await chai
+      const vendors = await chai
         .request('http://localhost:3000')
-        .post('/api/vendors')
-        .type('json')
-        .send(data);
+        .get('/api/vendors');
+
+      const lastVendor = R.last(vendors.body);
 
       const response = await chai
         .request('http://localhost:3000')
-        .delete(`/api/vendors/${createResponse.body.result._id}`);
+        .delete(`/api/vendors/${lastVendor._id}`);
 
       expect(response.status).to.equal(200);
-      expect(response.body.result).to.exist;
-      expect(response.body.result).to.be.true;
+      expect(response.body).to.exist;
+      expect(response.body).to.be.true;
     });
   });
 });
