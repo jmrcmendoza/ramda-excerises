@@ -6,11 +6,6 @@ export default function makeDeleteVendor(vendorsDB: VendorQueries) {
       throw new Error('ID must be provided.');
     }
 
-    const result = await vendorsDB.deleteVendor(id);
-
-    return {
-      message: 'Successful',
-      result,
-    };
+    return vendorsDB.deleteVendor(id);
   };
 }
