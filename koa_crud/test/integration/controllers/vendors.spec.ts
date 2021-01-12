@@ -2,6 +2,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
+import Chance from 'chance';
 import server from '../../../src';
 import { VendorType } from '../../../src/models/vendor';
 import {
@@ -11,8 +12,6 @@ import {
   postVendor,
   putVendor,
 } from '../../../src/controllers/vendors';
-
-import Chance from 'chance';
 
 const chance = new Chance();
 
@@ -80,28 +79,17 @@ describe('Vendor Controller', () => {
 
   describe('List Vendors', () => {
     it('should retrieve all vendors and return 200 status code', async () => {
-      const data = {
-        body: {},
-        headers: {
-          'Content-Type': null,
-          Referer: null,
-          'User-Agent': null,
-        },
-      };
-
       const result = await getVendors();
 
       expect(result).property('status', 200);
-      expect(result.body.vendors).length.greaterThan(0);
+      expect(result.body).length.greaterThan(0);
     });
 
     it('should retrieve one vendors and return 200 status code', async () => {
+      const vendors = await getVendors();
+
       const data = {
         params: {},
-        body: {
-          name: chance.name(),
-          type: VendorType.Seamless,
-        },
         headers: {
           'Content-Type': null,
           Referer: null,
@@ -109,11 +97,7 @@ describe('Vendor Controller', () => {
         },
       };
 
-      const vendor = await postVendor(data);
-
-      data.params = { id: vendor.body.result._id };
-
-      const test = await getOneVendor(data);
+      data.params = { id: vendors.body[0]._id };
 
       await expect(getOneVendor(data)).to.eventually.fulfilled.property(
         'status',
