@@ -6,6 +6,7 @@ import Chance from 'chance';
 import R from 'ramda';
 import server from '../../../../src';
 import {
+  delMember,
   getMembers,
   getOneMember,
   postMember,
@@ -229,6 +230,27 @@ describe('Member Controller', () => {
 
         expect(result).to.have.property('status', 400);
       });
+    });
+  });
+
+  describe('Delete Member', () => {
+    it('should delete member and return 200 status code', async () => {
+      const members = await getMembers();
+
+      const data = {
+        params: { id: R.compose(R.prop('_id'), R.last)(members.body) },
+
+        headers: {
+          'Content-Type': null,
+          Referer: null,
+          'User-Agent': null,
+        },
+      };
+
+      const result = await delMember(data);
+
+      expect(result).to.have.property('status', 200);
+      expect(result.body).to.be.true;
     });
   });
 });
