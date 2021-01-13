@@ -9,6 +9,7 @@ import {
   getMembers,
   getOneMember,
   postMember,
+  putMember,
 } from '../../../../src/controllers/members';
 
 const chance = new Chance();
@@ -132,6 +133,102 @@ describe('Member Controller', () => {
 
       expect(result).to.have.property('status', 200);
       expect(result.body).to.be.an('object');
+    });
+  });
+
+  describe('Edit Members', () => {
+    context('Given incorrect values', () => {
+      it('should return 400 status code for empty usename', async () => {
+        const members = await getMembers();
+
+        const lastMember = R.last(members.body);
+
+        const data = {
+          params: { id: lastMember._id },
+          body: {
+            username: '',
+            password: chance.string({ length: 5 }),
+            realName: lastMember.realName,
+          },
+          headers: {
+            'Content-Type': null,
+            Referer: null,
+            'User-Agent': null,
+          },
+        };
+
+        const result = await putMember(data);
+
+        expect(result).to.have.property('status', 400);
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should update last member and return 200 status code', async () => {
+        const members = await getMembers();
+
+        const lastMember = R.last(members.body);
+
+        const data = {
+          params: { id: lastMember._id },
+          body: {
+            username: lastMember.username,
+            password: chance.string({ length: 5 }),
+            realName: lastMember.realName,
+          },
+          headers: {
+            'Content-Type': null,
+            Referer: null,
+            'User-Agent': null,
+          },
+        };
+
+        const result = await putMember(data);
+
+        expect(result).to.have.property('status', 200);
+        expect(result.body).to.be.true;
+      });
+
+      it('should insert member and return 400 status code for duplicate username update', async () => {
+        let data = {
+          params: {},
+          body: {
+            username: chance.last(),
+            password: chance.string({ length: 5 }),
+            realName: chance.name(),
+          },
+          headers: {
+            'Content-Type': null,
+            Referer: null,
+            'User-Agent': null,
+          },
+        };
+
+        await postMember(data);
+
+        const members = await getMembers();
+
+        const firstMember = R.head(members.body);
+        const lastMember = R.last(members.body);
+
+        data = {
+          params: { id: lastMember._id },
+          body: {
+            username: firstMember.username,
+            password: chance.string({ length: 5 }),
+            realName: lastMember.realName,
+          },
+          headers: {
+            'Content-Type': null,
+            Referer: null,
+            'User-Agent': null,
+          },
+        };
+
+        const result = await putMember(data);
+
+        expect(result).to.have.property('status', 400);
+      });
     });
   });
 });
