@@ -128,4 +128,16 @@ describe('Member Data Access', () => {
       });
     });
   });
+
+  describe('Delete Member', () => {
+    it('should delete one member ', async () => {
+      const members = await memberDB.listMembers();
+
+      const lastMemberId = R.compose(R.prop('_id'), R.last)(members);
+
+      const result = await memberDB.deleteMember(lastMemberId);
+
+      expect(result).to.be.true;
+    });
+  });
 });
