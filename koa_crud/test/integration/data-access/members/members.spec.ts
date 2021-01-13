@@ -68,4 +68,24 @@ describe('Member Data Access', () => {
       });
     });
   });
+
+  describe('List Members', () => {
+    it('should return all members', async () => {
+      const result = await memberDB.listMembers();
+
+      expect(result).to.be.an('array');
+      expect(result).has.length.greaterThan(0);
+    });
+
+    it('should retrive on member', async () => {
+      const members = await memberDB.listMembers();
+
+      const lastMember = R.last(members);
+
+      const result = await memberDB.selectOneMember(lastMember._id);
+
+      expect(result).to.be.an('object');
+      expect(result).to.have.property('username', lastMember.username);
+    });
+  });
 });
