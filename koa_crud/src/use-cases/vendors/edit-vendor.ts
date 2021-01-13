@@ -6,7 +6,7 @@ export default function makeUpdateVendor(vendorsDB: VendorQueries) {
   return async function updateVendor(
     id: string,
     vendorInfo: VendorDocument,
-  ): Promise<any> {
+  ): Promise<boolean> {
     await makeVendor(vendorInfo);
 
     if (!id) {
