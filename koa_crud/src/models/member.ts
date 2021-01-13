@@ -4,7 +4,7 @@ import { Schema, model, Document } from 'mongoose';
 export type MemberDocument = Document & {
   username: string;
   password: string;
-  realName: string;
+  realName: string | null;
 };
 
 export default model<MemberDocument>(
