@@ -9,6 +9,7 @@ import {
   insertMember,
   listMembers,
   selectMember,
+  updateMember,
 } from '../../../../src/use-cases/members';
 
 const chance = new Chance();
@@ -96,6 +97,81 @@ describe('Member Use Case', () => {
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
+    });
+  });
+
+  describe('Edit Member', () => {
+    context('Given incorrect values', () => {
+      it('should throw an error for empty username', async () => {
+        const members = await listMembers();
+
+        const lastMember = R.last(members);
+
+        const data = {
+          username: '',
+          password: lastMember.password,
+          realName: lastMember.realName,
+        };
+
+        await expect(
+          updateMember(lastMember._id, data),
+        ).to.eventually.rejectedWith('Username must be provided.');
+      });
+
+      it('should throw an error for empty password', async () => {
+        const members = await listMembers();
+
+        const lastMember = R.last(members);
+
+        const data = {
+          username: lastMember.username,
+          password: '',
+          realName: lastMember.realName,
+        };
+
+        await expect(
+          updateMember(lastMember._id, data),
+        ).to.eventually.rejectedWith('Password must be provided.');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should update member and return true', async () => {
+        const members = await listMembers();
+
+        const lastMember = R.last(members);
+
+        const data = {
+          username: lastMember.username,
+          password: chance.string({ lenght: 5 }),
+          realName: lastMember.realName,
+        };
+
+        const result = await updateMember(lastMember._id, data);
+
+        expect(result).to.be.true;
+      });
+
+      it('should throw error for duplicate username', async () => {
+        let data = {
+          username: chance.last(),
+          password: chance.string({ lenght: 5 }),
+          realName: chance.name(),
+        };
+
+        const members = await listMembers();
+
+        const firstMember = R.last(members);
+        const lastMember = R.last(members);
+
+        data = {
+          username: firstMember.username,
+          password: lastMember.password,
+          realName: lastMember.realName,
+        };
+
+        await expect(updateMember(lastMember._id, data)).to.eventually.rejected;
+      });
     });
   });
 });
