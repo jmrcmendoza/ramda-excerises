@@ -5,7 +5,8 @@ import { ApolloServer } from 'apollo-server-koa';
 import vendorsRoutes from './routes/vendors';
 import membersRoutes from './routes/members';
 
-import { typeDefs, resolvers } from './schema/vendor';
+import { typeDefs } from './schema';
+import resolvers from './schema/resolvers';
 
 const app = new Koa();
 
