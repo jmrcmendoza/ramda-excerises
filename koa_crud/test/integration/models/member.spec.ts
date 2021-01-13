@@ -66,4 +66,22 @@ describe('Member Model', () => {
       });
     });
   });
+
+  describe('List Members', () => {
+    it('should retrieve all members', async () => {
+      const result = await MemberModel.find({}).lean();
+
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
+    });
+
+    it('should retrieve one members', async () => {
+      const member = await MemberModel.findOne({}).lean();
+
+      const result = await MemberModel.findById(member._id);
+
+      expect(result).to.be.an('object');
+      expect(result.username).to.equal(member.username);
+    });
+  });
 });
