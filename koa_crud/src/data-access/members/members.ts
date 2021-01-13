@@ -15,10 +15,10 @@ export default function ({
 }): MemberQueries {
   return Object.freeze({
     listMembers() {
-      return member.find({}).lean();
+      return member.find({}, { password: 0 }).lean();
     },
     selectOneMember(id: string) {
-      return member.findById(id).lean();
+      return member.findById(id, { password: 0 }).lean();
     },
     async createMember(vendorInfo: MemberDocument) {
       const result = await member.create(vendorInfo);
