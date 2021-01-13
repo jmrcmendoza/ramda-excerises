@@ -66,4 +66,24 @@ describe('Member End-Points', () => {
       });
     });
   });
+
+  describe('List Members', () => {
+    it('should return all vendors', async function () {
+      const response = await this.request().get('/api/members');
+
+      expect(response.body).to.exist;
+      expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
+    });
+
+    it('should return one member', async function () {
+      const vendors = await this.request().get('/api/members');
+
+      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors.body);
+
+      const response = await this.request().get(`/api/members/${lastVendorId}`);
+
+      expect(response.body).to.exist;
+      expect(response.body).to.be.an('object');
+    });
+  });
 });
