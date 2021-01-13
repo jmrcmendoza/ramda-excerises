@@ -5,7 +5,11 @@ import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
-import { insertMember, listMembers } from '../../../../src/use-cases/members';
+import {
+  insertMember,
+  listMembers,
+  selectMember,
+} from '../../../../src/use-cases/members';
 
 const chance = new Chance();
 
@@ -71,6 +75,27 @@ describe('Member Use Case', () => {
 
         await expect(insertMember(data)).to.eventually.rejected;
       });
+    });
+  });
+
+  describe('List Members', () => {
+    it('should return all members', async () => {
+      const result = await listMembers();
+
+      expect(result).to.exist;
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
+    });
+
+    it('should return one member', async () => {
+      const member = await listMembers();
+
+      const lastMemberId = R.compose(R.prop('_id'), R.last)(member);
+
+      const result = await selectMember(lastMemberId);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
     });
   });
 });
