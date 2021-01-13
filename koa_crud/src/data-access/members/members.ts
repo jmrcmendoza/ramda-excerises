@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+import { createHash } from '../../encryption';
 import MemberModel, { MemberDocument } from '../../models/member';
 
 export type MemberQueries = {
@@ -17,15 +19,25 @@ export default function ({
     listMembers() {
       return member.find({}, { password: 0 }).lean();
     },
-    selectOneMember(id: string) {
-      return member.findById(id, { password: 0 }).lean();
+    async selectOneMember(id: string) {
+      const result = await member.findById(id, { password: 0 }).lean();
+
+      return result;
     },
     async createMember(vendorInfo: MemberDocument) {
+      const hash = await createHash(vendorInfo.password);
+
+      vendorInfo.password = hash;
+
       const result = await member.create(vendorInfo);
 
       return !!result;
     },
     async updateMember(id: string, vendorInfo: MemberDocument) {
+      const hash = await createHash(vendorInfo.password);
+
+      vendorInfo.password = hash;
+
       const result = await member.findByIdAndUpdate(id, vendorInfo, {
         useFindAndModify: false,
       });
