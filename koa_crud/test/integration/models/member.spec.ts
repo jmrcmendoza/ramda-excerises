@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
+import R from 'ramda';
 import server from '../../../src';
 import MemberModel from '../../../src/models/member';
 
@@ -82,6 +83,48 @@ describe('Member Model', () => {
 
       expect(result).to.be.an('object');
       expect(result.username).to.equal(member.username);
+    });
+  });
+
+  describe('Edit Member', () => {
+    it('should update and return member values', async () => {
+      const member = await MemberModel.findOne({}).lean();
+
+      const password = chance.string({ length: 5 });
+
+      const result = await MemberModel.findByIdAndUpdate(member._id, password, {
+        useFindAndModify: false,
+      });
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+    });
+
+    it('should throw an error for duplicate username', async () => {
+      let data = {
+        username: chance.last(),
+        password: chance.string({ length: 5 }),
+        realName: chance.name(),
+      };
+
+      await MemberModel.create(data);
+
+      const members = await MemberModel.find({});
+
+      const firstMember = R.head(members);
+      const lastMember = R.last(members);
+
+      data = {
+        username: firstMember.username,
+        password: lastMember.password,
+        realName: lastMember.realName,
+      };
+
+      await expect(
+        MemberModel.findByIdAndUpdate(lastMember._id, data, {
+          useFindAndModify: false,
+        }),
+      ).to.eventually.rejected;
     });
   });
 });
