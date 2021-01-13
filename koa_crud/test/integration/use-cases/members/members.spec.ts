@@ -10,6 +10,7 @@ import {
   listMembers,
   selectMember,
   updateMember,
+  deleteMember,
 } from '../../../../src/use-cases/members';
 
 const chance = new Chance();
@@ -172,6 +173,18 @@ describe('Member Use Case', () => {
 
         await expect(updateMember(lastMember._id, data)).to.eventually.rejected;
       });
+    });
+  });
+
+  describe('Delete Member', () => {
+    it('should delete one vendor', async () => {
+      const members = await listMembers();
+
+      const lastMemberId = R.compose(R.prop('_id'), R.last)(members);
+
+      const result = await deleteMember(lastMemberId);
+
+      expect(result).to.be.true;
     });
   });
 });
