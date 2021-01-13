@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server-koa';
+import { VendorDocument } from '../models/vendor';
 
 import {
   insertVendor,
@@ -70,14 +71,19 @@ export const resolvers = {
   Mutation: {
     createVendor: async (
       _obj: any,
-      vendor: any,
-    ): Promise<Record<string, any>> => insertVendor(vendor.input),
+      args: {
+        input: VendorDocument;
+      },
+    ): Promise<Record<string, any>> => insertVendor(args.input),
     updateVendor: async (
       _obj: any,
-      vendor: any,
-    ): Promise<Record<string, any>> => updateVendor(vendor.id, vendor),
+      args: {
+        id: string;
+        input: VendorDocument;
+      },
+    ): Promise<boolean> => updateVendor(args.id, args.input),
 
-    deleteVendor: async (_obj: any, vendor: { id: string }): Promise<boolean> =>
-      deleteVendor(vendor.id),
+    deleteVendor: async (_obj: any, args: { id: string }): Promise<boolean> =>
+      deleteVendor(args.id),
   },
 };
