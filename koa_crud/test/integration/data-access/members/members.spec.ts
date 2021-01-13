@@ -88,4 +88,44 @@ describe('Member Data Access', () => {
       expect(result).to.have.property('username', lastMember.username);
     });
   });
+
+  describe('Update Member', () => {
+    context('Given correct values', () => {
+      it('should update member password', async () => {
+        const members = await memberDB.listMembers();
+
+        const lastMember = R.last(members);
+
+        const password = chance.string({ lenght: 5 });
+
+        const result = await memberDB.updateMember(lastMember._id, password);
+
+        expect(result).to.be.true;
+      });
+
+      it('should throw error for duplicate username', async () => {
+        let data = {
+          username: chance.last(),
+          password: chance.string({ length: 5 }),
+          realName: chance.name(),
+        };
+
+        await memberDB.createMember(data);
+
+        const members = await memberDB.listMembers();
+
+        const firstMember = R.head(members);
+        const lastMember = R.last(members);
+
+        data = {
+          username: firstMember.username,
+          password: lastMember.password,
+          realName: lastMember.realName,
+        };
+
+        await expect(memberDB.updateMember(lastMember._id, data)).to.eventually
+          .rejected;
+      });
+    });
+  });
 });
