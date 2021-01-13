@@ -3,6 +3,7 @@ import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
 import { ApolloServer } from 'apollo-server-koa';
 import vendorsRoutes from './routes/vendors';
+import membersRoutes from './routes/members';
 
 import { typeDefs, resolvers } from './schema/vendor';
 
@@ -32,6 +33,7 @@ mongoose.connect(
 );
 
 app.use(vendorsRoutes.routes());
+app.use(membersRoutes.routes());
 
 const server = app
   .listen(PORT, () => {
