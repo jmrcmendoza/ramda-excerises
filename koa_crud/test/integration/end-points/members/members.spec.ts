@@ -149,4 +149,20 @@ describe('Member End-Points', () => {
       });
     });
   });
+
+  describe('Delete Member', () => {
+    it('should delete one member', async function () {
+      const members = await this.request().get('/api/members');
+
+      const lastMemberId = R.compose(R.prop('_id'), R.last)(members.body);
+
+      const response = await this.request().delete(
+        `/api/members/${lastMemberId}`,
+      );
+
+      expect(response.status).to.equal(200);
+      expect(response.body).to.exist;
+      expect(response.body).to.be.true;
+    });
+  });
 });
