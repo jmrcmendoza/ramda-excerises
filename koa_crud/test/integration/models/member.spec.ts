@@ -127,4 +127,15 @@ describe('Member Model', () => {
       ).to.eventually.rejected;
     });
   });
+
+  describe('Delete Member', () => {
+    it('should delete one member', async () => {
+      const member = await MemberModel.findOne({}).lean();
+
+      const result = await MemberModel.findByIdAndDelete(member._id);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+    });
+  });
 });
