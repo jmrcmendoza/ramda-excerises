@@ -103,7 +103,7 @@ describe('Vendor Data Access', () => {
   });
 
   describe('Delete Vendor', () => {
-    it('should delete created vendor', async () => {
+    it('should delete one vendor', async () => {
       const vendors = await vendorsDB.listVendors();
 
       const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
