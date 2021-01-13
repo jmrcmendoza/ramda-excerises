@@ -86,4 +86,67 @@ describe('Member End-Points', () => {
       expect(response.body).to.be.an('object');
     });
   });
+
+  describe('Edit Member', () => {
+    context('Given incorrect values', () => {
+      it('should throw error for empty username', async function () {
+        const members = await this.request().get('/api/members');
+
+        const lastMember = R.last(members.body);
+
+        const data = {
+          username: '',
+          password: lastMember.password,
+          realName: lastMember.realName,
+        };
+
+        const response = await this.request()
+          .put(`/api/members/${lastMember._id}`)
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Username must be provided.');
+      });
+
+      it('should throw error for empty password', async function () {
+        const members = await this.request().get('/api/members');
+
+        const lastMember = R.last(members.body);
+
+        const data = {
+          username: lastMember.username,
+          password: '',
+          realName: lastMember.realName,
+        };
+
+        const response = await this.request()
+          .put(`/api/members/${lastMember._id}`)
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Password must be provided.');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should update member', async function () {
+        const members = await this.request().get('/api/members');
+
+        const lastMember = R.last(members.body);
+
+        const data = {
+          username: lastMember.username,
+          password: chance.string({ length: 5 }),
+          realName: lastMember.realName,
+        };
+
+        const response = await this.request()
+          .put(`/api/members/${lastMember._id}`)
+          .send(data);
+
+        expect(response.status).to.equal(200);
+        expect(response.body).to.be.true;
+      });
+    });
+  });
 });
