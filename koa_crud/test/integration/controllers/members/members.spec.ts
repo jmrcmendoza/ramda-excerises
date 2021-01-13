@@ -5,7 +5,11 @@ import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
 import server from '../../../../src';
-import { getMembers, postMember } from '../../../../src/controllers/members';
+import {
+  getMembers,
+  getOneMember,
+  postMember,
+} from '../../../../src/controllers/members';
 
 const chance = new Chance();
 
@@ -101,6 +105,33 @@ describe('Member Controller', () => {
 
         expect(result).to.have.property('status', 400);
       });
+    });
+  });
+
+  describe('List Members', () => {
+    it('should retrieve all members and return 200 status code', async () => {
+      const result = await getMembers();
+
+      expect(result).to.have.property('status', 200);
+      expect(result.body).to.have.length.greaterThan(0);
+    });
+
+    it('should retrieve one member and return 200 status code', async () => {
+      const members = await getMembers();
+
+      const data = {
+        params: { id: R.compose(R.prop('_id'), R.last)(members.body) },
+        headers: {
+          'Content-Type': null,
+          Referer: null,
+          'User-Agent': null,
+        },
+      };
+
+      const result = await getOneMember(data);
+
+      expect(result).to.have.property('status', 200);
+      expect(result.body).to.be.an('object');
     });
   });
 });
