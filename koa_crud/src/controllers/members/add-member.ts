@@ -10,7 +10,7 @@ export default function insertMemberController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const memberInfo = httpRequest.body;
+      const { body: memberInfo } = httpRequest;
       const result = await insertMember(memberInfo);
 
       return {

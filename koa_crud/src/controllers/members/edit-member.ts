@@ -10,9 +10,10 @@ export default function updateMemberController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const { id } = httpRequest.params;
-
-      const memberInfo = httpRequest.body;
+      const {
+        params: { id },
+        body: memberInfo,
+      } = httpRequest;
 
       const result = await updateMember(id, memberInfo);
 
