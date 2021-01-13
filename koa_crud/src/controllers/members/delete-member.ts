@@ -1,23 +1,23 @@
 import { Context } from 'koa';
-import { VendorDocument } from '../../models/vendor';
 
-export default function insertVendorController({
-  insertVendor,
+export default function deleteMemberController({
+  deleteMember,
 }: {
-  insertVendor: (document: VendorDocument) => Promise<VendorDocument>;
+  deleteMember: (id: string) => Promise<boolean>;
 }) {
-  return async function postInsertVendor(
+  return async function makeDeleteMember(
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const { body: vendorInfo } = httpRequest;
-      const result = await insertVendor(vendorInfo);
+      const { id } = httpRequest.params;
+
+      const result = await deleteMember(id);
 
       return {
         headers: {
           'Content-Type': 'application/json',
         },
-        status: 201,
+        status: 200,
         body: result,
       };
     } catch (e) {

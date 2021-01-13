@@ -1,23 +1,27 @@
 import { Context } from 'koa';
-import { VendorDocument } from '../../models/vendor';
+import { MemberDocument } from '../../models/member';
 
-export default function insertVendorController({
-  insertVendor,
+export default function updateMemberController({
+  updateMember,
 }: {
-  insertVendor: (document: VendorDocument) => Promise<VendorDocument>;
+  updateMember: (id: string, document: MemberDocument) => Promise<boolean>;
 }) {
-  return async function postInsertVendor(
+  return async function postInsertMember(
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const { body: vendorInfo } = httpRequest;
-      const result = await insertVendor(vendorInfo);
+      const {
+        params: { id },
+        body: memberInfo,
+      } = httpRequest;
+
+      const result = await updateMember(id, memberInfo);
 
       return {
         headers: {
           'Content-Type': 'application/json',
         },
-        status: 201,
+        status: 200,
         body: result,
       };
     } catch (e) {
