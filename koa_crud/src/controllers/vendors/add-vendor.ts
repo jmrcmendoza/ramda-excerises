@@ -10,7 +10,7 @@ export default function insertVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const vendorInfo = httpRequest.body;
+      const { body: vendorInfo } = httpRequest;
       const result = await insertVendor(vendorInfo);
 
       return {

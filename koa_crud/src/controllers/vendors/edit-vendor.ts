@@ -10,9 +10,10 @@ export default function updateVendorController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const { id } = httpRequest.params;
-
-      const vendorInfo = httpRequest.body;
+      const {
+        params: { id },
+        body: vendorInfo,
+      } = httpRequest;
 
       const result = await updateVendor(id, vendorInfo);
 
