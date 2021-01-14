@@ -31,17 +31,3 @@ export function verifyToken({ ctx }: { ctx: Context }): any {
 
   return { verified };
 }
-
-export function setToken(ctx, next) {
-  const bearerHeader = ctx.request.header.authorization;
-
-  if (typeof bearerHeader !== 'undefined') {
-    const token = bearerHeader.split(' ')[1];
-
-    ctx.token = token;
-
-    next();
-  } else {
-    ctx.status = 403;
-  }
-}
