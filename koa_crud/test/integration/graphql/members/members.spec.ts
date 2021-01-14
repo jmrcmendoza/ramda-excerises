@@ -112,4 +112,107 @@ describe('Members', function () {
       expect(response.body.data.member).to.be.an('object');
     });
   });
+
+  describe('Edit Member', () => {
+    context('Given incorrect values', () => {
+      it('should throw error for empty username', async function () {
+        let data = {
+          query: `{ members { _id username realName } }`,
+        };
+
+        const members = await this.request().post('/graphql').send(data);
+
+        const lastMemberId = R.compose(
+          R.prop('_id'),
+          R.last,
+        )(members.body.data.members);
+
+        data = {
+          query: `mutation { updateMember(id:"${lastMemberId}", input:{ username:null, password:"${chance.string(
+            { length: 5 },
+          )}"}) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body).to.have.property('errors');
+      });
+
+      it('should throw error for null password', async function () {
+        let data = {
+          query: `{ members { _id username realName } }`,
+        };
+
+        const members = await this.request().post('/graphql').send(data);
+
+        const lastMemberId = R.compose(
+          R.prop('_id'),
+          R.last,
+        )(members.body.data.members);
+
+        data = {
+          query: `mutation { updateMember(id:"${lastMemberId}", input:{ username:"${chance.name()}", password:null }) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body).to.have.property('errors');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should update member', async function () {
+        let data = {
+          query: `{ members { _id username realName } }`,
+        };
+
+        const members = await this.request().post('/graphql').send(data);
+
+        const lastMember = R.last(members.body.data.members);
+
+        data = {
+          query: `mutation { updateMember(id:"${
+            lastMember._id
+          }", input:{ username:"${
+            lastMember.username
+          }", password:"${chance.string({ length: 5 })}"}) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body.data).to.have.property('updateMember', true);
+      });
+
+      it('should throw error for duplicate username', async function () {
+        let data = {
+          query: `mutation { createMember(input:{ username:"${chance.last()}", password:"${chance.string(
+            { length: 5 },
+          )}", realName:"${chance.name()}"}) }`,
+        };
+
+        await this.request().post('/graphql').send(data);
+
+        data = {
+          query: `{ members { _id username realName } }`,
+        };
+
+        const members = await this.request().post('/graphql').send(data);
+
+        const firstMember = R.head(members.body.data.members);
+        const lastMember = R.last(members.body.data.members);
+
+        data = {
+          query: `mutation { updateMember(id:"${
+            lastMember._id
+          }", input:{ username:"${
+            firstMember.username
+          }", password:"${chance.string({ lenght: 5 })}" }) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body).to.have.property('errors');
+      });
+    });
+  });
 });
