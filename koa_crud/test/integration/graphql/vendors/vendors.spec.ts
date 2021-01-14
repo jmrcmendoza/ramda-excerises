@@ -56,7 +56,7 @@ describe('Vendors', function () {
   describe('List Vendors', () => {
     it('should return all vendors', async function () {
       const data = {
-        query: `{ vendors { _id name type } }`,
+        query: `{ vendors { id name type } }`,
       };
 
       const response = await this.request().post('/graphql').send(data);
@@ -69,18 +69,18 @@ describe('Vendors', function () {
 
     it('should return one vendor', async function () {
       let data = {
-        query: `{ vendors { _id name type } }`,
+        query: `{ vendors { id name type } }`,
       };
 
       const vendors = await this.request().post('/graphql').send(data);
 
       const lastVendorId = R.compose(
-        R.prop('_id'),
+        R.prop('id'),
         R.last,
       )(vendors.body.data.vendors);
 
       data = {
-        query: `{ vendor(id:"${lastVendorId}") { _id name type } }`,
+        query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
       };
 
       const response = await this.request().post('/graphql').send(data);
@@ -94,13 +94,13 @@ describe('Vendors', function () {
     context('Given incorrect values', () => {
       it('should throw error for null name', async function () {
         let data = {
-          query: `{ vendors { _id name type } }`,
+          query: `{ vendors { id name type } }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
-          R.prop('_id'),
+          R.prop('id'),
           R.last,
         )(vendors.body.data.vendors);
 
@@ -115,13 +115,13 @@ describe('Vendors', function () {
 
       it('should throw error for null type', async function () {
         let data = {
-          query: `{ vendors { _id name type } }`,
+          query: `{ vendors { id name type } }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
-          R.prop('_id'),
+          R.prop('id'),
           R.last,
         )(vendors.body.data.vendors);
 
@@ -136,13 +136,13 @@ describe('Vendors', function () {
 
       it('should throw error for invalid type', async function () {
         let data = {
-          query: `{ vendors { _id name type } }`,
+          query: `{ vendors { id name type } }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
-          R.prop('_id'),
+          R.prop('id'),
           R.last,
         )(vendors.body.data.vendors);
 
@@ -159,7 +159,7 @@ describe('Vendors', function () {
     context('Given correct values', () => {
       it('should update vendor', async function () {
         let data = {
-          query: `{ vendors { _id name type } }`,
+          query: `{ vendors { id name type } }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
@@ -167,7 +167,7 @@ describe('Vendors', function () {
         const lastVendor = R.last(vendors.body.data.vendors);
 
         data = {
-          query: `mutation { updateVendor(id:"${lastVendor._id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
+          query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
         };
 
         const response = await this.request().post('/graphql').send(data);
@@ -181,13 +181,13 @@ describe('Vendors', function () {
   describe('Delete Vendor', () => {
     it('should delete one vendor', async function () {
       let data = {
-        query: `{ vendors { _id name type } }`,
+        query: `{ vendors { id name type } }`,
       };
 
       const vendors = await this.request().post('/graphql').send(data);
 
       const lastVendorId = R.compose(
-        R.prop('_id'),
+        R.prop('id'),
         R.last,
       )(vendors.body.data.vendors);
 
