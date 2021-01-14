@@ -215,4 +215,27 @@ describe('Members', function () {
       });
     });
   });
+
+  describe('Delete Member', () => {
+    it('should delete one member', async function () {
+      let data = {
+        query: `{ members { _id username realName } }`,
+      };
+
+      const members = await this.request().post('/graphql').send(data);
+
+      const lastMemberId = R.compose(
+        R.prop('_id'),
+        R.last,
+      )(members.body.data.members);
+
+      data = {
+        query: `mutation { deleteMember(id:"${lastMemberId}") }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data).to.have.property('deleteMember', true);
+    });
+  });
 });
