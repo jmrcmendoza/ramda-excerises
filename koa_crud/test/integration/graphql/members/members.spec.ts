@@ -54,7 +54,7 @@ describe('Members', function () {
 
       it('should throw error for duplicate username', async function () {
         let data = {
-          query: `{ members { _id username realName } }`,
+          query: `{ members { id username realName } }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
@@ -79,7 +79,7 @@ describe('Members', function () {
   describe('List Members', () => {
     it('should return all members', async function () {
       const data = {
-        query: `{ members { _id username realName } }`,
+        query: `{ members { id username realName } }`,
       };
 
       const response = await this.request().post('/graphql').send(data);
@@ -92,18 +92,18 @@ describe('Members', function () {
 
     it('should return one member', async function () {
       let data = {
-        query: `{ members { _id username realName } }`,
+        query: `{ members { id username realName } }`,
       };
 
       const members = await this.request().post('/graphql').send(data);
 
       const lastMemberId = R.compose(
-        R.prop('_id'),
+        R.prop('id'),
         R.last,
       )(members.body.data.members);
 
       data = {
-        query: `{ member(id:"${lastMemberId}") { _id username realName } }`,
+        query: `{ member(id:"${lastMemberId}") { id username realName } }`,
       };
 
       const response = await this.request().post('/graphql').send(data);
@@ -117,13 +117,13 @@ describe('Members', function () {
     context('Given incorrect values', () => {
       it('should throw error for empty username', async function () {
         let data = {
-          query: `{ members { _id username realName } }`,
+          query: `{ members { id username realName } }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
         const lastMemberId = R.compose(
-          R.prop('_id'),
+          R.prop('id'),
           R.last,
         )(members.body.data.members);
 
@@ -140,13 +140,13 @@ describe('Members', function () {
 
       it('should throw error for null password', async function () {
         let data = {
-          query: `{ members { _id username realName } }`,
+          query: `{ members { id username realName } }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
         const lastMemberId = R.compose(
-          R.prop('_id'),
+          R.prop('id'),
           R.last,
         )(members.body.data.members);
 
@@ -163,7 +163,7 @@ describe('Members', function () {
     context('Given correct values', () => {
       it('should update member', async function () {
         let data = {
-          query: `{ members { _id username realName } }`,
+          query: `{ members { id username realName } }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
@@ -172,7 +172,7 @@ describe('Members', function () {
 
         data = {
           query: `mutation { updateMember(id:"${
-            lastMember._id
+            lastMember.id
           }", input:{ username:"${
             lastMember.username
           }", password:"${chance.string({ length: 5 })}"}) }`,
@@ -193,7 +193,7 @@ describe('Members', function () {
         await this.request().post('/graphql').send(data);
 
         data = {
-          query: `{ members { _id username realName } }`,
+          query: `{ members { id username realName } }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
@@ -203,7 +203,7 @@ describe('Members', function () {
 
         data = {
           query: `mutation { updateMember(id:"${
-            lastMember._id
+            lastMember.id
           }", input:{ username:"${
             firstMember.username
           }", password:"${chance.string({ lenght: 5 })}" }) }`,
@@ -219,13 +219,13 @@ describe('Members', function () {
   describe('Delete Member', () => {
     it('should delete one member', async function () {
       let data = {
-        query: `{ members { _id username realName } }`,
+        query: `{ members { id username realName } }`,
       };
 
       const members = await this.request().post('/graphql').send(data);
 
       const lastMemberId = R.compose(
-        R.prop('_id'),
+        R.prop('id'),
         R.last,
       )(members.body.data.members);
 
