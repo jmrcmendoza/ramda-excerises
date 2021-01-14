@@ -10,6 +10,10 @@ export const typeDefs = gql`
     updatedAt: String
   }
 
+  type Token {
+    token: String
+  }
+
   extend type Query {
     members: [Member]
     member(id: ID!): Member
@@ -27,9 +31,15 @@ export const typeDefs = gql`
     realName: String
   }
 
+  input AuthenticateMemberInput {
+    username: String!
+    password: String!
+  }
+
   extend type Mutation {
     createMember(input: CreateMemberInput!): Boolean
     updateMember(id: ID!, input: UpdateMemberInput!): Boolean
     deleteMember(id: ID!): Boolean
+    authenticate(input: AuthenticateMemberInput!): Token
   }
 `;
