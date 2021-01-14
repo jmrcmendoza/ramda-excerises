@@ -15,10 +15,10 @@ export default function ({
 }): VendorQueries {
   return Object.freeze({
     listVendors() {
-      return vendors.find({}).lean();
+      return vendors.find({}).lean({ virtuals: true });
     },
     selectOneVendor(id: string) {
-      return vendors.findById(id).lean();
+      return vendors.findById(id).lean({ virtuals: true });
     },
     async createVendor(vendorInfo: VendorDocument) {
       const result = await vendors.create(vendorInfo);
