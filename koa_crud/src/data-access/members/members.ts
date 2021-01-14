@@ -17,10 +17,12 @@ export default function ({
 }): MemberQueries {
   return Object.freeze({
     listMembers() {
-      return member.find({}, { password: 0 }).lean();
+      return member.find({}, { password: 0 }).lean({ virtuals: true });
     },
     async selectOneMember(id: string) {
-      const result = await member.findById(id, { password: 0 }).lean();
+      const result = await member
+        .findById(id, { password: 0 })
+        .lean({ virtuals: true });
 
       return result;
     },
