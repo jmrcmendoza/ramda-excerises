@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 import { Schema, model, Document } from 'mongoose';
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 
 export type MemberDocument = Document & {
   username: string;
@@ -25,5 +26,5 @@ export default model<MemberDocument>(
       },
     },
     { timestamps: true },
-  ),
+  ).plugin(mongooseLeanVirtuals),
 );

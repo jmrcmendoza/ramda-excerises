@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 import { Schema, model, Document } from 'mongoose';
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 
 export enum VendorType {
   Seamless = 'SEAMLESS',
@@ -26,5 +27,5 @@ export default model<VendorDocument>(
       },
     },
     { timestamps: true },
-  ),
+  ).plugin(mongooseLeanVirtuals),
 );
