@@ -89,4 +89,92 @@ describe('Vendors', function () {
       expect(response.body.data.vendor).to.be.an('object');
     });
   });
+
+  describe('Edit Vendor', () => {
+    context('Given incorrect values', () => {
+      it('should throw error for null name', async function () {
+        let data = {
+          query: `{ vendors { _id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendorId = R.compose(
+          R.prop('_id'),
+          R.last,
+        )(vendors.body.data.vendors);
+
+        data = {
+          query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:null, type:${VendorType.Seamless}}) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body).to.have.property('errors');
+      });
+
+      it('should throw error for null type', async function () {
+        let data = {
+          query: `{ vendors { _id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendorId = R.compose(
+          R.prop('_id'),
+          R.last,
+        )(vendors.body.data.vendors);
+
+        data = {
+          query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:null }) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body).to.have.property('errors');
+      });
+
+      it('should throw error for invalid type', async function () {
+        let data = {
+          query: `{ vendors { _id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendorId = R.compose(
+          R.prop('_id'),
+          R.last,
+        )(vendors.body.data.vendors);
+
+        data = {
+          query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:"TEST" }) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.body).to.have.property('errors');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should update vendor', async function () {
+        let data = {
+          query: `{ vendors { _id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendor = R.last(vendors.body.data.vendors);
+
+        data = {
+          query: `mutation { updateVendor(id:"${lastVendor._id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
+        };
+
+        const response = await this.request().post('/graphql').send(data);
+
+        expect(response.status).to.equal(200);
+        expect(response.body.data).to.have.property('updateVendor', true);
+      });
+    });
+  });
 });
