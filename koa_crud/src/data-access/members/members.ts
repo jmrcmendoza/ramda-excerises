@@ -24,25 +24,25 @@ export default function ({
 
       return result;
     },
-    async createMember(vendorInfo: MemberDocument) {
-      if (vendorInfo.password) {
-        const hash = await createHash(vendorInfo.password);
+    async createMember(memberInfo: MemberDocument) {
+      if (memberInfo.password) {
+        const hash = await createHash(memberInfo.password);
 
-        vendorInfo.password = hash;
+        memberInfo.password = hash;
       }
 
-      const result = await member.create(vendorInfo);
+      const result = await member.create(memberInfo);
 
       return !!result;
     },
-    async updateMember(id: string, vendorInfo: MemberDocument) {
-      if (vendorInfo.password) {
-        const hash = await createHash(vendorInfo.password);
+    async updateMember(id: string, memberInfo: MemberDocument) {
+      if (memberInfo.password) {
+        const hash = await createHash(memberInfo.password);
 
-        vendorInfo.password = hash;
+        memberInfo.password = hash;
       }
 
-      const result = await member.findByIdAndUpdate(id, vendorInfo, {
+      const result = await member.findByIdAndUpdate(id, memberInfo, {
         useFindAndModify: false,
       });
 
