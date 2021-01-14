@@ -177,4 +177,27 @@ describe('Vendors', function () {
       });
     });
   });
+
+  describe('Delete Vendor', () => {
+    it('should delete one vendor', async function () {
+      let data = {
+        query: `{ vendors { _id name type } }`,
+      };
+
+      const vendors = await this.request().post('/graphql').send(data);
+
+      const lastVendorId = R.compose(
+        R.prop('_id'),
+        R.last,
+      )(vendors.body.data.vendors);
+
+      data = {
+        query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data).to.have.property('deleteVendor', true);
+    });
+  });
 });
