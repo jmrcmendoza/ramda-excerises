@@ -4,15 +4,15 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../src';
-import { VendorType } from '../../../src/models/vendor';
+import server from '../../../../src';
+import { VendorType } from '../../../../src/models/vendor';
 import {
   delVendor,
   getOneVendor,
   getVendors,
   postVendor,
   putVendor,
-} from '../../../src/controllers/vendors';
+} from '../../../../src/controllers/vendors';
 
 const chance = new Chance();
 
@@ -166,7 +166,7 @@ describe('Vendor Controller', () => {
     });
 
     context('Given correct values', () => {
-      it('should create and update vendor', async () => {
+      it('should update last vendor', async () => {
         const data = {
           params: {},
           body: {},
@@ -196,7 +196,7 @@ describe('Vendor Controller', () => {
   });
 
   describe('Delete Vendor', () => {
-    it('should create and delete vendor and return status code of 200', async () => {
+    it('should delete last vendor and return status code of 200', async () => {
       const vendors = await getVendors();
 
       const data = {

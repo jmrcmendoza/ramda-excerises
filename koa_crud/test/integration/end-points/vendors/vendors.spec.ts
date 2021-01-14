@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import { VendorType } from '../../../src/models/vendor';
+import { VendorType } from '../../../../src/models/vendor';
 
 const chance = new Chance();
 
