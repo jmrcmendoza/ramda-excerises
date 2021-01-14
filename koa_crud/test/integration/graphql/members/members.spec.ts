@@ -75,4 +75,41 @@ describe('Members', function () {
       });
     });
   });
+
+  describe('List Members', () => {
+    it('should return all members', async function () {
+      const data = {
+        query: `{ members { _id username realName } }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data).to.exist;
+      expect(response.body.data.members)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
+    });
+
+    it('should return one member', async function () {
+      let data = {
+        query: `{ members { _id username realName } }`,
+      };
+
+      const members = await this.request().post('/graphql').send(data);
+
+      const lastMemberId = R.compose(
+        R.prop('_id'),
+        R.last,
+      )(members.body.data.members);
+
+      data = {
+        query: `{ member(id:"${lastMemberId}") { _id username realName } }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data.member).to.exist;
+      expect(response.body.data.member).to.be.an('object');
+    });
+  });
 });
