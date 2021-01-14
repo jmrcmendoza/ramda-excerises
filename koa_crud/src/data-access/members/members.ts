@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createHash } from '../../encryption';
+import { compareHash, createHash } from '../../encryption';
 import MemberModel, { MemberDocument } from '../../models/member';
 
 export type MemberQueries = {
@@ -8,6 +8,7 @@ export type MemberQueries = {
   createMember: (document: MemberDocument) => Promise<boolean>;
   updateMember: (id: string, document: MemberDocument) => Promise<boolean>;
   deleteMember: (id: string) => Promise<boolean>;
+  authenticateMember: (document: MemberDocument) => Promise<boolean>;
 };
 
 export default function ({
@@ -54,6 +55,13 @@ export default function ({
       const result = await member.findByIdAndDelete(id);
 
       return !!result;
+    },
+    async authenticateMember(memberInfo: MemberDocument) {
+      const result = await member
+        .findOne({ username: memberInfo.username })
+        .lean();
+
+      return compareHash(memberInfo.password, result.password);
     },
   });
 }
