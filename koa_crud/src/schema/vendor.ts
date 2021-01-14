@@ -7,7 +7,7 @@ export const typeDefs = gql`
   }
 
   type Vendor {
-    _id: ID!
+    id: ID!
     name: String!
     type: VendorType!
     createdAt: String!
