@@ -7,8 +7,8 @@ export async function createToken(username: string): Promise<string> {
   return jwt.sign({ username }, key);
 }
 
-export function verifyToken(ctx: Context): any {
-  const bearerHeader = ctx.ctx.request.header.authorization;
+export function verifyToken({ ctx }: { ctx: Context }): any {
+  const bearerHeader = ctx.request.header.authorization;
 
   let verified = false;
 
