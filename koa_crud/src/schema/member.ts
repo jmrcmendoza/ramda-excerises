@@ -11,7 +11,7 @@ export const typeDefs = gql`
   }
 
   type Token {
-    token: String
+    token: String!
   }
 
   extend type Query {
