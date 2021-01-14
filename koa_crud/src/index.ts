@@ -4,15 +4,18 @@ import mongoose from 'mongoose';
 import { ApolloServer } from 'apollo-server-koa';
 import vendorsRoutes from './routes/vendors';
 import membersRoutes from './routes/members';
+import authenicateRoute from './routes/authenticate';
 
 import { typeDefs } from './schema';
 import resolvers from './schema/resolvers';
+import { verifyToken } from './middleware/authorization';
 
 const app = new Koa();
 
 const graphqlServer = new ApolloServer({
   typeDefs,
   resolvers,
+  context: verifyToken,
 });
 
 graphqlServer.applyMiddleware({ app });
@@ -35,6 +38,7 @@ mongoose.connect(
 
 app.use(vendorsRoutes.routes());
 app.use(membersRoutes.routes());
+app.use(authenicateRoute.routes());
 
 const server = app
   .listen(PORT, () => {
