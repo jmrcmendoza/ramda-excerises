@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-koa';
 
 export const typeDefs = gql`
   type Member {
-    id: ID!
+    _id: ID!
     username: String!
     password: String!
     realName: String
