@@ -140,4 +140,28 @@ describe('Member Data Access', () => {
       expect(result).to.be.true;
     });
   });
+
+  describe('Authenticate Member', () => {
+    it('should return false for invalid password', async () => {
+      const data = {
+        username: 'Jason',
+        password: chance.string({ length: 5 }),
+      };
+
+      const result = await memberDB.authenticateMember(data);
+
+      expect(result).to.be.false;
+    });
+
+    it('should return true for correct password', async () => {
+      const data = {
+        username: 'Jason',
+        password: '1234',
+      };
+
+      const result = await memberDB.authenticateMember(data);
+
+      expect(result).to.be.true;
+    });
+  });
 });
