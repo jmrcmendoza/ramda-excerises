@@ -6,6 +6,8 @@ export type MemberDocument = Document & {
   username: string;
   password: string;
   realName: string | null;
+  email: string | null;
+  bankAccount: number | null;
 };
 
 export default model<MemberDocument>(
@@ -23,6 +25,12 @@ export default model<MemberDocument>(
       },
       realName: {
         type: String,
+      },
+      email: {
+        type: String,
+      },
+      bankAccount: {
+        type: Number,
       },
     },
     { timestamps: true },
