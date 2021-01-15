@@ -1,4 +1,9 @@
-import { PromoDocument, Status, Template } from '../../models/promo';
+import {
+  MemberFields,
+  PromoDocument,
+  Status,
+  Template,
+} from '../../models/promo';
 
 export default function () {
   return async function makeVendor(
@@ -41,7 +46,15 @@ export default function () {
     }
     if (template === Template.SignUp) {
       if (!requiredMemberFields || requiredMemberFields.length < 1) {
-        throw new Error('Members must be provided.');
+        throw new Error('Members fields must be provided.');
+      }
+
+      const invalidField = requiredMemberFields.find(
+        (field) => !Object.values(MemberFields).includes(field),
+      );
+
+      if (invalidField) {
+        throw new Error(`${invalidField} is an invalid field.`);
       }
     }
   };
