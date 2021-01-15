@@ -13,11 +13,11 @@ export enum Status {
   Inactve = 'INACTIVE',
 }
 
-export type MemberFields = {
-  realName: string;
-  email: string;
-  bankAccount: number;
-};
+export enum MemberFields {
+  EMAIL,
+  REAL_NAME,
+  BANK_ACCOUNT,
+}
 
 export type PromoDocument = Document & {
   name: string;
@@ -28,7 +28,7 @@ export type PromoDocument = Document & {
   enabled: boolean;
   status: Status;
   minimumBalance: number | null;
-  requireMemberFields: [MemberFields];
+  requiredMemberFields: [MemberFields];
 };
 
 export default model<PromoDocument>(
@@ -67,13 +67,9 @@ export default model<PromoDocument>(
       minimumBalance: {
         type: Number,
       },
-      requireMemberFields: [
-        {
-          realName: String,
-          email: String,
-          bankAccount: Number,
-        },
-      ],
+      requiredMemberFields: {
+        type: [String],
+      },
     },
     { timestamps: true },
   ).plugin(mongooseLeanVirtuals),
