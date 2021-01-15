@@ -3,7 +3,6 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import R from 'ramda';
 import server from '../../../../src';
 
 import { authMember } from '../../../../src/controllers/authenticate';

@@ -2,7 +2,6 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
-import R from 'ramda';
 
 const chance = new Chance();
 
