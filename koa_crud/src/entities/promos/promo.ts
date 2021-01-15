@@ -11,7 +11,7 @@ export default function () {
       description,
       status,
       minimumBalance,
-      requireMemberFields,
+      requiredMemberFields,
     } = promo;
 
     if (!name) {
@@ -40,7 +40,7 @@ export default function () {
       throw new Error('Minimum balance must be provided.');
     }
     if (template === Template.SignUp) {
-      if (!requireMemberFields || requireMemberFields.length < 1) {
+      if (!requiredMemberFields || requiredMemberFields.length < 1) {
         throw new Error('Members must be provided.');
       }
     }
