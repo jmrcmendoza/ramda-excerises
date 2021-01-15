@@ -172,6 +172,8 @@ describe('Vendors', function () {
   describe('Edit Vendor', () => {
     context('Given incorrect values', () => {
       it('should throw error for null name', async function () {
+        const token = await this.getToken();
+
         let data = {
           query: `{ vendors { id name type } }`,
         };
@@ -187,12 +189,17 @@ describe('Vendors', function () {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:null, type:${VendorType.Seamless}}) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response.body).to.have.property('errors');
       });
 
       it('should throw error for null type', async function () {
+        const token = await this.getToken();
+
         let data = {
           query: `{ vendors { id name type } }`,
         };
@@ -208,12 +215,16 @@ describe('Vendors', function () {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:null }) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response.body).to.have.property('errors');
       });
 
       it('should throw error for invalid type', async function () {
+        const token = await this.getToken();
         let data = {
           query: `{ vendors { id name type } }`,
         };
@@ -229,7 +240,10 @@ describe('Vendors', function () {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:"TEST" }) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response.body).to.have.property('errors');
       });
@@ -237,6 +251,8 @@ describe('Vendors', function () {
 
     context('Given correct values', () => {
       it('should update vendor', async function () {
+        const token = await this.getToken();
+
         let data = {
           query: `{ vendors { id name type } }`,
         };
@@ -249,10 +265,36 @@ describe('Vendors', function () {
           query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response.status).to.equal(200);
         expect(response.body.data).to.have.property('updateVendor', true);
+      });
+    });
+
+    context('Given invalid token', () => {
+      it('should thrown an error for invalid token', async function () {
+        let data = {
+          query: `{ vendors { id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendor = R.last(vendors.body.data.vendors);
+
+        data = {
+          query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
+        };
+
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer token`);
+
+        expect(response.body).to.have.property('errors');
       });
     });
   });
