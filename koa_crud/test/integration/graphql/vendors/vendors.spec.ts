@@ -300,25 +300,61 @@ describe('Vendors', function () {
   });
 
   describe('Delete Vendor', () => {
-    it('should delete one vendor', async function () {
-      let data = {
-        query: `{ vendors { id name type } }`,
-      };
+    context('Given valid token', () => {
+      it('should delete one vendor', async function () {
+        const token = await this.getToken();
 
-      const vendors = await this.request().post('/graphql').send(data);
+        let data = {
+          query: `{ vendors { id name type } }`,
+        };
 
-      const lastVendorId = R.compose(
-        R.prop('id'),
-        R.last,
-      )(vendors.body.data.vendors);
+        const vendors = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
-      data = {
-        query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
-      };
+        const lastVendorId = R.compose(
+          R.prop('id'),
+          R.last,
+        )(vendors.body.data.vendors);
 
-      const response = await this.request().post('/graphql').send(data);
+        data = {
+          query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
+        };
 
-      expect(response.body.data).to.have.property('deleteVendor', true);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(response.body.data).to.have.property('deleteVendor', true);
+      });
+    });
+
+    context('Given invalid token', () => {
+      it('should throw an error for invalid token', async function () {
+        let data = {
+          query: `{ vendors { id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendorId = R.compose(
+          R.prop('id'),
+          R.last,
+        )(vendors.body.data.vendors);
+
+        data = {
+          query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
+        };
+
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer token`);
+
+        expect(response.body).to.have.property('errors');
+      });
     });
   });
 });
