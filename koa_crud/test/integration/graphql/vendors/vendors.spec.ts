@@ -95,39 +95,77 @@ describe('Vendors', function () {
   });
 
   describe('List Vendors', () => {
-    it('should return all vendors', async function () {
-      const data = {
-        query: `{ vendors { id name type } }`,
-      };
+    context('Given valid token', () => {
+      it('should return all vendors', async function () {
+        const token = await this.getToken();
 
-      const response = await this.request().post('/graphql').send(data);
+        const data = {
+          query: `{ vendors { id name type } }`,
+        };
 
-      expect(response.body.data).to.exist;
-      expect(response.body.data.vendors)
-        .to.be.an('array')
-        .that.has.length.greaterThan(0);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(response.body.data).to.exist;
+        expect(response.body.data.vendors)
+          .to.be.an('array')
+          .that.has.length.greaterThan(0);
+      });
+
+      it('should return one vendor', async function () {
+        const token = await this.getToken();
+
+        let data = {
+          query: `{ vendors { id name type } }`,
+        };
+
+        const vendors = await this.request().post('/graphql').send(data);
+
+        const lastVendorId = R.compose(
+          R.prop('id'),
+          R.last,
+        )(vendors.body.data.vendors);
+
+        data = {
+          query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
+        };
+
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(response.body.data.vendor).to.exist;
+        expect(response.body.data.vendor).to.be.an('object');
+      });
     });
 
-    it('should return one vendor', async function () {
-      let data = {
-        query: `{ vendors { id name type } }`,
-      };
+    context('Given invalid token', () => {
+      it('should throw an error for invalid token', async function () {
+        let data = {
+          query: `{ vendors { id name type } }`,
+        };
 
-      const vendors = await this.request().post('/graphql').send(data);
+        const vendors = await this.request().post('/graphql').send(data);
 
-      const lastVendorId = R.compose(
-        R.prop('id'),
-        R.last,
-      )(vendors.body.data.vendors);
+        const lastVendorId = R.compose(
+          R.prop('id'),
+          R.last,
+        )(vendors.body.data.vendors);
 
-      data = {
-        query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
-      };
+        data = {
+          query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
+        };
 
-      const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer token`);
 
-      expect(response.body.data.vendor).to.exist;
-      expect(response.body.data.vendor).to.be.an('object');
+        expect(response.body).to.have.property('errors');
+      });
     });
   });
 
