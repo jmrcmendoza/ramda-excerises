@@ -12,26 +12,46 @@ chai.use(chaiHttp);
 describe('Vendors', function () {
   before(function () {
     this.request = () => chai.request('http://localhost:3000');
+
+    this.getToken = async () => {
+      const data = {
+        query: `mutation { authenticate(input: { username:"Jason", password:"1234" }){ token } }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      return response.body.data.authenticate.token;
+    };
   });
 
   describe('Add vendor', () => {
     context('Given incorrect values', () => {
       it('should return error for null vendor name', async function () {
+        const token = await this.getToken();
+
         const data = {
           query: `mutation { createVendor(input:{ name:null, type:${VendorType.Seamless}}) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response.body).to.have.property('errors');
       });
 
       it('should return error for null vendor type', async function () {
+        const token = await this.getToken();
+
         const data = {
           query: `mutation { createVendor(input:{ name:${chance.name()}, type:null}) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response.body).to.have.property('errors');
       });
@@ -39,16 +59,37 @@ describe('Vendors', function () {
 
     context('Given correct values', () => {
       it('should insert vendor', async function () {
+        const token = await this.getToken();
         const data = {
           query: `mutation { createVendor(input:{ name:"${chance.name()}", type:${
             VendorType.Seamless
           }}) }`,
         };
 
-        const response = await this.request().post('/graphql').send(data);
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
 
         expect(response).to.have.property('status', 200);
         expect(response.body.data.createVendor).to.be.true;
+      });
+    });
+
+    context('Given invalid token', () => {
+      it('should throw an error for forbidden', async function () {
+        const data = {
+          query: `mutation { createVendor(input:{ name:"${chance.name()}", type:${
+            VendorType.Seamless
+          }}) }`,
+        };
+
+        const response = await this.request()
+          .post('/graphql')
+          .set('authorization', 'Bearer token')
+          .send(data);
+
+        expect(response.body).to.have.property('errors');
       });
     });
   });
