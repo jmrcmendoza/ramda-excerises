@@ -28,7 +28,7 @@ export type PromoDocument = Document & {
   enabled: boolean;
   status: Status;
   minimumBalance: number | null;
-  requiredMemberFields: [MemberFields];
+  requiredMemberFields: MemberFields[];
 };
 
 export default model<PromoDocument>(
