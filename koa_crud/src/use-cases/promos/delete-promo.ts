@@ -1,5 +1,5 @@
-import { PromoQueries } from '../../data-access/promos/promos';
 import R from 'ramda';
+import { PromoQueries } from '../../data-access/promos/promos';
 
 export default function makeDeletePromo(promosDB: PromoQueries) {
   return async function deletePromo(id: string): Promise<any> {
