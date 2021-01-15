@@ -34,10 +34,7 @@ export default function () {
     if (!description) {
       throw new Error('Description must be provided.');
     }
-    if (!status) {
-      throw new Error('Status must be provided.');
-    }
-    if (!Object.values(Status).includes(status)) {
+    if (status && !Object.values(Status).includes(status)) {
       throw new Error('Invalid status.');
     }
 
