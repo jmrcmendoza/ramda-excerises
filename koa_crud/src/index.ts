@@ -5,6 +5,7 @@ import { ApolloServer } from 'apollo-server-koa';
 import vendorsRoutes from './routes/vendors';
 import membersRoutes from './routes/members';
 import authenicateRoute from './routes/authenticate';
+import promoRoutes from './routes/promos';
 
 import { typeDefs } from './schema';
 import resolvers from './schema/resolvers';
@@ -39,6 +40,7 @@ mongoose.connect(
 app.use(vendorsRoutes.routes());
 app.use(membersRoutes.routes());
 app.use(authenicateRoute.routes());
+app.use(promoRoutes.routes());
 
 const server = app
   .listen(PORT, () => {
