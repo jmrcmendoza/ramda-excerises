@@ -6,14 +6,14 @@ import Chance from 'chance';
 import R from 'ramda';
 import server from '../../../../src';
 import promoDB from '../../../../src/data-access/promos';
-import { PromoTemplate } from '../../../../src/models/promo';
+import { PromoStatus, PromoTemplate } from '../../../../src/models/promo';
 
 const chance = new Chance();
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
-describe('Vendor Data Access', () => {
+describe('Promo Data Access', () => {
   before(function () {
     this.request = () => chai.request(server);
   });
@@ -116,6 +116,29 @@ describe('Vendor Data Access', () => {
       expect(result).to.exist;
       expect(result).to.be.an('object');
       expect(result).to.have.property('name', lastPromo.name);
+    });
+  });
+
+  describe('Update Promo', () => {
+    context('Given incorrect values', () => {
+      it('should update promo type', async () => {
+        const vendors = await promoDB.listPromos();
+
+        const lastVendor = R.last(vendors);
+
+        const data = {
+          name: chance.name(),
+          template: PromoTemplate.Deposit,
+          title: chance.word(),
+          description: chance.sentence(),
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const result = await promoDB.updatePromo(lastVendor._id, data);
+
+        expect(result).to.be.true;
+      });
     });
   });
 });
