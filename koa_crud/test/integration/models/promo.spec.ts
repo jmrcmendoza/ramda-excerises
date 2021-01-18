@@ -108,25 +108,8 @@ describe('Promo Model', () => {
 
         expect(result).to.be.an('object');
         expect(result.name).to.equal(data.name);
+        expect(result.status).to.equal(PromoStatus.Draft);
       });
-    });
-  });
-
-  describe('List Promos', () => {
-    it('should retrieve all promo', async () => {
-      const result = await PromoModel.find({}).lean();
-
-      expect(result).to.be.an('array');
-      expect(result).to.have.length.greaterThan(0);
-    });
-
-    it('should retrieve one promo', async () => {
-      const promo = await PromoModel.findOne({}).lean({ virtuals: true });
-
-      const result = await PromoModel.findById(promo.id);
-
-      expect(result).to.be.an('object');
-      expect(result.id).to.equal(promo.id);
     });
   });
 
@@ -146,17 +129,6 @@ describe('Promo Model', () => {
       const result = await PromoModel.findByIdAndUpdate(promo.id, data, {
         useFindAndModify: false,
       });
-
-      expect(result).to.exist;
-      expect(result).to.be.an('object');
-    });
-  });
-
-  describe('Delete Promo', () => {
-    it('should delete one promo', async () => {
-      const promo = await PromoModel.findOne({}).lean({ virtuals: true });
-
-      const result = await PromoModel.findByIdAndDelete(promo.id);
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
