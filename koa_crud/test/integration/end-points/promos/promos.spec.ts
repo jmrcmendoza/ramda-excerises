@@ -207,4 +207,24 @@ describe('Member End-Points', () => {
       });
     });
   });
+
+  describe('List Promos', () => {
+    it('should return all promos', async function () {
+      const response = await this.request().get('/api/promos');
+
+      expect(response.body).to.exist;
+      expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
+    });
+
+    it('should return one promo', async function () {
+      const promos = await this.request().get('/api/promos');
+
+      const lastPromoId = R.compose(R.prop('_id'), R.last)(promos.body);
+
+      const response = await this.request().get(`/api/promos/${lastPromoId}`);
+
+      expect(response.body).to.exist;
+      expect(response.body).to.be.an('object');
+    });
+  });
 });
