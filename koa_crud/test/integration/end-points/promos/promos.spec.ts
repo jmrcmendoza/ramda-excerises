@@ -3,7 +3,11 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import { MemberFields, PromoTemplate } from '../../../../src/models/promo';
+import {
+  MemberFields,
+  PromoStatus,
+  PromoTemplate,
+} from '../../../../src/models/promo';
 
 const chance = new Chance();
 
@@ -225,6 +229,248 @@ describe('Member End-Points', () => {
 
       expect(response.body).to.exist;
       expect(response.body).to.be.an('object');
+    });
+  });
+
+  describe('Update Promo', () => {
+    context('Given incorrect values', () => {
+      it('should return error for empty name', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: '',
+          template: PromoTemplate.Deposit,
+          title: chance.word(),
+          description: chance.sentence(),
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Promo name must be provided.');
+      });
+
+      it('should return error for empty template', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: null,
+          title: lastPromo.name,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Template must be provided.');
+      });
+
+      it('should return error for invalid template', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: 'Test',
+          title: lastPromo.name,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Invalid template.');
+      });
+
+      it('should return error for empty title', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: '',
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Promo title must be provided');
+      });
+
+      it('should return error for empty description', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: '',
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal(
+          'Description must be provided.',
+        );
+      });
+
+      it('should return error for empty minimum balance given template is deposit', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: null,
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal(
+          'Minimum balance must be provided.',
+        );
+      });
+
+      it('should return error for empty member fields given template is sign up', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.SignUp,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          requiredMemberFields: [],
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal(
+          'Members fields must be provided.',
+        );
+      });
+
+      it('should return error for invalid member fields given template is sign up', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.SignUp,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          requiredMemberFields: ['Test'],
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Test is an invalid field.');
+      });
+
+      it('should return error for invalid status', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.SignUp,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          requiredMemberFields: [MemberFields.BANK_ACCOUNT, MemberFields.EMAIL],
+          status: 'TEST',
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(400);
+        expect(response.body.errorMsg).to.equal('Invalid status.');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should return error for empty name', async function () {
+        const promos = await this.request().get('/api/promos');
+
+        const lastPromo = R.last(promos.body);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const response = await this.request()
+          .put(`/api/promos/${lastPromo.id}`)
+          .type('json')
+          .send(data);
+
+        expect(response.status).to.equal(200);
+        expect(response.body).to.be.true;
+      });
     });
   });
 });
