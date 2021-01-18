@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import { MemberFields, PromoTemplate } from '../../../../src/models/promo';
+import { PromoTemplate } from '../../../../src/models/promo';
 
 const chance = new Chance();
 
