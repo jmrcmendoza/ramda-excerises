@@ -6,6 +6,7 @@ import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
 import {
+  deletePromo,
   insertPromo,
   listPromos,
   selectPromo,
@@ -381,6 +382,49 @@ describe('Promo Use Case', () => {
 
         expect(result).to.be.true;
       });
+    });
+  });
+
+  describe('Delete Promo', () => {
+    it('should delete one promo', async () => {
+      const data = {
+        name: chance.name(),
+        template: PromoTemplate.Deposit,
+        title: chance.word(),
+        description: chance.sentence(),
+        minimumBalance: chance.prime(),
+      };
+
+      await insertPromo(data);
+
+      const promos = await listPromos();
+
+      const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+      const result = await deletePromo(lastPromoId);
+
+      expect(result).to.be.true;
+    });
+
+    it('should delete one promo', async () => {
+      const data = {
+        name: chance.name(),
+        template: PromoTemplate.Deposit,
+        title: chance.word(),
+        description: chance.sentence(),
+        minimumBalance: chance.prime(),
+        status: PromoStatus.Active,
+      };
+
+      await insertPromo(data);
+
+      const promos = await listPromos();
+
+      const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+      await expect(deletePromo(lastPromoId)).to.eventually.rejectedWith(
+        'Cannot delete active promo.',
+      );
     });
   });
 });
