@@ -105,7 +105,7 @@ describe('Promos Graphql', function () {
         expect(error.message).to.equal('Minimum balance must be provided.');
       });
 
-      it('should return error for empty member fields given template is sign up', async function () {
+      it('should return error for empty promo fields given template is sign up', async function () {
         const data = {
           query: `mutation { createPromo(input:{name: "${chance.name()}", template: ${
             PromoTemplate.SignUp
@@ -122,7 +122,7 @@ describe('Promos Graphql', function () {
         expect(error.message).to.equal('Members fields must be provided.');
       });
 
-      it('should return error for invalid member fields given template is sign up', async function () {
+      it('should return error for invalid promo fields given template is sign up', async function () {
         const data = {
           query: `mutation { createPromo(input:{name: "${chance.name()}", template: ${
             PromoTemplate.SignUp
@@ -165,6 +165,77 @@ describe('Promos Graphql', function () {
 
         expect(result.body.data.createPromo).to.be.true;
       });
+    });
+  });
+
+  describe('List Promos', () => {
+    it('should return all promos', async function () {
+      const data = {
+        query: `{ promos { 
+          id
+          name
+          template
+          title
+          description
+          ...on SignUpPromo {
+            requiredMemberFields
+         }    
+          ...on DepositPromo{
+            minimumBalance
+          }
+          status  } }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data).to.exist;
+      expect(response.body.data.promos)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
+    });
+
+    it('should return one promo', async function () {
+      let data = {
+        query: `{ promos { 
+          id
+          name
+          template
+          title
+          description
+          status  
+        }
+      }`,
+      };
+
+      const promos = await this.request().post('/graphql').send(data);
+
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promos.body.data.promos);
+
+      data = {
+        query: `{ promo(id:"${lastPromoId}") {   
+          id
+          name
+          template
+          title
+          description
+          ...on SignUpPromo {
+            requiredMemberFields
+         }    
+          ...on DepositPromo{
+            minimumBalance
+          }
+          status  
+        }
+       }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data.promo).to.exist;
+      expect(response.body.data.promo).to.be.an('object');
     });
   });
 });
