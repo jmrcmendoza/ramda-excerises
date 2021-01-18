@@ -1,8 +1,8 @@
 import {
   MemberFields,
   PromoDocument,
-  Status,
-  Template,
+  PromoStatus,
+  PromoTemplate,
 } from '../../models/promo';
 
 export default function () {
@@ -25,7 +25,7 @@ export default function () {
     if (!template) {
       throw new Error('Template must be provided.');
     }
-    if (!Object.values(Template).includes(template)) {
+    if (!Object.values(PromoTemplate).includes(template)) {
       throw new Error('Invalid template.');
     }
     if (!title) {
@@ -34,14 +34,14 @@ export default function () {
     if (!description) {
       throw new Error('Description must be provided.');
     }
-    if (status && !Object.values(Status).includes(status)) {
+    if (status && !Object.values(PromoStatus).includes(status)) {
       throw new Error('Invalid status.');
     }
 
-    if (template === Template.Deposit && !minimumBalance) {
+    if (template === PromoTemplate.Deposit && !minimumBalance) {
       throw new Error('Minimum balance must be provided.');
     }
-    if (template === Template.SignUp) {
+    if (template === PromoTemplate.SignUp) {
       if (!requiredMemberFields || requiredMemberFields.length < 1) {
         throw new Error('Members fields must be provided.');
       }

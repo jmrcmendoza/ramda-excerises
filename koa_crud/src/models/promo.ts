@@ -2,12 +2,12 @@
 import { Schema, model, Document } from 'mongoose';
 import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 
-export enum Template {
+export enum PromoTemplate {
   Deposit = 'DEPOSIT',
   SignUp = 'SIGN_UP',
 }
 
-export enum Status {
+export enum PromoStatus {
   Draft = 'DRAFT',
   Active = 'ACTIVE',
   Inactve = 'INACTIVE',
@@ -21,12 +21,12 @@ export enum MemberFields {
 
 export type PromoDocument = Document & {
   name: string;
-  template: Template;
+  template: PromoTemplate;
   title: string;
   description: string;
   submitted: boolean;
   enabled: boolean;
-  status: Status;
+  status: PromoStatus;
   minimumBalance: number | null;
   requiredMemberFields: MemberFields[];
 };
@@ -41,7 +41,7 @@ export default model<PromoDocument>(
       },
       template: {
         type: String,
-        enum: [Template.Deposit, Template.SignUp],
+        enum: [PromoTemplate.Deposit, PromoTemplate.SignUp],
         required: true,
       },
       title: {
@@ -60,8 +60,8 @@ export default model<PromoDocument>(
       },
       status: {
         type: String,
-        enum: [Status.Draft, Status.Active, Status.Inactve],
-        default: Status.Draft,
+        enum: [PromoStatus.Draft, PromoStatus.Active, PromoStatus.Inactve],
+        default: PromoStatus.Draft,
         required: true,
       },
       minimumBalance: {

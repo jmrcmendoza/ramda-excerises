@@ -1,12 +1,12 @@
 import { gql } from 'apollo-server-koa';
 
 export const typeDefs = gql`
-  enum Template {
+  enum PromoTemplate {
     DEPOSIT
     SIGN_UP
   }
 
-  enum Status {
+  enum PromoStatus {
     DRAFT
     ACTIVE
     INACTIVE
@@ -18,17 +18,43 @@ export const typeDefs = gql`
     BANK_ACCOUNT
   }
 
-  type Promo {
+  interface Promo {
     id: ID!
     name: String!
-    template: Template!
+    template: PromoTemplate!
     title: String!
     description: String!
-    submitted: Boolean
-    enabled: Boolean
-    status: Status!
-    minimumBalance: Float
-    requiredMemberFields: [String]
+    submitted: Boolean!
+    enabled: Boolean!
+    status: PromoStatus!
+    createdAt: String!
+    updatedAt: String
+  }
+
+  type DepositPromo implements Promo {
+    id: ID!
+    name: String!
+    template: PromoTemplate!
+    title: String!
+    description: String!
+    submitted: Boolean!
+    enabled: Boolean!
+    status: PromoStatus!
+    minimumBalance: Float!
+    createdAt: String!
+    updatedAt: String
+  }
+
+  type SignUpPromo implements Promo {
+    id: ID!
+    name: String!
+    template: PromoTemplate!
+    title: String!
+    description: String!
+    submitted: Boolean!
+    enabled: Boolean!
+    status: PromoStatus!
+    requiredMemberFields: [MemberFields!]
     createdAt: String!
     updatedAt: String
   }
@@ -40,24 +66,24 @@ export const typeDefs = gql`
 
   input CreatePromoInput {
     name: String!
-    template: Template!
+    template: PromoTemplate!
     title: String!
     description: String!
     submitted: Boolean
     enabled: Boolean
-    status: Status
+    status: PromoStatus
     minimumBalance: Float
     requiredMemberFields: [String]
   }
 
   input UpdatePromoInput {
     name: String!
-    template: Template!
+    template: PromoTemplate!
     title: String!
     description: String!
     submitted: Boolean
     enabled: Boolean
-    status: Status!
+    status: PromoStatus
     minimumBalance: Float
     requiredMemberFields: [String]
   }
