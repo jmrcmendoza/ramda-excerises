@@ -141,4 +141,17 @@ describe('Promo Data Access', () => {
       });
     });
   });
+
+  describe('Delete Promo', () => {
+    it('should delete one promo', async () => {
+      const vendors = await promoDB.listPromos();
+
+      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
+
+      const result = await promoDB.deletePromo(lastVendorId);
+
+      expect(result).to.exist;
+      expect(result).to.be.true;
+    });
+  });
 });
