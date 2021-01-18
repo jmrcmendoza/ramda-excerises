@@ -9,8 +9,13 @@ import {
   insertPromo,
   listPromos,
   selectPromo,
+  updatePromo,
 } from '../../../../src/use-cases/promos';
-import { MemberFields, PromoTemplate } from '../../../../src/models/promo';
+import {
+  MemberFields,
+  PromoStatus,
+  PromoTemplate,
+} from '../../../../src/models/promo';
 
 const chance = new Chance();
 
@@ -182,12 +187,200 @@ describe('Promo Use Case', () => {
     it('should return one promo', async () => {
       const promo = await listPromos();
 
-      const lastPromoId = R.compose(R.prop('_id'), R.last)(promo);
+      const lastPromoId = R.compose(R.prop('id'), R.last)(promo);
 
       const result = await selectPromo(lastPromoId);
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
+    });
+  });
+
+  describe('Update Promo', () => {
+    context('Given incorrect values', () => {
+      it('should throw an error for empty name', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: '',
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Promo name must be provided.');
+      });
+
+      it('should throw an error for empty template', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: null,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Template must be provided.');
+      });
+
+      it('should throw an error for invalid template', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: 'Test',
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Invalid template.');
+      });
+
+      it('should throw an error for empty title', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: '',
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Promo title must be provided');
+      });
+
+      it('should throw an error for empty description', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: '',
+          minimumBalance: chance.prime(),
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Description must be provided.');
+      });
+
+      it('should throw an error for empty minimum balance given the template is deposit', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: null,
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Minimum balance must be provided.');
+      });
+
+      it('should throw an error for empty member fields given the template is sign up', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.SignUp,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          requiredMemberFields: [],
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Members fields must be provided.');
+      });
+
+      it('should throw an error for invalid member fields given the template is sign up', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.SignUp,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          requiredMemberFields: ['Test'],
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Test is an invalid field.');
+      });
+
+      it('should throw an error for invalid status', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.SignUp,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          requiredMemberFields: [MemberFields.REAL_NAME],
+          status: 'Test',
+        };
+
+        await expect(
+          updatePromo(lastPromo.id, data),
+        ).to.eventually.rejectedWith('Invalid status.');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should update promo and return true', async () => {
+        const promos = await listPromos();
+
+        const lastPromo = R.last(promos);
+
+        const data = {
+          name: lastPromo.name,
+          template: PromoTemplate.Deposit,
+          title: lastPromo.title,
+          description: lastPromo.description,
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        const result = await updatePromo(lastPromo.id, data);
+
+        expect(result).to.be.true;
+      });
     });
   });
 });
