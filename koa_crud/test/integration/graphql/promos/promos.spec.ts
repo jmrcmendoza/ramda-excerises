@@ -295,7 +295,7 @@ describe('Promos Graphql', function () {
     });
   });
 
-  describe.only('Edit Promo', () => {
+  describe('Edit Promo', () => {
     context('Given incorrect values', () => {
       it('should throw error for empty name', async function () {
         let data = {
@@ -664,6 +664,99 @@ describe('Promos Graphql', function () {
 
         expect(result.body.data.updatePromo).to.be.true;
       });
+    });
+  });
+
+  describe('Delete Member', () => {
+    it('should delete one member', async function () {
+      let data = {
+        query: `mutation { createPromo(
+          input: {
+            name: "${chance.name()}",
+            template: ${PromoTemplate.Deposit},
+            title: "${chance.word()}",
+            description: "${chance.sentence()}",
+            minimumBalance: ${chance.prime()}
+          })
+        }`,
+      };
+
+      await this.request().post('/graphql').send(data);
+
+      data = {
+        query: `{ promos { 
+          id
+          name
+          template
+          title
+          description
+          status  
+        }
+      }`,
+      };
+
+      const promos = await this.request().post('/graphql').send(data);
+
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promos.body.data.promos);
+
+      data = {
+        query: `mutation { deletePromo(id:"${lastPromoId}") }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data).to.have.property('deletePromo', true);
+    });
+
+    it('should throw an error for deleting active promo', async function () {
+      let data = {
+        query: `mutation { createPromo(
+          input: {
+            name: "${chance.name()}",
+            template: ${PromoTemplate.Deposit},
+            title: "${chance.word()}",
+            description: "${chance.sentence()}",
+            minimumBalance: ${chance.prime()},
+            status: ${PromoStatus.Active}
+          })
+        }`,
+      };
+
+      await this.request().post('/graphql').send(data);
+
+      data = {
+        query: `{ promos { 
+          id
+          name
+          template
+          title
+          description
+          status  
+        }
+      }`,
+      };
+
+      const promos = await this.request().post('/graphql').send(data);
+
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promos.body.data.promos);
+
+      data = {
+        query: `mutation { deletePromo(id:"${lastPromoId}") }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Cannot delete active promo.');
     });
   });
 });
