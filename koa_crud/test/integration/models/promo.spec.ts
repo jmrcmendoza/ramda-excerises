@@ -151,4 +151,15 @@ describe('Promo Model', () => {
       expect(result).to.be.an('object');
     });
   });
+
+  describe.only('Delete Promo', () => {
+    it('should delete one promo', async () => {
+      const promo = await PromoModel.findOne({}).lean({ virtuals: true });
+
+      const result = await PromoModel.findByIdAndDelete(promo.id);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+    });
+  });
 });
