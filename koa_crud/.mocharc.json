@@ -4,5 +4,6 @@
   "recursive": true,
   "bail": true,
   "require": "ts-node/register/transpile-only",
-  "spec": "test/**/*.spec.ts"
+  "spec": "test/integration/models/promo.spec.ts"
+  
 }
