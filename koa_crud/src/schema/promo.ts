@@ -90,7 +90,7 @@ export const typeDefs = gql`
 
   extend type Mutation {
     createPromo(input: CreatePromoInput!): Boolean!
-    updatePromo(input: UpdatePromoInput!): Boolean!
+    updatePromo(id: ID!, input: UpdatePromoInput!): Boolean!
     deletePromo(id: ID!): Boolean!
   }
 `;
