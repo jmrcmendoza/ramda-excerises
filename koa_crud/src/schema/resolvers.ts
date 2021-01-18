@@ -102,6 +102,13 @@ export default {
     // name: (obj: any) => `Vendor - ${obj.name}`,
   },
 
+  Promo: {
+    __resolveType(obj: { template: string }): string {
+      if (obj.template === 'SIGN_UP') return 'SignUpPromo';
+      return 'DepositPromo';
+    },
+  },
+
   Mutation: {
     createMember: async (
       _obj: any,
