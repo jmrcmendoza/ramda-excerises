@@ -20,6 +20,14 @@ import {
 } from '../use-cases/vendors';
 
 import { authenticateMember } from '../use-cases/authenticate';
+import { PromoDocument } from '../models/promo';
+import {
+  deletePromo,
+  insertPromo,
+  listPromos,
+  selectPromo,
+  updatePromo,
+} from '../use-cases/promos';
 
 export default {
   Query: {
@@ -58,6 +66,24 @@ export default {
       }
 
       return selectMember(args.id);
+    },
+    promos: async (_obj: any, _arg: any, ctx: Context): Promise<any> => {
+      if (!ctx.verified) {
+        throw new Error('Forbidden');
+      }
+
+      return listPromos();
+    },
+    promo: async (
+      _obj: any,
+      args: { id: string },
+      ctx: Context,
+    ): Promise<Record<string, any>> => {
+      if (!ctx.verified) {
+        throw new Error('Forbidden');
+      }
+
+      return selectPromo(args.id);
     },
   },
 
@@ -162,6 +188,47 @@ export default {
       }
 
       return deleteVendor(args.id);
+    },
+
+    createPromo: async (
+      _obj: any,
+      args: {
+        input: PromoDocument;
+      },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      return insertPromo(args.input);
+    },
+
+    updatePromo: async (
+      _obj: any,
+      args: {
+        id: string;
+        input: PromoDocument;
+      },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      return updatePromo(args.id, args.input);
+    },
+
+    deletePromo: async (
+      _obj: any,
+      args: { id: string },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      return deletePromo(args.id);
     },
   },
 };
