@@ -473,4 +473,53 @@ describe('Member End-Points', () => {
       });
     });
   });
+
+  describe('Delete Promo', () => {
+    it('should delete promo', async function () {
+      const data = {
+        name: chance.name(),
+        template: PromoTemplate.Deposit,
+        title: chance.word(),
+        description: chance.sentence(),
+        minimumBalance: chance.prime(),
+      };
+
+      await this.request().post('/api/promos').type('json').send(data);
+
+      const promos = await this.request().get('/api/promos');
+
+      const lastPromoId = R.compose(R.prop('_id'), R.last)(promos.body);
+
+      const response = await this.request().delete(
+        `/api/promos/${lastPromoId}`,
+      );
+
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.true;
+    });
+
+    it('should throw an error for deleting active promo', async function () {
+      const data = {
+        name: chance.name(),
+        template: PromoTemplate.Deposit,
+        title: chance.word(),
+        description: chance.sentence(),
+        minimumBalance: chance.prime(),
+        status: PromoStatus.Active,
+      };
+
+      await this.request().post('/api/promos').type('json').send(data);
+
+      const promos = await this.request().get('/api/promos');
+
+      const lastPromoId = R.compose(R.prop('_id'), R.last)(promos.body);
+
+      const response = await this.request().delete(
+        `/api/promos/${lastPromoId}`,
+      );
+
+      expect(response.status).to.equal(400);
+      expect(response.body.errorMsg).to.equal('Cannot delete active promo.');
+    });
+  });
 });
