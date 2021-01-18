@@ -194,6 +194,7 @@ describe('Promo Use Case', () => {
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
+      expect(result.id).to.equal(lastPromoId);
     });
   });
 
