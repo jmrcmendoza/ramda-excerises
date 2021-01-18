@@ -111,4 +111,22 @@ describe('Promo Model', () => {
       });
     });
   });
+
+  describe('List Promos', () => {
+    it('should retrieve all promo', async () => {
+      const result = await PromoModel.find({}).lean();
+
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
+    });
+
+    it('should retrieve one promo', async () => {
+      const member = await PromoModel.findOne({}).lean({ virtuals: true });
+
+      const result = await PromoModel.findById(member.id);
+
+      expect(result).to.be.an('object');
+      expect(result.id).to.equal(member.id);
+    });
+  });
 });
