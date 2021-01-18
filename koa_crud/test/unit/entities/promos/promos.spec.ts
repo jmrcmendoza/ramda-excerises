@@ -129,6 +129,7 @@ describe('Promo Entity', () => {
       description: chance.sentence(),
       requiredMemberFields: [MemberFields.REAL_NAME],
     };
-    await expect(makePromo(data)).to.eventually.be.fulfilled;
+
+    await expect(makePromo(data)).to.eventually.be.fulfilled.and.be.undefined;
   });
 });
