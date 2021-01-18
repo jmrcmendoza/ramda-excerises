@@ -5,7 +5,11 @@ import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
-import { insertPromo } from '../../../../src/use-cases/promos';
+import {
+  insertPromo,
+  listPromos,
+  selectPromo,
+} from '../../../../src/use-cases/promos';
 import { MemberFields, PromoTemplate } from '../../../../src/models/promo';
 
 const chance = new Chance();
@@ -104,7 +108,7 @@ describe('Promo Use Case', () => {
         );
       });
 
-      it('should throw an error for empty member fields given template is sign up', async () => {
+      it('should throw an error for empty promo fields given template is sign up', async () => {
         const data = {
           name: chance.name(),
           template: PromoTemplate.SignUp,
@@ -118,7 +122,7 @@ describe('Promo Use Case', () => {
         );
       });
 
-      it('should throw an error for invalid member fields given template is sign up', async () => {
+      it('should throw an error for invalid promo fields given template is sign up', async () => {
         const data = {
           name: chance.name(),
           template: PromoTemplate.SignUp,
@@ -163,6 +167,27 @@ describe('Promo Use Case', () => {
         expect(result).to.exist;
         expect(result).to.be.true;
       });
+    });
+  });
+
+  describe('List Promos', () => {
+    it('should return all promos', async () => {
+      const result = await listPromos();
+
+      expect(result).to.exist;
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
+    });
+
+    it('should return one promo', async () => {
+      const promo = await listPromos();
+
+      const lastPromoId = R.compose(R.prop('_id'), R.last)(promo);
+
+      const result = await selectPromo(lastPromoId);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
     });
   });
 });
