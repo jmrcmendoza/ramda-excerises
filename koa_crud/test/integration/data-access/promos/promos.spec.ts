@@ -97,4 +97,25 @@ describe('Vendor Data Access', () => {
       });
     });
   });
+
+  describe('List Promos', () => {
+    it('should retrieve all promos', async () => {
+      const result = await promoDB.listPromos();
+
+      expect(result).to.be.an('array');
+      expect(result).has.length.greaterThan(0);
+    });
+
+    it('should retrieve one promo', async () => {
+      const promos = await promoDB.listPromos();
+
+      const lastPromo = R.last(promos);
+
+      const result = await promoDB.selectOnePromo(lastPromo.id);
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+      expect(result).to.have.property('name', lastPromo.name);
+    });
+  });
 });
