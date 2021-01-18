@@ -5,7 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
 import server from '../../../src';
-import { PromoTemplate } from '../../../src/models/promo';
+import { PromoStatus, PromoTemplate } from '../../../src/models/promo';
 import PromoModel from '../../../src/models/promo';
 
 const chance = new Chance();
@@ -121,12 +121,34 @@ describe('Promo Model', () => {
     });
 
     it('should retrieve one promo', async () => {
-      const member = await PromoModel.findOne({}).lean({ virtuals: true });
+      const promo = await PromoModel.findOne({}).lean({ virtuals: true });
 
-      const result = await PromoModel.findById(member.id);
+      const result = await PromoModel.findById(promo.id);
 
       expect(result).to.be.an('object');
-      expect(result.id).to.equal(member.id);
+      expect(result.id).to.equal(promo.id);
+    });
+  });
+
+  describe('Update Promo', () => {
+    it('should update and return promo values', async () => {
+      const promo = await PromoModel.findOne({}).lean({ virtuals: true });
+
+      const data = {
+        name: promo.name,
+        template: PromoTemplate.Deposit,
+        title: promo.title,
+        description: promo.description,
+        minimumBalance: chance.prime(),
+        status: PromoStatus.Active,
+      };
+
+      const result = await PromoModel.findByIdAndUpdate(promo.id, data, {
+        useFindAndModify: false,
+      });
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
     });
   });
 });
