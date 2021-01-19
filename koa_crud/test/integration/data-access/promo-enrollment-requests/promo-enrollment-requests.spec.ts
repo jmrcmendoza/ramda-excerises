@@ -108,4 +108,21 @@ describe('Promo Data Access', () => {
       expect(result).to.be.true;
     });
   });
+
+  describe('Approve Promo Enrollment Requests', () => {
+    it('should process request and return true', async () => {
+      const enrollmentRequests = await promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
+
+      const lastEnrollmentRequest = R.compose(
+        R.prop('id'),
+        R.last,
+      )(enrollmentRequests);
+
+      const result = await promoEnrollmentRequestsDB.approvePromoEnrollmentRequest(
+        lastEnrollmentRequest,
+      );
+
+      expect(result).to.be.true;
+    });
+  });
 });
