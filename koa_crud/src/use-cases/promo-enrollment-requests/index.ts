@@ -6,6 +6,8 @@ import makeApprovePromoEnrollmentRequest from './approve-promo-enrollment-reques
 import makeRejectPromoEnrollmentRequest from './reject-promo-enrollment-request';
 
 import promoEnrollmentRequestsDB from '../../data-access/promo-enrollment-requests';
+import promosDB from '../../data-access/promos';
+import membersDB from '../../data-access/members';
 
 export const listPromoEnrollmentRequests = makeListPromoEnrollmentRequests(
   promoEnrollmentRequestsDB,
@@ -13,7 +15,11 @@ export const listPromoEnrollmentRequests = makeListPromoEnrollmentRequests(
 export const selectOnePromoEnrollmentRequest = makeSelectPromoEnrollmentRequest(
   promoEnrollmentRequestsDB,
 );
-export const enrollToPromo = makeEnrollToPromo(promoEnrollmentRequestsDB);
+export const enrollToPromo = makeEnrollToPromo({
+  promoEnrollmentRequestsDB,
+  promosDB,
+  membersDB,
+});
 export const processPromoEnrollmentRequest = makeProcessPromoEnrollmentRequest(
   promoEnrollmentRequestsDB,
 );
