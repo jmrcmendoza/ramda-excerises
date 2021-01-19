@@ -10,8 +10,10 @@ export default function enrollToPromoController({
     httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
-      const { body: enrollmentInfo } = httpRequest;
-      const result = await enrollToPromo(enrollmentInfo);
+      const {
+        params: { promo },
+      } = httpRequest;
+      const result = await enrollToPromo(promo);
 
       return {
         headers: {
