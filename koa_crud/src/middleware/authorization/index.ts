@@ -3,14 +3,15 @@ import { Context } from 'mocha';
 
 const key = 'koacrud';
 
-export async function createToken(username: string): Promise<string> {
-  return jwt.sign({ username }, key);
+export async function createToken(id: string): Promise<string> {
+  return jwt.sign({ id }, key);
 }
 
 export function verifyToken({ ctx }: { ctx: Context }): any {
   const bearerHeader = ctx.request.header.authorization;
 
   let verified = false;
+  let userId = '';
 
   if (!bearerHeader) {
     return { verified: true, isAdmin: true };
@@ -24,10 +25,13 @@ export function verifyToken({ ctx }: { ctx: Context }): any {
 
   try {
     const result = jwt.verify(token, key);
+
+    userId = result.id;
+
     verified = !!result;
   } catch (error) {
     verified = false;
   }
 
-  return { verified };
+  return { verified, userId };
 }
