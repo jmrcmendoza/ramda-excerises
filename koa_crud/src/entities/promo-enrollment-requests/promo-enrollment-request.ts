@@ -4,14 +4,14 @@ export default function () {
   return async function makeVendor(
     promoEnrollmentRequest: PromoEnrollmentRequestDocument,
   ): Promise<void | Error> {
-    const { memberId, promoId } = promoEnrollmentRequest;
+    const { member, promo } = promoEnrollmentRequest;
 
-    if (!memberId) {
-      throw new Error('Member ID must be provided.');
+    if (!promo) {
+      throw new Error('Promo must be provided.');
     }
 
-    if (!promoId) {
-      throw new Error('Promo ID must be provided.');
+    if (!member) {
+      throw new Error('Member must be provided.');
     }
   };
 }
