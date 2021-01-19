@@ -91,4 +91,21 @@ describe('Promo Data Access', () => {
       expect(result).to.have.property('id', lastPromoEnrollmentRequest.id);
     });
   });
+
+  describe('Process Promo Enrollment Requests', () => {
+    it('should process request and return true', async () => {
+      const enrollmentRequests = await promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
+
+      const lastEnrollmentRequest = R.compose(
+        R.prop('id'),
+        R.last,
+      )(enrollmentRequests);
+
+      const result = await promoEnrollmentRequestsDB.processPromoEnrollmentRequest(
+        lastEnrollmentRequest,
+      );
+
+      expect(result).to.be.true;
+    });
+  });
 });
