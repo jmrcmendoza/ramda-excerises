@@ -31,6 +31,7 @@ import {
 import {
   enrollToPromo,
   listPromoEnrollmentRequests,
+  processPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../use-cases/promo-enrollment-requests';
 
@@ -280,6 +281,18 @@ export default {
       };
 
       return enrollToPromo(data);
+    },
+
+    processPromoEnrollmentRequest: async (
+      _obj: any,
+      args: { id: string },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      return processPromoEnrollmentRequest(args.id);
     },
   },
 };
