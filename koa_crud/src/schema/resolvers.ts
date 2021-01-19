@@ -33,6 +33,7 @@ import {
   enrollToPromo,
   listPromoEnrollmentRequests,
   processPromoEnrollmentRequest,
+  rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../use-cases/promo-enrollment-requests';
 
@@ -306,6 +307,18 @@ export default {
       }
 
       return approvePromoEnrollmentRequest(args.id);
+    },
+
+    rejectPromoEnrollmentRequest: async (
+      _obj: any,
+      args: { id: string },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      return rejectPromoEnrollmentRequest(args.id);
     },
   },
 };
