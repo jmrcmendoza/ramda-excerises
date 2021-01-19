@@ -150,7 +150,7 @@ describe('Member Data Access', () => {
 
       const result = await memberDB.authenticateMember(data);
 
-      expect(result).to.be.false;
+      expect(result.verified).to.be.false;
     });
 
     it('should return true for correct password', async () => {
@@ -161,7 +161,7 @@ describe('Member Data Access', () => {
 
       const result = await memberDB.authenticateMember(data);
 
-      expect(result).to.be.true;
+      expect(result.verified).to.be.true;
     });
   });
 });
