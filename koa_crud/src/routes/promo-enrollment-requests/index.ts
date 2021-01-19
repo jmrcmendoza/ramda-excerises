@@ -5,6 +5,7 @@ import {
   postEnrollToPromo,
   putProcessPromoEnrollmentRequest,
   putApprovePromoEnrollmentRequest,
+  putRejectPromoEnrollmentRequest,
 } from '../../controllers/promo-enrollment-requests';
 
 import { serialize } from '../../serialize';
@@ -23,6 +24,10 @@ router.put(
 router.put(
   '/api/promos/enrollment/requests/approve/:id',
   serialize(putApprovePromoEnrollmentRequest),
+);
+router.put(
+  '/api/promos/enrollment/requests/reject/:id',
+  serialize(putRejectPromoEnrollmentRequest),
 );
 
 export default router;
