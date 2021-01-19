@@ -21,10 +21,18 @@ export default function ({
 }): PromoEnrollmentRequestQueries {
   return Object.freeze({
     listPromoEnrollmentRequests() {
-      return promoEnrollmentRequests.find({}).lean({ virtuals: true });
+      return promoEnrollmentRequests
+        .find({})
+        .populate('promo')
+        .populate({ path: 'member', select: '-password' })
+        .lean({ virtuals: true });
     },
     selectOnePromoEnrollmentRequest(id: string) {
-      return promoEnrollmentRequests.findById(id).lean({ virtuals: true });
+      return promoEnrollmentRequests
+        .findById(id)
+        .populate('promo')
+        .populate({ path: 'member', select: '-password' })
+        .lean({ virtuals: true });
     },
     async enrollToPromo(enrollmentInfo) {
       const result = await promoEnrollmentRequests.create(enrollmentInfo);
