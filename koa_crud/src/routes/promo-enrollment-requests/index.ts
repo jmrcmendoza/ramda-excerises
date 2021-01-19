@@ -3,6 +3,7 @@ import Router from 'koa-router';
 import {
   getPromoEnrollmentRequests,
   postEnrollToPromo,
+  putApprovePromoEnrollmentRequest,
 } from '../../controllers/promo-enrollment-requests';
 
 import { serialize } from '../../serialize';
@@ -14,5 +15,9 @@ router.get(
   serialize(getPromoEnrollmentRequests),
 );
 router.post('/api/promos/enrollment/requests', serialize(postEnrollToPromo));
+router.put(
+  '/api/promos/enrollment/requests/approve/:id',
+  serialize(putApprovePromoEnrollmentRequest),
+);
 
 export default router;
