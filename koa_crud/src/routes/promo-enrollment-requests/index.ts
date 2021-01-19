@@ -21,7 +21,10 @@ router.get(
   '/api/promos/enrollment/requests/:id',
   serialize(getOnePromoEnrollmentRequest),
 );
-router.post('/api/promos/enrollment/requests', serialize(postEnrollToPromo));
+router.post(
+  '/api/promos/enrollment/requests/:promo',
+  serialize(postEnrollToPromo),
+);
 router.put(
   '/api/promos/enrollment/requests/process/:id',
   serialize(putProcessPromoEnrollmentRequest),
