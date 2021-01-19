@@ -68,4 +68,27 @@ describe('Promo Data Access', () => {
       });
     });
   });
+
+  describe('List Promo Enrollment Requests', () => {
+    it('should retrieve all promo enrollment requests', async () => {
+      const result = await promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
+
+      expect(result).to.be.an('array');
+      expect(result).has.length.greaterThan(0);
+    });
+
+    it('should retrieve one promo', async () => {
+      const promoEnrollmentRequests = await promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
+
+      const lastPromoEnrollmentRequest = R.last(promoEnrollmentRequests);
+
+      const result = await promoEnrollmentRequestsDB.selectOnePromoEnrollmentRequest(
+        lastPromoEnrollmentRequest.id,
+      );
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+      expect(result).to.have.property('id', lastPromoEnrollmentRequest.id);
+    });
+  });
 });
