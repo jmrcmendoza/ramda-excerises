@@ -28,6 +28,11 @@ import {
   selectPromo,
   updatePromo,
 } from '../use-cases/promos';
+import {
+  enrollToPromo,
+  listPromoEnrollmentRequests,
+  selectOnePromoEnrollmentRequest,
+} from '../use-cases/promo-enrollment-requests';
 
 export default {
   Query: {
@@ -84,6 +89,28 @@ export default {
       }
 
       return selectPromo(args.id);
+    },
+    promoEnrollmentRequests: async (
+      _obj: any,
+      _arg: any,
+      ctx: Context,
+    ): Promise<any> => {
+      if (!ctx.verified) {
+        throw new Error('Forbidden');
+      }
+
+      return listPromoEnrollmentRequests();
+    },
+    promoEnrollmentRequest: async (
+      _obj: any,
+      args: { id: string },
+      ctx: Context,
+    ): Promise<Record<string, any>> => {
+      if (!ctx.verified) {
+        throw new Error('Forbidden');
+      }
+
+      return selectOnePromoEnrollmentRequest(args.id);
     },
   },
 
@@ -236,6 +263,23 @@ export default {
       }
 
       return deletePromo(args.id);
+    },
+
+    enrollToPromo: async (
+      _obj: any,
+      args: { promo: string },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.verified) {
+        throw new Error('Forbidden');
+      }
+
+      const data: any = {
+        promo: args.promo,
+        member: ctx.userId,
+      };
+
+      return enrollToPromo(data);
     },
   },
 };
