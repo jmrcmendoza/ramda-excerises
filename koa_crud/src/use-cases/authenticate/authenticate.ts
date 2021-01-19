@@ -11,8 +11,8 @@ export default function makeAuthenticateMember(membersDB: MemberQueries) {
 
     const result = await membersDB.authenticateMember(memberInfo);
 
-    if (result) {
-      const token = await createToken(memberInfo.username);
+    if (result.verified) {
+      const token = await createToken(result.id);
 
       return { token };
     }

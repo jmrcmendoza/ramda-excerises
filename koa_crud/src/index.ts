@@ -6,6 +6,7 @@ import vendorsRoutes from './routes/vendors';
 import membersRoutes from './routes/members';
 import authenicateRoute from './routes/authenticate';
 import promoRoutes from './routes/promos';
+import promoEnrollmentRequestRoutes from './routes/promo-enrollment-requests';
 
 import { typeDefs } from './schema';
 import resolvers from './schema/resolvers';
@@ -41,6 +42,7 @@ app.use(vendorsRoutes.routes());
 app.use(membersRoutes.routes());
 app.use(authenicateRoute.routes());
 app.use(promoRoutes.routes());
+app.use(promoEnrollmentRequestRoutes.routes());
 
 const server = app
   .listen(PORT, () => {
