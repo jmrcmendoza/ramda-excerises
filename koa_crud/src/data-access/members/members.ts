@@ -8,7 +8,9 @@ export type MemberQueries = {
   createMember: (document: MemberDocument) => Promise<boolean>;
   updateMember: (id: string, document: MemberDocument) => Promise<boolean>;
   deleteMember: (id: string) => Promise<boolean>;
-  authenticateMember: (document: MemberDocument) => Promise<boolean>;
+  authenticateMember: (
+    document: MemberDocument,
+  ) => Promise<{ verified: boolean; id: string }>;
 };
 
 export default function ({
@@ -57,11 +59,18 @@ export default function ({
       return !!result;
     },
     async authenticateMember(memberInfo: MemberDocument) {
-      const result = await member
+      const memberDetails = await member
         .findOne({ username: memberInfo.username })
-        .lean();
+        .lean({ virtuals: true });
 
-      return compareHash(memberInfo.password, result.password);
+      const result = await compareHash(
+        memberInfo.password,
+        memberDetails.password,
+      );
+      return {
+        verified: result,
+        id: memberDetails.id,
+      };
     },
   });
 }
