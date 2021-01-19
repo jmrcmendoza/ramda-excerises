@@ -10,8 +10,8 @@ export enum PromoEnrollmentRequestStatus {
 }
 
 export type PromoEnrollmentRequestDocument = Document & {
-  promoId: string;
-  memberId: string;
+  promo: string;
+  member: string;
   status: PromoEnrollmentRequestStatus;
 };
 
@@ -19,11 +19,11 @@ export default model<PromoEnrollmentRequestDocument>(
   'PromoEnrollmentRequests',
   new Schema(
     {
-      promoId: {
+      promo: {
         type: String,
         required: true,
       },
-      memberId: {
+      member: {
         type: String,
         required: true,
       },
