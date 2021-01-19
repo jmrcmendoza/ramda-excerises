@@ -29,6 +29,7 @@ import {
   updatePromo,
 } from '../use-cases/promos';
 import {
+  approvePromoEnrollmentRequest,
   enrollToPromo,
   listPromoEnrollmentRequests,
   processPromoEnrollmentRequest,
@@ -293,6 +294,18 @@ export default {
       }
 
       return processPromoEnrollmentRequest(args.id);
+    },
+
+    approvePromoEnrollmentRequest: async (
+      _obj: any,
+      args: { id: string },
+      ctx: Context,
+    ): Promise<boolean> => {
+      if (!ctx.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      return approvePromoEnrollmentRequest(args.id);
     },
   },
 };
