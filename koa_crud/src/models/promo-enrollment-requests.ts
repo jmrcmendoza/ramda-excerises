@@ -20,11 +20,13 @@ export default model<PromoEnrollmentRequestDocument>(
   new Schema(
     {
       promo: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Promo',
         required: true,
       },
       member: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Member',
         required: true,
       },
       status: {
