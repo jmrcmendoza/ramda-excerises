@@ -2,6 +2,7 @@ import Router from 'koa-router';
 
 import {
   getPromoEnrollmentRequests,
+  getOnePromoEnrollmentRequest,
   postEnrollToPromo,
   putProcessPromoEnrollmentRequest,
   putApprovePromoEnrollmentRequest,
@@ -15,6 +16,10 @@ const router = new Router();
 router.get(
   '/api/promos/enrollment/requests',
   serialize(getPromoEnrollmentRequests),
+);
+router.get(
+  '/api/promos/enrollment/requests/:id',
+  serialize(getOnePromoEnrollmentRequest),
 );
 router.post('/api/promos/enrollment/requests', serialize(postEnrollToPromo));
 router.put(
