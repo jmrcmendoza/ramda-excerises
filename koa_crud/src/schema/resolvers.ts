@@ -151,7 +151,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listPromoEnrollmentRequests();
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+
+      const edges = await R.map((promoEnrollmentRequest) => {
+        return { node: promoEnrollmentRequest, cursor: 'not implemented' };
+      })(promoEnrollmentRequests);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(promoEnrollmentRequests),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     promoEnrollmentRequest: async (
       _obj: any,
