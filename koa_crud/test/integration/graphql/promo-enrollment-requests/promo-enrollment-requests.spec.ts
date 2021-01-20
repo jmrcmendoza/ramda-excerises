@@ -158,7 +158,7 @@ describe('Promos Graphql', function () {
           template: PromoTemplate.Deposit,
           title: chance.word(),
           description: chance.sentence(),
-          minimumBalance: 500,
+          minimumBalance: chance.prime(),
           status: PromoStatus.Active,
         };
 
