@@ -215,29 +215,34 @@ describe('Promos Graphql', function () {
     it('should return all promo enrollment requests', async function () {
       const data = {
         query: `{ promoEnrollmentRequests {
-          id
-          promo { 
-            id
-            name
-            template
-            title
-            description
-            ...on SignUpPromo {
-              requiredMemberFields
-           }    
-            ...on DepositPromo{
-              minimumBalance
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
             }
-            status
-          }
-          member {
-            id
-            username
-            realName
-            email
-            bankAccount
-          }
-          status
+          }         
         } 
       }`,
       };
@@ -245,17 +250,44 @@ describe('Promos Graphql', function () {
       const result = await this.request().post('/graphql').send(data);
 
       expect(result.body.data).to.exist;
-      expect(result.body.data.promoEnrollmentRequests)
-        .to.be.an('array')
-        .that.has.length.greaterThan(0);
+      expect(
+        result.body.data.promoEnrollmentRequests.totalCount,
+      ).to.be.greaterThan(0);
+      expect(result.body.data.promoEnrollmentRequests.edges).to.be.an('array');
     });
 
     it('should return one promo enrollment request', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -265,8 +297,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `{ promoEnrollmentRequest(id:"${lastPromoEnrollmentRequestId}") {
@@ -306,29 +339,34 @@ describe('Promos Graphql', function () {
     it('should throw an error for invalid token', async function () {
       const data = {
         query: `{ promoEnrollmentRequests {
-          id
-          promo { 
-            id
-            name
-            template
-            title
-            description
-            ...on SignUpPromo {
-              requiredMemberFields
-           }    
-            ...on DepositPromo{
-              minimumBalance
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
             }
-            status
-          }
-          member {
-            id
-            username
-            realName
-            email
-            bankAccount
-          }
-          status
+          }         
         } 
       }`,
       };
@@ -365,10 +403,36 @@ describe('Promos Graphql', function () {
 
     it('should process request and return true', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -378,8 +442,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `mutation { processPromoEnrollmentRequest(
@@ -394,10 +459,36 @@ describe('Promos Graphql', function () {
 
     it('should throw error for invalid token', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -407,8 +498,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `mutation { processPromoEnrollmentRequest(
@@ -448,10 +540,36 @@ describe('Promos Graphql', function () {
 
     it('should approve request and return true', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -461,8 +579,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `mutation { approvePromoEnrollmentRequest(
@@ -477,10 +596,36 @@ describe('Promos Graphql', function () {
 
     it('should throw error for invalid token', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -490,8 +635,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `mutation { approvePromoEnrollmentRequest(
@@ -531,10 +677,36 @@ describe('Promos Graphql', function () {
 
     it('should reject request and return true', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -544,8 +716,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `mutation { rejectPromoEnrollmentRequest(
@@ -560,10 +733,36 @@ describe('Promos Graphql', function () {
 
     it('should throw error for invalid token', async function () {
       let data = {
-        query: `{ promoEnrollmentRequests { 
-          id
-          status  
-        }
+        query: `{ promoEnrollmentRequests {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }         
+        } 
       }`,
       };
 
@@ -573,8 +772,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests.edges);
 
       data = {
         query: `mutation { rejectPromoEnrollmentRequest(
