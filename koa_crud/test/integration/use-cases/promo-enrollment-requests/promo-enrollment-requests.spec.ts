@@ -9,6 +9,7 @@ import {
   approvePromoEnrollmentRequest,
   enrollToPromo,
   listPromoEnrollmentRequests,
+  processPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../../../../src/use-cases/promo-enrollment-requests';
 import MemberModel from '../../../../src/models/member';
@@ -147,6 +148,29 @@ describe('Promo Enrollment Request Use Cases', () => {
       expect(result).to.exist;
       expect(result).to.be.an('object');
       expect(result.id).to.equal(lastpromoEnrollmentRequestId);
+    });
+  });
+
+  describe('Process Enrollment Request', () => {
+    it('should throw and error for empty id', async () => {
+      await expect(
+        processPromoEnrollmentRequest(''),
+      ).to.eventually.rejectedWith('ID must be provided.');
+    });
+
+    it('should process request and return true', async () => {
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests);
+
+      const result = await processPromoEnrollmentRequest(
+        lastPromoEnrollmentRequestId,
+      );
+
+      expect(result).to.be.true;
     });
   });
 
