@@ -1,5 +1,6 @@
-import { MemberDocument } from '../models/member';
 import { Context } from 'koa';
+import R from 'ramda';
+import { MemberDocument } from '../models/member';
 
 import {
   insertMember,
@@ -37,6 +38,18 @@ import {
   selectOnePromoEnrollmentRequest,
 } from '../use-cases/promo-enrollment-requests';
 
+type Connection<T> = {
+  totalCount: number;
+  pageInfo: {
+    endCursor: string;
+    hasNextPage: boolean;
+  };
+  edges: {
+    node: T;
+    cursor: Buffer;
+  }[];
+};
+
 export default {
   Query: {
     vendors: async (_obj: any, _arg: any, ctx: Context): Promise<any> => {
@@ -44,7 +57,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listVendors();
+      const vendors = await listVendors();
+
+      const edges = await R.map((vendor) => {
+        return { node: vendor, cursor: 'not implemented' };
+      })(vendors);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(vendors),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     vendor: async (
       _obj: any,
