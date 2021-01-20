@@ -54,12 +54,26 @@ describe('Members', function () {
 
       it('should throw error for duplicate username', async function () {
         let data = {
-          query: `{ members { id username realName } }`,
+          query: `{ members { 
+            totalCount
+            edges {
+              node {
+                id
+                username
+                realName
+              }
+              cursor            
+            }
+          } 
+        }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
-        const lastMember = R.last(members.body.data.members);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.data.members.edges);
 
         data = {
           query: `mutation { createMember(input:{ username:"${
@@ -79,28 +93,50 @@ describe('Members', function () {
   describe('List Members', () => {
     it('should return all members', async function () {
       const data = {
-        query: `{ members { id username realName } }`,
+        query: `{ members { 
+          totalCount
+          edges {
+            node {
+              id
+              username
+              realName
+            }
+            cursor            
+          }
+        } 
+      }`,
       };
 
       const response = await this.request().post('/graphql').send(data);
 
       expect(response.body.data).to.exist;
-      expect(response.body.data.members)
-        .to.be.an('array')
-        .that.has.length.greaterThan(0);
+      expect(response.body.data.members.totalCount).to.be.greaterThan(0);
+      expect(response.body.data.members.edges).to.be.an('array');
     });
 
     it('should return one member', async function () {
       let data = {
-        query: `{ members { id username realName } }`,
+        query: `{ members { 
+          totalCount
+          edges {
+            node {
+              id
+              username
+              realName
+            }
+            cursor            
+          }
+        } 
+      }`,
       };
 
       const members = await this.request().post('/graphql').send(data);
 
       const lastMemberId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(members.body.data.members);
+      )(members.body.data.members.edges);
 
       data = {
         query: `{ member(id:"${lastMemberId}") { id username realName } }`,
@@ -117,15 +153,27 @@ describe('Members', function () {
     context('Given incorrect values', () => {
       it('should throw error for empty username', async function () {
         let data = {
-          query: `{ members { id username realName } }`,
+          query: `{ members { 
+            totalCount
+            edges {
+              node {
+                id
+                username
+                realName
+              }
+              cursor            
+            }
+          } 
+        }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
         const lastMemberId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(members.body.data.members);
+        )(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${lastMemberId}", input:{ username:null, password:"${chance.string(
@@ -140,15 +188,27 @@ describe('Members', function () {
 
       it('should throw error for null password', async function () {
         let data = {
-          query: `{ members { id username realName } }`,
+          query: `{ members { 
+            totalCount
+            edges {
+              node {
+                id
+                username
+                realName
+              }
+              cursor            
+            }
+          } 
+        }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
         const lastMemberId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(members.body.data.members);
+        )(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${lastMemberId}", input:{ username:"${chance.name()}", password:null }) }`,
@@ -163,12 +223,26 @@ describe('Members', function () {
     context('Given correct values', () => {
       it('should update member', async function () {
         let data = {
-          query: `{ members { id username realName } }`,
+          query: `{ members { 
+            totalCount
+            edges {
+              node {
+                id
+                username
+                realName
+              }
+              cursor            
+            }
+          } 
+        }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
-        const lastMember = R.last(members.body.data.members);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${
@@ -193,13 +267,30 @@ describe('Members', function () {
         await this.request().post('/graphql').send(data);
 
         data = {
-          query: `{ members { id username realName } }`,
+          query: `{ members { 
+            totalCount
+            edges {
+              node {
+                id
+                username
+                realName
+              }
+              cursor            
+            }
+          } 
+        }`,
         };
 
         const members = await this.request().post('/graphql').send(data);
 
-        const firstMember = R.head(members.body.data.members);
-        const lastMember = R.last(members.body.data.members);
+        const firstMember = R.compose(
+          R.prop('node'),
+          R.head,
+        )(members.body.data.members.edges);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${
@@ -219,15 +310,27 @@ describe('Members', function () {
   describe('Delete Member', () => {
     it('should delete one member', async function () {
       let data = {
-        query: `{ members { id username realName } }`,
+        query: `{ members { 
+          totalCount
+          edges {
+            node {
+              id
+              username
+              realName
+            }
+            cursor            
+          }
+        } 
+      }`,
       };
 
       const members = await this.request().post('/graphql').send(data);
 
       const lastMemberId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(members.body.data.members);
+      )(members.body.data.members.edges);
 
       data = {
         query: `mutation { deleteMember(id:"${lastMemberId}") }`,
