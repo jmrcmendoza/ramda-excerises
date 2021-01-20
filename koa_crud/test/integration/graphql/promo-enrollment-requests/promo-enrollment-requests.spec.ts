@@ -1,0 +1,597 @@
+/* eslint-disable no-unused-expressions */
+import chai, { expect } from 'chai';
+import chaiHttp from 'chai-http';
+import Chance from 'chance';
+import R from 'ramda';
+import promoDB from '../../../../src/data-access/promos';
+import server from '../../../../src';
+import { PromoStatus, PromoTemplate } from '../../../../src/models/promo';
+
+const chance = new Chance();
+
+chai.use(chaiHttp);
+
+describe('Promos Graphql', function () {
+  before(function () {
+    this.request = () => chai.request(server);
+
+    this.getToken = async () => {
+      const data = {
+        query: `mutation { authenticate(
+          input: { 
+            username:"Jason",
+            password:"1234"
+          }){ 
+            token 
+          }
+        }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      return result.body.data.authenticate.token;
+    };
+  });
+
+  describe('Enroll to Promo', () => {
+    context('Given incorrect values', () => {
+      it('should return error for empty promo', async function () {
+        const data = {
+          query: `mutation { enrollToPromo(
+            promo:""
+          )
+        }`,
+        };
+
+        const result = await this.request().post('/graphql').send(data);
+
+        expect(result.body).to.have.property('errors');
+
+        const error = R.head(result.body.errors);
+
+        expect(error.message).to.equal('Promo must be provided.');
+      });
+
+      it('should return error for empty member', async function () {
+        const promos = await promoDB.listPromos();
+
+        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+        const data = {
+          query: `mutation { enrollToPromo(
+            promo:"${lastPromoId}"
+          )
+        }`,
+        };
+
+        const result = await this.request().post('/graphql').send(data);
+
+        expect(result.body).to.have.property('errors');
+
+        const error = R.head(result.body.errors);
+
+        expect(error.message).to.equal('Member must be provided.');
+      });
+    });
+
+    context('Given correct values', () => {
+      it('should return error for missing member fields', async function () {
+        const token = await this.getToken();
+
+        const promoDetails = {
+          name: chance.name(),
+          template: PromoTemplate.SignUp,
+          title: chance.word(),
+          description: chance.sentence(),
+          requiredMemberFields: ['BANK_ACCOUNT'],
+          status: PromoStatus.Active,
+        };
+
+        await promoDB.createPromo(promoDetails);
+
+        const promos = await promoDB.listPromos();
+
+        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+        const data = {
+          query: `mutation { enrollToPromo(
+            promo:"${lastPromoId}"
+          )
+        }`,
+        };
+
+        const result = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(result.body).to.have.property('errors');
+
+        const error = R.head(result.body.errors);
+
+        expect(error.message).to.equal('BANK_ACCOUNT member field is missing.');
+      });
+
+      it('should return error for enrolling to draft promo', async function () {
+        const token = await this.getToken();
+
+        const promoDetails = {
+          name: chance.name(),
+          template: PromoTemplate.SignUp,
+          title: chance.word(),
+          description: chance.sentence(),
+          requiredMemberFields: ['BANK_ACCOUNT'],
+        };
+
+        await promoDB.createPromo(promoDetails);
+
+        const promos = await promoDB.listPromos();
+
+        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+        const data = {
+          query: `mutation { enrollToPromo(
+            promo:"${lastPromoId}"
+          )
+        }`,
+        };
+
+        const result = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(result.body).to.have.property('errors');
+
+        const error = R.head(result.body.errors);
+
+        expect(error.message).to.equal(
+          'Cannot enroll to Inactive/Draft promo.',
+        );
+      });
+
+      it('should enroll to a promo and return true', async function () {
+        const token = await this.getToken();
+
+        const promoDetails = {
+          name: chance.name(),
+          template: PromoTemplate.Deposit,
+          title: chance.word(),
+          description: chance.sentence(),
+          minimumBalance: chance.prime(),
+          status: PromoStatus.Active,
+        };
+
+        await promoDB.createPromo(promoDetails);
+
+        const promos = await promoDB.listPromos();
+
+        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+        const data = {
+          query: `mutation { enrollToPromo(
+            promo:"${lastPromoId}"
+          )
+        }`,
+        };
+
+        const result = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(result.body.data.enrollToPromo).to.be.true;
+      });
+    });
+
+    context('Given invalid token', () => {
+      it('should throw forbidden', async function () {
+        const promos = await promoDB.listPromos();
+
+        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+
+        const data = {
+          query: `mutation { enrollToPromo(
+            promo:"${lastPromoId}"
+          )
+        }`,
+        };
+
+        const result = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer token`);
+
+        expect(result.body).to.have.property('errors');
+
+        const error = R.head(result.body.errors);
+
+        expect(error.message).to.equal('Forbidden');
+      });
+    });
+  });
+
+  describe('List Promo Enrollment Requests', () => {
+    it('should return all promo enrollment requests', async function () {
+      const data = {
+        query: `{ promoEnrollmentRequests {
+          id
+          promo { 
+            id
+            name
+            template
+            title
+            description
+            ...on SignUpPromo {
+              requiredMemberFields
+           }    
+            ...on DepositPromo{
+              minimumBalance
+            }
+            status
+          }
+          member {
+            id
+            username
+            realName
+            email
+            bankAccount
+          }
+          status
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data).to.exist;
+      expect(result.body.data.promoEnrollmentRequests)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
+    });
+
+    it('should return one promo enrollment request', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `{ promoEnrollmentRequest(id:"${lastPromoEnrollmentRequestId}") {
+          id
+          promo { 
+            id
+            name
+            template
+            title
+            description
+            ...on SignUpPromo {
+              requiredMemberFields
+           }    
+            ...on DepositPromo{
+              minimumBalance
+            }
+            status
+          }
+          member {
+            id
+            username
+            realName
+            email
+            bankAccount
+          }
+          status
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data.promoEnrollmentRequest).to.exist;
+      expect(result.body.data.promoEnrollmentRequest).to.be.an('object');
+    });
+
+    it('should throw an error for invalid token', async function () {
+      const data = {
+        query: `{ promoEnrollmentRequests {
+          id
+          promo { 
+            id
+            name
+            template
+            title
+            description
+            ...on SignUpPromo {
+              requiredMemberFields
+           }    
+            ...on DepositPromo{
+              minimumBalance
+            }
+            status
+          }
+          member {
+            id
+            username
+            realName
+            email
+            bankAccount
+          }
+          status
+        } 
+      }`,
+      };
+
+      const result = await this.request()
+        .post('/graphql')
+        .send(data)
+        .set('authorization', `Bearer token`);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Forbidden');
+    });
+  });
+
+  describe('Process Promo Enrollment Request', () => {
+    it('should throw an error for empty id', async function () {
+      const data = {
+        query: `mutation { processPromoEnrollmentRequest(
+          id:""
+        ) }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('ID must be provided.');
+    });
+
+    it('should process request and return true', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { processPromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data.processPromoEnrollmentRequest).to.be.true;
+    });
+
+    it('should throw error for invalid token', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { processPromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request()
+        .post('/graphql')
+        .send(data)
+        .set('authorization', `Bearer token`);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Forbidden');
+    });
+  });
+
+  describe('Approve Promo Enrollment Request', () => {
+    it('should throw an error for empty id', async function () {
+      const data = {
+        query: `mutation { approvePromoEnrollmentRequest(
+          id:""
+        ) }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('ID must be provided.');
+    });
+
+    it('should approve request and return true', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { approvePromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data.approvePromoEnrollmentRequest).to.be.true;
+    });
+
+    it('should throw error for invalid token', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { approvePromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request()
+        .post('/graphql')
+        .send(data)
+        .set('authorization', `Bearer token`);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Forbidden');
+    });
+  });
+
+  describe('Reject Promo Enrollment Request', () => {
+    it('should throw an error for empty id', async function () {
+      const data = {
+        query: `mutation { rejectPromoEnrollmentRequest(
+          id:""
+        ) }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('ID must be provided.');
+    });
+
+    it('should reject request and return true', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { rejectPromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data.rejectPromoEnrollmentRequest).to.be.true;
+    });
+
+    it('should throw error for invalid token', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { rejectPromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request()
+        .post('/graphql')
+        .send(data)
+        .set('authorization', `Bearer token`);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Forbidden');
+    });
+  });
+});
