@@ -6,6 +6,7 @@ import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
 import {
+  approvePromoEnrollmentRequest,
   enrollToPromo,
   listPromoEnrollmentRequests,
   selectOnePromoEnrollmentRequest,
@@ -146,6 +147,29 @@ describe('Promo Enrollment Request Use Cases', () => {
       expect(result).to.exist;
       expect(result).to.be.an('object');
       expect(result.id).to.equal(lastpromoEnrollmentRequestId);
+    });
+  });
+
+  describe('Approve Enrollment Request', () => {
+    it('should throw and error for empty id', async () => {
+      await expect(
+        approvePromoEnrollmentRequest(''),
+      ).to.eventually.rejectedWith('ID must be provided.');
+    });
+
+    it('should approve request and return true', async () => {
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests);
+
+      const result = await approvePromoEnrollmentRequest(
+        lastPromoEnrollmentRequestId,
+      );
+
+      expect(result).to.be.true;
     });
   });
 });
