@@ -2,14 +2,11 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
-import Chance from 'chance';
 import R from 'ramda';
 import server from '../../../../src';
 import promoEnrollmentRequestsDB from '../../../../src/data-access/promo-enrollment-requests';
 import memberDB from '../../../../src/data-access/members';
 import promoDB from '../../../../src/data-access/promos';
-
-const chance = new Chance();
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
