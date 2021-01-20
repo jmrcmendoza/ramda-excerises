@@ -17,8 +17,24 @@ export const typeDefs = gql`
     updatedAt: String
   }
 
+  type PromoEnrollmentRequestEdge {
+    node: PromoEnrollmentRequest
+    cursor: String
+  }
+
+  type PromoEnrollmentRequestPageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
+  }
+
+  type PromoEnrollmentRequestConnection {
+    totalCount: Int
+    edges: [PromoEnrollmentRequestEdge]!
+    pageInfo: PromoEnrollmentRequestPageInfo
+  }
+
   extend type Query {
-    promoEnrollmentRequests: [PromoEnrollmentRequest]!
+    promoEnrollmentRequests: PromoEnrollmentRequestConnection
     promoEnrollmentRequest(id: ID!): PromoEnrollmentRequest
   }
 
