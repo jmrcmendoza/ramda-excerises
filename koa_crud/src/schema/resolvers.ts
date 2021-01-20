@@ -117,7 +117,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listPromos();
+      const promos = await listPromos();
+
+      const edges = await R.map((promo) => {
+        return { node: promo, cursor: 'not implemented' };
+      })(promos);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(promos),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     promo: async (
       _obj: any,
