@@ -511,4 +511,87 @@ describe('Promos Graphql', function () {
       expect(error.message).to.equal('Forbidden');
     });
   });
+
+  describe('Reject Promo Enrollment Request', () => {
+    it('should throw an error for empty id', async function () {
+      const data = {
+        query: `mutation { rejectPromoEnrollmentRequest(
+          id:""
+        ) }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('ID must be provided.');
+    });
+
+    it('should reject request and return true', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { rejectPromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data.rejectPromoEnrollmentRequest).to.be.true;
+    });
+
+    it('should throw error for invalid token', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `mutation { rejectPromoEnrollmentRequest(
+          id:"${lastPromoEnrollmentRequestId}"
+        )}`,
+      };
+
+      const result = await this.request()
+        .post('/graphql')
+        .send(data)
+        .set('authorization', `Bearer token`);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Forbidden');
+    });
+  });
 });
