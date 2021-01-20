@@ -5,10 +5,13 @@ import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
 import Chance from 'chance';
 import server from '../../../../src';
-import { enrollToPromo } from '../../../../src/use-cases/promo-enrollment-requests';
+import {
+  enrollToPromo,
+  listPromoEnrollmentRequests,
+  selectOnePromoEnrollmentRequest,
+} from '../../../../src/use-cases/promo-enrollment-requests';
 import MemberModel from '../../../../src/models/member';
 import PromoModel, {
-  MemberFields,
   PromoStatus,
   PromoTemplate,
 } from '../../../../src/models/promo';
@@ -116,6 +119,33 @@ describe('Promo Enrollment Request Use Cases', () => {
 
         expect(result).to.be.true;
       });
+    });
+  });
+
+  describe('List Promo Enrollment Requests', () => {
+    it('should return all promo enrollment requests', async () => {
+      const result = await listPromoEnrollmentRequests();
+
+      expect(result).to.exist;
+      expect(result).to.be.an('array');
+      expect(result).to.have.length.greaterThan(0);
+    });
+
+    it('should return one promo enrollment request', async () => {
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+
+      const lastpromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests);
+
+      const result = await selectOnePromoEnrollmentRequest(
+        lastpromoEnrollmentRequestId,
+      );
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+      expect(result.id).to.equal(lastpromoEnrollmentRequestId);
     });
   });
 });
