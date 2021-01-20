@@ -210,4 +210,139 @@ describe('Promos Graphql', function () {
       });
     });
   });
+
+  describe('List Promo Enrollment Requests', () => {
+    it('should return all promo enrollment requests', async function () {
+      const data = {
+        query: `{ promoEnrollmentRequests {
+          id
+          promo { 
+            id
+            name
+            template
+            title
+            description
+            ...on SignUpPromo {
+              requiredMemberFields
+           }    
+            ...on DepositPromo{
+              minimumBalance
+            }
+            status
+          }
+          member {
+            id
+            username
+            realName
+            email
+            bankAccount
+          }
+          status
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data).to.exist;
+      expect(result.body.data.promoEnrollmentRequests)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
+    });
+
+    it('should return one promo enrollment request', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests { 
+          id
+          status  
+        }
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests.body.data.promoEnrollmentRequests);
+
+      data = {
+        query: `{ promoEnrollmentRequest(id:"${lastPromoEnrollmentRequestId}") {
+          id
+          promo { 
+            id
+            name
+            template
+            title
+            description
+            ...on SignUpPromo {
+              requiredMemberFields
+           }    
+            ...on DepositPromo{
+              minimumBalance
+            }
+            status
+          }
+          member {
+            id
+            username
+            realName
+            email
+            bankAccount
+          }
+          status
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data.promoEnrollmentRequest).to.exist;
+      expect(result.body.data.promoEnrollmentRequest).to.be.an('object');
+    });
+
+    it('should throw an error for invalid token', async function () {
+      const data = {
+        query: `{ promoEnrollmentRequests {
+          id
+          promo { 
+            id
+            name
+            template
+            title
+            description
+            ...on SignUpPromo {
+              requiredMemberFields
+           }    
+            ...on DepositPromo{
+              minimumBalance
+            }
+            status
+          }
+          member {
+            id
+            username
+            realName
+            email
+            bankAccount
+          }
+          status
+        } 
+      }`,
+      };
+
+      const result = await this.request()
+        .post('/graphql')
+        .send(data)
+        .set('authorization', `Bearer token`);
+
+      expect(result.body).to.have.property('errors');
+
+      const error = R.head(result.body.errors);
+
+      expect(error.message).to.equal('Forbidden');
+    });
+  });
 });
