@@ -87,4 +87,26 @@ describe('Promo Enrollment Request Model', () => {
       expect(result.status).to.equal(PromoEnrollmentRequestStatus.Processing);
     });
   });
+
+  describe('Approve Promo Enrollment Request', () => {
+    it('should approve promo enrollment request', async () => {
+      const promoEnrollmentRequest = await PromoEnrollmentRequestModel.findOne(
+        {},
+      ).lean({ virtuals: true });
+
+      const result = await PromoEnrollmentRequestModel.findById(
+        promoEnrollmentRequest.id,
+        {
+          status: PromoEnrollmentRequestStatus.Approved,
+        },
+        {
+          useFindAndModify: false,
+        },
+      );
+
+      expect(result).to.exist;
+      expect(result).to.be.an('object');
+      expect(result.status).to.equal(PromoEnrollmentRequestStatus.Approved);
+    });
+  });
 });
