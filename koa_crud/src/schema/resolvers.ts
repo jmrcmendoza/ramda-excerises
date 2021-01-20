@@ -87,7 +87,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listMembers();
+      const members = await listMembers();
+
+      const edges = await R.map((member) => {
+        return { node: member, cursor: 'not implemented' };
+      })(members);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(members),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     member: async (
       _obj: any,
