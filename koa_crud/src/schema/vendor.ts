@@ -14,8 +14,24 @@ export const typeDefs = gql`
     updatedAt: String
   }
 
+  type VendorEdge {
+    node: Vendor
+    cursor: String
+  }
+
+  type VendorPageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
+  }
+
+  type VendorConnection {
+    totalCount: Int
+    edges: [VendorEdge]
+    pageInfo: VendorPageInfo
+  }
+
   extend type Query {
-    vendors: [Vendor]
+    vendors: VendorConnection
     vendor(id: ID!): Vendor
   }
 
