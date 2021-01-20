@@ -10,6 +10,7 @@ import {
   enrollToPromo,
   listPromoEnrollmentRequests,
   processPromoEnrollmentRequest,
+  rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../../../../src/use-cases/promo-enrollment-requests';
 import MemberModel from '../../../../src/models/member';
@@ -190,6 +191,29 @@ describe('Promo Enrollment Request Use Cases', () => {
       )(promoEnrollmentRequests);
 
       const result = await approvePromoEnrollmentRequest(
+        lastPromoEnrollmentRequestId,
+      );
+
+      expect(result).to.be.true;
+    });
+  });
+
+  describe('Reject Enrollment Request', () => {
+    it('should throw and error for empty id', async () => {
+      await expect(rejectPromoEnrollmentRequest('')).to.eventually.rejectedWith(
+        'ID must be provided.',
+      );
+    });
+
+    it('should reject request and return true', async () => {
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+
+      const lastPromoEnrollmentRequestId = R.compose(
+        R.prop('id'),
+        R.last,
+      )(promoEnrollmentRequests);
+
+      const result = await rejectPromoEnrollmentRequest(
         lastPromoEnrollmentRequestId,
       );
 
