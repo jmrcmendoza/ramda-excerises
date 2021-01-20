@@ -16,8 +16,24 @@ export const typeDefs = gql`
     token: String!
   }
 
+  type MemberEdge {
+    node: Member
+    cursor: String
+  }
+
+  type MemberPageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
+  }
+
+  type MemberConnection {
+    totalCount: Int
+    edges: [MemberEdge]
+    pageInfo: MemberPageInfo
+  }
+
   extend type Query {
-    members: [Member]
+    members: MemberConnection
     member(id: ID!): Member
   }
 

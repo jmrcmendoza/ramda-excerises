@@ -59,8 +59,24 @@ export const typeDefs = gql`
     updatedAt: String
   }
 
+  type PromoEdge {
+    node: Promo
+    cursor: String
+  }
+
+  type PromoPageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
+  }
+
+  type PromoConnection {
+    totalCount: Int
+    edges: [PromoEdge]!
+    pageInfo: PromoPageInfo
+  }
+
   extend type Query {
-    promos: [Promo]!
+    promos: PromoConnection
     promo(id: ID!): Promo
   }
 

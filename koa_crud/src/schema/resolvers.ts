@@ -87,7 +87,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listMembers();
+      const members = await listMembers();
+
+      const edges = await R.map((member) => {
+        return { node: member, cursor: 'not implemented' };
+      })(members);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(members),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     member: async (
       _obj: any,
@@ -105,7 +117,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listPromos();
+      const promos = await listPromos();
+
+      const edges = await R.map((promo) => {
+        return { node: promo, cursor: 'not implemented' };
+      })(promos);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(promos),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     promo: async (
       _obj: any,
@@ -127,7 +151,19 @@ export default {
         throw new Error('Forbidden');
       }
 
-      return listPromoEnrollmentRequests();
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+
+      const edges = await R.map((promoEnrollmentRequest) => {
+        return { node: promoEnrollmentRequest, cursor: 'not implemented' };
+      })(promoEnrollmentRequests);
+
+      const result: Connection<Record<string, any>> = {
+        totalCount: R.length(promoEnrollmentRequests),
+        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
+        edges,
+      };
+
+      return result;
     },
     promoEnrollmentRequest: async (
       _obj: any,
