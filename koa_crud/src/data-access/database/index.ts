@@ -4,7 +4,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 const mongod = new MongoMemoryServer();
 
 export const initializeDatabase = async (): Promise<void> => {
-  const uri = await mongod.getConnectionString();
+  const uri =
+    process.env.NODE_ENV === 'test'
+      ? await mongod.getConnectionString()
+      : 'mongodb://mongo:27017/onboarding';
 
   const mongooseOpts = {
     useNewUrlParser: true,
