@@ -2,6 +2,9 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
+import server from '../../../../src';
+import MemberModel from '../../../../src/models/member';
+import { createHash } from '../../../../src/encryption';
 
 const chance = new Chance();
 
@@ -9,7 +12,7 @@ chai.use(chaiHttp);
 
 describe('Authenticate End-Point', () => {
   before(function () {
-    this.request = () => chai.request(`http://localhost:3000`);
+    this.request = () => chai.request(server);
   });
 
   describe('Authenticate Member', () => {
@@ -46,11 +49,18 @@ describe('Authenticate End-Point', () => {
     });
 
     context('Given correct values', () => {
+      afterEach(async function () {
+        await MemberModel.deleteMany({});
+      });
+
       it('should throw an error for invalid password', async function () {
         const data = {
-          username: 'Jason',
+          username: chance.word(),
           password: chance.string({ length: 5 }),
         };
+
+        await MemberModel.create(data);
+
         const response = await this.request()
           .post('/api/authenticate')
           .type('json')
@@ -64,14 +74,19 @@ describe('Authenticate End-Point', () => {
       });
 
       it('should return token', async function () {
+        const password = '1234';
+
         const data = {
-          username: 'Jason',
-          password: '1234',
+          username: chance.word(),
+          password: await createHash(password),
         };
+
+        await MemberModel.create(data);
+
         const response = await this.request()
           .post('/api/authenticate')
           .type('json')
-          .send(data);
+          .send({ username: data.username, password });
 
         expect(response.status).to.equal(201);
         expect(response.body).to.have.property('token');

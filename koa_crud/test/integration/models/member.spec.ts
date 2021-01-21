@@ -4,8 +4,8 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../src';
-import MemberModel from '../../../src/models/member';
+import MemberModel, { MemberDocument } from '../../../src/models/member';
+import DBManager from '../tear-down';
 
 const chance = new Chance();
 
@@ -13,8 +13,10 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 describe('Member Model', () => {
-  before(function () {
-    this.request = () => chai.request(server);
+  before(async function () {
+    this.dbManager = new DBManager();
+
+    await this.dbManager.start();
   });
 
   describe('Create Member', () => {
@@ -41,6 +43,10 @@ describe('Member Model', () => {
     });
 
     context('Given correct values', () => {
+      beforeEach(async function () {
+        await MemberModel.deleteMany({});
+      });
+
       it('should insert member', async () => {
         const data = {
           username: chance.last(),
@@ -55,15 +61,17 @@ describe('Member Model', () => {
       });
 
       it('should throw error for duplicate username', async () => {
-        const member = await MemberModel.findOne({}).lean();
+        const username = chance.word();
 
-        const data = {
-          username: member.username,
-          password: chance.string({ length: 5 }),
-          realName: chance.name(),
-        };
-
-        await expect(MemberModel.create(data)).to.eventually.rejected;
+        await expect(
+          MemberModel.create(
+            R.times(() => ({
+              username,
+              password: chance.string({ length: 5 }),
+              realName: chance.name(),
+            }))(2),
+          ),
+        ).to.eventually.rejected;
       });
     });
   });
@@ -92,9 +100,13 @@ describe('Member Model', () => {
 
       const password = chance.string({ length: 5 });
 
-      const result = await MemberModel.findByIdAndUpdate(member._id, password, {
-        useFindAndModify: false,
-      });
+      const result = await MemberModel.findByIdAndUpdate(
+        member._id,
+        { password },
+        {
+          useFindAndModify: false,
+        },
+      );
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
@@ -109,15 +121,15 @@ describe('Member Model', () => {
 
       await MemberModel.create(data);
 
-      const members = await MemberModel.find({});
+      const members: MemberDocument[] = await MemberModel.find({}).lean();
 
-      const firstMember = R.head(members);
-      const lastMember = R.last(members);
+      const firstMember = R.head(members)!;
+      const lastMember = R.last(members)!;
 
       data = {
         username: firstMember.username,
         password: lastMember.password,
-        realName: lastMember.realName,
+        realName: lastMember.realName!,
       };
 
       await expect(

@@ -8,6 +8,7 @@ import {
   PromoStatus,
   PromoTemplate,
 } from '../../../../src/models/promo';
+import server from '../../../../src';
 
 const chance = new Chance();
 
@@ -15,7 +16,7 @@ chai.use(chaiHttp);
 
 describe('Member End-Points', () => {
   before(function () {
-    this.request = () => chai.request(`http://localhost:3000`);
+    this.request = () => chai.request(server);
   });
 
   describe('Add Promo', () => {

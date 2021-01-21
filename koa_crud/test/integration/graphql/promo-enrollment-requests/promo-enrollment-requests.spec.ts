@@ -5,6 +5,8 @@ import Chance from 'chance';
 import R from 'ramda';
 import promoDB from '../../../../src/data-access/promos';
 import server from '../../../../src';
+import MemberModel from '../../../../src/models/member';
+import { createHash } from '../../../../src/encryption';
 import { PromoStatus, PromoTemplate } from '../../../../src/models/promo';
 
 const chance = new Chance();
@@ -12,15 +14,24 @@ const chance = new Chance();
 chai.use(chaiHttp);
 
 describe('Promos Graphql', function () {
-  before(function () {
+  before(async function () {
     this.request = () => chai.request(server);
+
+    const password = '1234';
+
+    const memberData = {
+      username: chance.word(),
+      password: await createHash(password),
+    };
+
+    await MemberModel.create(memberData);
 
     this.getToken = async () => {
       const data = {
         query: `mutation { authenticate(
           input: { 
-            username:"Jason",
-            password:"1234"
+            username: "${memberData.username}",
+            password: "${password}"
           }){ 
             token 
           }

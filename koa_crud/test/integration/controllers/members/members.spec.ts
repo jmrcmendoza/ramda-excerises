@@ -23,6 +23,10 @@ describe('Member Controller', () => {
     this.request = () => chai.request(server);
   });
 
+  after(async function () {
+    server.close();
+  });
+
   describe('Create Member', () => {
     context('Given incorrect values', () => {
       it('should return 400 status code for empty username', async () => {
