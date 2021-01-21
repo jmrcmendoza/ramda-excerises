@@ -1,6 +1,5 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import mongoose from 'mongoose';
 import { ApolloServer } from 'apollo-server-koa';
 import vendorsRoutes from './routes/vendors';
 import membersRoutes from './routes/members';
@@ -11,6 +10,7 @@ import promoEnrollmentRequestRoutes from './routes/promo-enrollment-requests';
 import { typeDefs } from './schema';
 import resolvers from './schema/resolvers';
 import { verifyToken } from './middleware/authorization';
+import { initializeDatabase } from './data-access/database';
 
 const app = new Koa();
 
@@ -26,19 +26,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser());
 
-const uri = 'mongodb://mongo:27017/onboarding';
-
-mongoose.connect(
-  uri,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  (err: any) => {
-    if (err) {
-      console.log(err.message);
-    }
-  },
-);
-
-mongoose.set('runValidators', true);
+initializeDatabase();
 
 app.use(vendorsRoutes.routes());
 app.use(membersRoutes.routes());
