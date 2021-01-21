@@ -1,5 +1,12 @@
 import { PromoEnrollmentRequestDocument } from '../../models/promo-enrollment-requests';
 
+class PromoEnrollmentRequestValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR';
+  }
+}
+
 export default function () {
   return async function makeVendor(
     promoEnrollmentRequest: PromoEnrollmentRequestDocument,
@@ -7,11 +14,15 @@ export default function () {
     const { member, promo } = promoEnrollmentRequest;
 
     if (!promo) {
-      throw new Error('Promo must be provided.');
+      throw new PromoEnrollmentRequestValidationError(
+        'Promo must be provided.',
+      );
     }
 
     if (!member) {
-      throw new Error('Member must be provided.');
+      throw new PromoEnrollmentRequestValidationError(
+        'Member must be provided.',
+      );
     }
   };
 }
