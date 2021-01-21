@@ -228,38 +228,55 @@ describe('Promos Graphql', function () {
     it('should return all promos', async function () {
       const data = {
         query: `{ promos { 
-          id
-          name
-          template
-          title
-          description
-          ...on SignUpPromo {
-            requiredMemberFields
-         }    
-          ...on DepositPromo{
-            minimumBalance
+          totalCount
+          edges { 
+            node {
+              id
+              name
+              template
+              title
+              description
+              ...on SignUpPromo {
+                requiredMemberFields
+              }    
+              ...on DepositPromo{
+                minimumBalance
+              }
+              status                
+            }           
           }
-          status  } }`,
+        } 
+      }`,
       };
 
       const result = await this.request().post('/graphql').send(data);
 
       expect(result.body.data).to.exist;
-      expect(result.body.data.promos)
-        .to.be.an('array')
-        .that.has.length.greaterThan(0);
+      expect(result.body.data.promos.totalCount).to.be.greaterThan(0);
+      expect(result.body.data.promos.edges).to.be.an('array');
     });
 
     it('should return one promo', async function () {
       let data = {
         query: `{ promos { 
-          id
-          name
-          template
-          title
-          description
-          status  
-        }
+          totalCount
+          edges { 
+            node {
+              id
+              name
+              template
+              title
+              description
+              ...on SignUpPromo {
+                requiredMemberFields
+              }    
+              ...on DepositPromo{
+                minimumBalance
+              }
+              status                
+            }           
+          }
+        } 
       }`,
       };
 
@@ -267,8 +284,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promos.body.data.promos);
+      )(promos.body.data.promos.edges);
 
       data = {
         query: `{ promo(id:"${lastPromoId}") {   
@@ -299,20 +317,34 @@ describe('Promos Graphql', function () {
     context('Given incorrect values', () => {
       it('should throw error for empty name', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -337,20 +369,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for empty template', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -371,20 +417,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for invalid template', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -405,20 +465,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for empty title', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -443,20 +517,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for empty description', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -481,20 +569,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for empty minimum balance given the tempate deposit', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -519,20 +621,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for empty member fields given the tempate sign up', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -557,20 +673,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for invalid member fields given the tempate sign up', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -595,20 +725,34 @@ describe('Promos Graphql', function () {
 
       it('should throw error for invalid status', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -632,20 +776,34 @@ describe('Promos Graphql', function () {
     context('Given correct values', () => {
       it('should update promo', async function () {
         let data = {
-          query: `{ promos {    
-            id
-            name
-            template
-            title
-            description
-            status   
+          query: `{ promos { 
+            totalCount
+            edges { 
+              node {
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status                
+              }           
+            }
           } 
         }`,
         };
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.last(promos.body.data.promos);
+        const lastPromo = R.compose(
+          R.prop('node'),
+          R.last,
+        )(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -685,13 +843,24 @@ describe('Promos Graphql', function () {
 
       data = {
         query: `{ promos { 
-          id
-          name
-          template
-          title
-          description
-          status  
-        }
+          totalCount
+          edges { 
+            node {
+              id
+              name
+              template
+              title
+              description
+              ...on SignUpPromo {
+                requiredMemberFields
+              }    
+              ...on DepositPromo{
+                minimumBalance
+              }
+              status                
+            }           
+          }
+        } 
       }`,
       };
 
@@ -699,8 +868,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promos.body.data.promos);
+      )(promos.body.data.promos.edges);
 
       data = {
         query: `mutation { deletePromo(id:"${lastPromoId}") }`,
@@ -729,13 +899,24 @@ describe('Promos Graphql', function () {
 
       data = {
         query: `{ promos { 
-          id
-          name
-          template
-          title
-          description
-          status  
-        }
+          totalCount
+          edges { 
+            node {
+              id
+              name
+              template
+              title
+              description
+              ...on SignUpPromo {
+                requiredMemberFields
+              }    
+              ...on DepositPromo{
+                minimumBalance
+              }
+              status                
+            }           
+          }
+        } 
       }`,
       };
 
@@ -743,8 +924,9 @@ describe('Promos Graphql', function () {
 
       const lastPromoId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promos.body.data.promos);
+      )(promos.body.data.promos.edges);
 
       data = {
         query: `mutation { deletePromo(id:"${lastPromoId}") }`,

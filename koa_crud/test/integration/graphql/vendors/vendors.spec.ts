@@ -100,7 +100,17 @@ describe('Vendors', function () {
         const token = await this.getToken();
 
         const data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const response = await this.request()
@@ -109,24 +119,34 @@ describe('Vendors', function () {
           .set('authorization', `Bearer ${token}`);
 
         expect(response.body.data).to.exist;
-        expect(response.body.data.vendors)
-          .to.be.an('array')
-          .that.has.length.greaterThan(0);
+        expect(response.body.data.vendors.totalCount).to.be.greaterThan(0);
+        expect(response.body.data.vendors.edges).to.be.an('array');
       });
 
       it('should return one vendor', async function () {
         const token = await this.getToken();
 
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
@@ -145,15 +165,26 @@ describe('Vendors', function () {
     context('Given invalid token', () => {
       it('should throw an error for invalid token', async function () {
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
@@ -175,15 +206,26 @@ describe('Vendors', function () {
         const token = await this.getToken();
 
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:null, type:${VendorType.Seamless}}) }`,
@@ -201,15 +243,26 @@ describe('Vendors', function () {
         const token = await this.getToken();
 
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:null }) }`,
@@ -226,15 +279,26 @@ describe('Vendors', function () {
       it('should throw error for invalid type', async function () {
         const token = await this.getToken();
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:"TEST" }) }`,
@@ -254,12 +318,25 @@ describe('Vendors', function () {
         const token = await this.getToken();
 
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendor = R.last(vendors.body.data.vendors);
+        const lastVendor = R.compose(
+          R.prop('node'),
+          R.last,
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
@@ -278,12 +355,25 @@ describe('Vendors', function () {
     context('Given invalid token', () => {
       it('should thrown an error for invalid token', async function () {
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendor = R.last(vendors.body.data.vendors);
+        const lastVendor = R.compose(
+          R.prop('node'),
+          R.last,
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
@@ -305,7 +395,17 @@ describe('Vendors', function () {
         const token = await this.getToken();
 
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request()
@@ -315,8 +415,9 @@ describe('Vendors', function () {
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
@@ -334,15 +435,26 @@ describe('Vendors', function () {
     context('Given invalid token', () => {
       it('should throw an error for invalid token', async function () {
         let data = {
-          query: `{ vendors { id name type } }`,
+          query: `{ vendors { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+          } 
+        }`,
         };
 
         const vendors = await this.request().post('/graphql').send(data);
 
         const lastVendorId = R.compose(
           R.prop('id'),
+          R.prop('node'),
           R.last,
-        )(vendors.body.data.vendors);
+        )(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
