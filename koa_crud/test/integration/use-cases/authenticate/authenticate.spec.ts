@@ -6,6 +6,7 @@ import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import server from '../../../../src';
 import { authenticateMember } from '../../../../src/use-cases/authenticate';
+import { insertMember } from '../../../../src/use-cases/members';
 
 const chance = new Chance();
 
@@ -13,8 +14,19 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 describe('Member Use Case', () => {
-  before(function () {
+  before(async function () {
     this.request = () => chai.request(server);
+
+    try {
+      await insertMember({
+        username: 'Jason',
+        password: '1234',
+        realName: 'Jason Marc',
+        email: 'test@gmail.com',
+      });
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   describe('Authenticate Member', () => {
