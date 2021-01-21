@@ -4,6 +4,7 @@ import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
 import { VendorType } from '../../../../src/models/vendor';
+import server from '../../../../src';
 
 const chance = new Chance();
 
@@ -11,7 +12,7 @@ chai.use(chaiHttp);
 
 describe('Vendors', function () {
   before(function () {
-    this.request = () => chai.request('http://localhost:3000');
+    this.request = () => chai.request(server);
 
     this.getToken = async () => {
       const data = {
