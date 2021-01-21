@@ -5,6 +5,34 @@ import {
   PromoTemplate,
 } from '../../models/promo';
 
+class PromoValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'PROMO_VALIDATION_ERROR';
+  }
+}
+
+class InvalidPromoTemplate extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'INVALID_PROMO_TYPE';
+  }
+}
+
+class InvalidPromoStatus extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'INVALID_PROMO_STATUS';
+  }
+}
+
+class InvalidMemberFeild extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'INVALID_MEMBER_FIELD';
+  }
+}
+
 export default function () {
   return async function makeVendor(
     promo: PromoDocument,
@@ -20,22 +48,22 @@ export default function () {
     } = promo;
 
     if (!name) {
-      throw new Error('Promo name must be provided.');
+      throw new PromoValidationError('Promo name must be provided.');
     }
     if (!template) {
-      throw new Error('Template must be provided.');
+      throw new PromoValidationError('Template must be provided.');
     }
     if (!Object.values(PromoTemplate).includes(template)) {
-      throw new Error('Invalid template.');
+      throw new InvalidPromoTemplate('Invalid template.');
     }
     if (!title) {
-      throw new Error('Promo title must be provided');
+      throw new PromoValidationError('Promo title must be provided');
     }
     if (!description) {
-      throw new Error('Description must be provided.');
+      throw new PromoValidationError('Description must be provided.');
     }
     if (status && !Object.values(PromoStatus).includes(status)) {
-      throw new Error('Invalid status.');
+      throw new InvalidPromoStatus('Invalid status.');
     }
 
     if (template === PromoTemplate.Deposit && !minimumBalance) {
@@ -43,7 +71,7 @@ export default function () {
     }
     if (template === PromoTemplate.SignUp) {
       if (!requiredMemberFields || requiredMemberFields.length < 1) {
-        throw new Error('Members fields must be provided.');
+        throw new PromoValidationError('Members fields must be provided.');
       }
 
       const invalidField = requiredMemberFields.find(
@@ -51,7 +79,7 @@ export default function () {
       );
 
       if (invalidField) {
-        throw new Error(`${invalidField} is an invalid field.`);
+        throw new InvalidMemberFeild(`${invalidField} is an invalid field.`);
       }
     }
   };
