@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser());
 
-const uri = 'mongodb://localhost:27017/local';
+const uri = 'mongodb://mongo:27017/onboarding';
 
 mongoose.connect(
   uri,
@@ -37,6 +37,8 @@ mongoose.connect(
     }
   },
 );
+
+mongoose.set('runValidators', true);
 
 app.use(vendorsRoutes.routes());
 app.use(membersRoutes.routes());
