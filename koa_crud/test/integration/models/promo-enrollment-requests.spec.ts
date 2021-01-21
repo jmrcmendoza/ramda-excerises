@@ -80,7 +80,6 @@ describe('Promo Enrollment Request Model', () => {
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
-      expect(result.status).to.equal(PromoEnrollmentRequestStatus.Processing);
     });
   });
 
@@ -102,7 +101,6 @@ describe('Promo Enrollment Request Model', () => {
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
-      expect(result.status).to.equal(PromoEnrollmentRequestStatus.Approved);
     });
   });
 
@@ -124,7 +122,6 @@ describe('Promo Enrollment Request Model', () => {
 
       expect(result).to.exist;
       expect(result).to.be.an('object');
-      expect(result.status).to.equal(PromoEnrollmentRequestStatus.Rejected);
     });
   });
 });
