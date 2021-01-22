@@ -1,6 +1,7 @@
 import { PromoDocument } from '../../models/promo';
 import { makePromo } from '../../entities/promos';
 import { PromoQueries } from '../../data-access/promos/promos';
+import { PromoValidationError } from '../../entities/promos/promo';
 
 export default function makeUpdatePromo(promosDB: PromoQueries) {
   return async function updatePromo(
@@ -10,7 +11,7 @@ export default function makeUpdatePromo(promosDB: PromoQueries) {
     await makePromo(promoInfo);
 
     if (!id) {
-      throw new Error('ID must be provided.');
+      throw new PromoValidationError('ID must be provided.');
     }
 
     return promosDB.updatePromo(id, promoInfo);
