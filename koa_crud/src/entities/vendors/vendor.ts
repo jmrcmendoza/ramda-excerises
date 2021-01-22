@@ -1,6 +1,6 @@
 import { VendorDocument } from '../../models/vendor';
 
-class VendorValidationError extends Error {
+export class VendorValidationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'VENDOR_VALIDATION_ERROR';

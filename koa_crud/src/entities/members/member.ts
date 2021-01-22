@@ -1,6 +1,6 @@
 import { MemberDocument } from '../../models/member';
 
-class MemberValidationError extends Error {
+export class MemberValidationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'MEMBER_VALIDATION_ERROR';

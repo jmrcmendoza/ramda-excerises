@@ -5,7 +5,7 @@ import {
   PromoTemplate,
 } from '../../models/promo';
 
-class PromoValidationError extends Error {
+export class PromoValidationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'PROMO_VALIDATION_ERROR';
@@ -67,7 +67,7 @@ export default function () {
     }
 
     if (template === PromoTemplate.Deposit && !minimumBalance) {
-      throw new Error('Minimum balance must be provided.');
+      throw new PromoValidationError('Minimum balance must be provided.');
     }
     if (template === PromoTemplate.SignUp) {
       if (!requiredMemberFields || requiredMemberFields.length < 1) {

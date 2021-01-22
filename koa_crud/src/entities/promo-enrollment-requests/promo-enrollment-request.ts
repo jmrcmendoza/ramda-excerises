@@ -1,6 +1,6 @@
 import { PromoEnrollmentRequestDocument } from '../../models/promo-enrollment-requests';
 
-class PromoEnrollmentRequestValidationError extends Error {
+export class PromoEnrollmentRequestValidationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR';
