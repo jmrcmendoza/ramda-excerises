@@ -33,6 +33,12 @@ describe('Member Use Case', () => {
           password: chance.string({ lenght: 5 }),
         };
 
+        await expect(
+          authenticateMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_VALIDATION_ERROR',
+        );
         await expect(authenticateMember(data)).to.eventually.rejectedWith(
           'Username must be provided.',
         );
@@ -44,6 +50,12 @@ describe('Member Use Case', () => {
           password: '',
         };
 
+        await expect(
+          authenticateMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_VALIDATION_ERROR',
+        );
         await expect(authenticateMember(data)).to.eventually.rejectedWith(
           'Password must be provided.',
         );
@@ -57,6 +69,12 @@ describe('Member Use Case', () => {
           password: chance.string({ lenght: 5 }),
         };
 
+        await expect(
+          authenticateMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'AUTHENTICATE_ERROR',
+        );
         await expect(authenticateMember(data)).to.eventually.rejectedWith(
           'Authenticate failed.',
         );
