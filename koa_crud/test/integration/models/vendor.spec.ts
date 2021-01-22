@@ -2,9 +2,9 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
-import server from '../../../src';
-import VendorModel, { VendorType } from '../../../src/models/vendor';
 import Chance from 'chance';
+import VendorModel, { VendorType } from '../../../src/models/vendor';
+import DBManager from '../tear-down';
 
 const chance = new Chance();
 
@@ -12,8 +12,10 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 describe('Vendor Model', () => {
-  before(function () {
-    this.request = () => chai.request(server);
+  before(async function () {
+    this.dbManager = new DBManager();
+
+    await this.dbManager.start();
   });
 
   describe('Create Vendor', () => {

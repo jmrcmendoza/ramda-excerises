@@ -4,7 +4,6 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import server from '../../../../src';
-
 import { authMember } from '../../../../src/controllers/authenticate';
 import { insertMember } from '../../../../src/use-cases/members';
 
@@ -17,16 +16,16 @@ describe('Authenticate Controller', () => {
   before(async function () {
     this.request = () => chai.request(server);
 
-    try {
-      await insertMember({
-        username: 'Jason',
-        password: '1234',
-        realName: 'Jason Marc',
-        email: 'test@gmail.com',
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await insertMember({
+      username: 'Jason',
+      password: '1234',
+      realName: 'Jason Marc',
+      email: 'test@gmail.com',
+    });
+  });
+
+  after(function (done) {
+    server.close(done);
   });
 
   describe('Authenticate Member', () => {

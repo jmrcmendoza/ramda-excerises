@@ -3,6 +3,8 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
+import MemberModel from '../../../../src/models/member';
+import { createHash } from '../../../../src/encryption';
 import { VendorType } from '../../../../src/models/vendor';
 import server from '../../../../src';
 
@@ -11,17 +13,33 @@ const chance = new Chance();
 chai.use(chaiHttp);
 
 describe('Vendors', function () {
-  before(function () {
+  before(async function () {
     this.request = () => chai.request(server);
+
+    const password = '1234';
+
+    const memberData = {
+      username: chance.word(),
+      password: await createHash(password),
+    };
+
+    await MemberModel.create(memberData);
 
     this.getToken = async () => {
       const data = {
-        query: `mutation { authenticate(input: { username:"Jason", password:"1234" }){ token } }`,
+        query: `mutation { authenticate(
+          input: { 
+            username: "${memberData.username}",
+            password: "${password}"
+          }){ 
+            token 
+          }
+        }`,
       };
 
-      const response = await this.request().post('/graphql').send(data);
+      const result = await this.request().post('/graphql').send(data);
 
-      return response.body.data.authenticate.token;
+      return result.body.data.authenticate.token;
     };
   });
 

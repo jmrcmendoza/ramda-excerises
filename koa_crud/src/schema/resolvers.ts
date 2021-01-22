@@ -52,7 +52,7 @@ type Connection<T> = {
 
 export default {
   Query: {
-    vendors: async (_obj: any, _arg: any, ctx: Context): Promise<any> => {
+    vendors: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new Error('Forbidden');
       }
@@ -72,7 +72,7 @@ export default {
       return result;
     },
     vendor: async (
-      _obj: any,
+      _obj,
       vendor: { id: string },
       ctx: Context,
     ): Promise<Record<string, any>> => {
@@ -82,7 +82,7 @@ export default {
 
       return selectVendor(vendor.id);
     },
-    members: async (_obj: any, _arg: any, ctx: Context): Promise<any> => {
+    members: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new Error('Forbidden');
       }
@@ -102,7 +102,7 @@ export default {
       return result;
     },
     member: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<Record<string, any>> => {
@@ -112,7 +112,7 @@ export default {
 
       return selectMember(args.id);
     },
-    promos: async (_obj: any, _arg: any, ctx: Context): Promise<any> => {
+    promos: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new Error('Forbidden');
       }
@@ -132,7 +132,7 @@ export default {
       return result;
     },
     promo: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<Record<string, any>> => {
@@ -142,11 +142,7 @@ export default {
 
       return selectPromo(args.id);
     },
-    promoEnrollmentRequests: async (
-      _obj: any,
-      _arg: any,
-      ctx: Context,
-    ): Promise<any> => {
+    promoEnrollmentRequests: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new Error('Forbidden');
       }
@@ -166,7 +162,7 @@ export default {
       return result;
     },
     promoEnrollmentRequest: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<Record<string, any>> => {
@@ -190,7 +186,7 @@ export default {
       if (obj.type === 'TRANSFER') return 'TRANSFER';
       return 'SEAMLESS';
     },
-    // name: (obj: any) => `Vendor - ${obj.name}`,
+    // name: (obj) => `Vendor - ${obj.name}`,
   },
 
   Promo: {
@@ -202,7 +198,7 @@ export default {
 
   Mutation: {
     createMember: async (
-      _obj: any,
+      _obj,
       args: {
         input: MemberDocument;
       },
@@ -215,7 +211,7 @@ export default {
       return insertMember(args.input);
     },
     updateMember: async (
-      _obj: any,
+      _obj,
       args: {
         id: string;
         input: MemberDocument;
@@ -230,7 +226,7 @@ export default {
     },
 
     deleteMember: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<boolean> => {
@@ -242,14 +238,14 @@ export default {
     },
 
     authenticate: async (
-      _obj: any,
+      _obj,
       args: { input: MemberDocument },
     ): Promise<{ token: string }> => {
       return authenticateMember(args.input);
     },
 
     createVendor: async (
-      _obj: any,
+      _obj,
       args: {
         input: VendorDocument;
       },
@@ -262,7 +258,7 @@ export default {
       return insertVendor(args.input);
     },
     updateVendor: async (
-      _obj: any,
+      _obj,
       args: {
         id: string;
         input: VendorDocument;
@@ -277,7 +273,7 @@ export default {
     },
 
     deleteVendor: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<boolean> => {
@@ -289,7 +285,7 @@ export default {
     },
 
     createPromo: async (
-      _obj: any,
+      _obj,
       args: {
         input: PromoDocument;
       },
@@ -303,7 +299,7 @@ export default {
     },
 
     updatePromo: async (
-      _obj: any,
+      _obj,
       args: {
         id: string;
         input: PromoDocument;
@@ -318,7 +314,7 @@ export default {
     },
 
     deletePromo: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<boolean> => {
@@ -330,7 +326,7 @@ export default {
     },
 
     enrollToPromo: async (
-      _obj: any,
+      _obj,
       args: { promo: string },
       ctx: Context,
     ): Promise<boolean> => {
@@ -338,7 +334,7 @@ export default {
         throw new Error('Forbidden');
       }
 
-      const data: any = {
+      const data = {
         promo: args.promo,
         member: ctx.userId,
       };
@@ -347,7 +343,7 @@ export default {
     },
 
     processPromoEnrollmentRequest: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<boolean> => {
@@ -359,7 +355,7 @@ export default {
     },
 
     approvePromoEnrollmentRequest: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<boolean> => {
@@ -371,7 +367,7 @@ export default {
     },
 
     rejectPromoEnrollmentRequest: async (
-      _obj: any,
+      _obj,
       args: { id: string },
       ctx: Context,
     ): Promise<boolean> => {

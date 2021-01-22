@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Context } from 'mocha';
+import { Context } from 'koa';
 
 const key = 'koacrud';
 

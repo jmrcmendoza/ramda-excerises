@@ -4,12 +4,17 @@ import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
 import { VendorType } from '../../../../src/models/vendor';
+import server from '../../../../src';
 
 const chance = new Chance();
 
 chai.use(chaiHttp);
 
 describe('Vendors', () => {
+  before(function () {
+    this.request = () => chai.request(server);
+  });
+
   describe('Add vendor', () => {
     it('should return error for null vendor name', async function () {
       const data = {
@@ -17,8 +22,7 @@ describe('Vendors', () => {
         type: VendorType.Seamless,
       };
 
-      const response = await chai
-        .request('http://localhost:3000')
+      const response = await this.request()
         .post('/api/vendors')
         .type('json')
         .send(data);
@@ -33,8 +37,7 @@ describe('Vendors', () => {
         type: undefined,
       };
 
-      const response = await chai
-        .request('http://localhost:3000')
+      const response = await this.request()
         .post('/api/vendors')
         .type('json')
         .send(data);
@@ -49,8 +52,7 @@ describe('Vendors', () => {
         type: VendorType.Seamless,
       };
 
-      const response = await chai
-        .request('http://localhost:3000')
+      const response = await this.request()
         .post('/api/vendors')
         .type('json')
         .send(data);
@@ -63,24 +65,18 @@ describe('Vendors', () => {
 
   describe('List vendors', () => {
     it('should return all vendors', async function () {
-      const response = await chai
-        .request('http://localhost:3000')
-        .get('/api/vendors');
+      const response = await this.request().get('/api/vendors');
 
       expect(response.body).to.exist;
       expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
     });
 
     it('should return one vendor', async function () {
-      const vendors = await chai
-        .request('http://localhost:3000')
-        .get('/api/vendors');
+      const vendors = await this.request().get('/api/vendors');
 
       const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors.body);
 
-      const response = await chai
-        .request('http://localhost:3000')
-        .get(`/api/vendors/${lastVendorId}`);
+      const response = await this.request().get(`/api/vendors/${lastVendorId}`);
 
       expect(response.body).to.exist;
       expect(response.body).to.be.an('object');
@@ -89,9 +85,7 @@ describe('Vendors', () => {
 
   describe('Edit vendor', () => {
     it('should return error for null vendor name', async function () {
-      const vendors = await chai
-        .request('http://localhost:3000')
-        .get('/api/vendors');
+      const vendors = await this.request().get('/api/vendors');
 
       const lastVendor = R.last(vendors.body);
 
@@ -100,8 +94,7 @@ describe('Vendors', () => {
         type: lastVendor.type,
       };
 
-      const response = await chai
-        .request('http://localhost:3000')
+      const response = await this.request()
         .put(`/api/vendors/${lastVendor._id}`)
         .send(data);
 
@@ -110,9 +103,7 @@ describe('Vendors', () => {
     });
 
     it('should return error for null vendor type', async function () {
-      const vendors = await chai
-        .request('http://localhost:3000')
-        .get('/api/vendors');
+      const vendors = await this.request().get('/api/vendors');
 
       const lastVendor = R.last(vendors.body);
 
@@ -121,8 +112,7 @@ describe('Vendors', () => {
         type: '',
       };
 
-      const response = await chai
-        .request('http://localhost:3000')
+      const response = await this.request()
         .put(`/api/vendors/${lastVendor._id}`)
         .send(data);
 
@@ -131,9 +121,7 @@ describe('Vendors', () => {
     });
 
     it('should update vendor type', async function () {
-      const vendors = await chai
-        .request('http://localhost:3000')
-        .get('/api/vendors');
+      const vendors = await this.request().get('/api/vendors');
 
       const lastVendor = R.last(vendors.body);
 
@@ -142,8 +130,7 @@ describe('Vendors', () => {
         type: VendorType.Transfer,
       };
 
-      const response = await chai
-        .request('http://localhost:3000')
+      const response = await this.request()
         .put(`/api/vendors/${lastVendor._id}`)
         .send(data);
 
@@ -155,15 +142,13 @@ describe('Vendors', () => {
 
   describe('Delete vendor', () => {
     it('should delete one vendor', async function () {
-      const vendors = await chai
-        .request('http://localhost:3000')
-        .get('/api/vendors');
+      const vendors = await this.request().get('/api/vendors');
 
       const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors.body);
 
-      const response = await chai
-        .request('http://localhost:3000')
-        .delete(`/api/vendors/${lastVendorId}`);
+      const response = await this.request().delete(
+        `/api/vendors/${lastVendorId}`,
+      );
 
       expect(response.status).to.equal(200);
       expect(response.body).to.exist;

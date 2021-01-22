@@ -3,10 +3,12 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import R from 'ramda';
-import server from '../../../src';
-import { PromoStatus, PromoTemplate } from '../../../src/models/promo';
-import PromoModel from '../../../src/models/promo';
+import PromoModel, {
+  PromoStatus,
+  PromoTemplate,
+} from '../../../src/models/promo';
+
+import DBManager from '../tear-down';
 
 const chance = new Chance();
 
@@ -14,8 +16,10 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 describe('Promo Model', () => {
-  before(function () {
-    this.request = () => chai.request(server);
+  before(async function () {
+    this.dbManager = new DBManager();
+
+    await this.dbManager.start();
   });
 
   describe('Create Promo', () => {
@@ -26,7 +30,7 @@ describe('Promo Model', () => {
           template: PromoTemplate.Deposit,
           title: chance.word(),
           description: chance.sentence(),
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
         };
 
         await expect(PromoModel.create(data)).to.eventually.rejected;
@@ -38,7 +42,7 @@ describe('Promo Model', () => {
           template: '',
           title: chance.word(),
           description: chance.sentence(),
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
         };
 
         await expect(PromoModel.create(data)).to.eventually.rejected;
@@ -50,7 +54,7 @@ describe('Promo Model', () => {
           template: 'Test',
           title: chance.word(),
           description: chance.sentence(),
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
         };
 
         await expect(PromoModel.create(data)).to.eventually.rejected;
@@ -62,7 +66,7 @@ describe('Promo Model', () => {
           template: PromoTemplate.Deposit,
           title: '',
           description: chance.sentence(),
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
         };
 
         await expect(PromoModel.create(data)).to.eventually.rejected;
@@ -74,7 +78,7 @@ describe('Promo Model', () => {
           template: PromoTemplate.Deposit,
           title: chance.word(),
           description: '',
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
         };
 
         await expect(PromoModel.create(data)).to.eventually.rejected;
@@ -86,7 +90,7 @@ describe('Promo Model', () => {
           template: PromoTemplate.Deposit,
           title: chance.word(),
           description: chance.sentence(),
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
           status: 'TEST',
         };
 
@@ -101,7 +105,7 @@ describe('Promo Model', () => {
           template: PromoTemplate.Deposit,
           title: chance.word(),
           description: chance.sentence(),
-          minimumBalance: chance.prime(),
+          minimumBalance: chance.natural(),
         };
 
         const result = await PromoModel.create(data);
@@ -122,7 +126,7 @@ describe('Promo Model', () => {
         template: PromoTemplate.Deposit,
         title: promo.title,
         description: promo.description,
-        minimumBalance: chance.prime(),
+        minimumBalance: chance.natural(),
         status: PromoStatus.Active,
       };
 
