@@ -15,6 +15,12 @@ describe('Promo Enrollment Request Entity', () => {
 
     await expect(
       makePromoEnrollmentRequest(this.data),
+    ).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+    );
+    await expect(
+      makePromoEnrollmentRequest(this.data),
     ).to.eventually.rejectedWith('Promo must be provided.');
   });
 
@@ -24,6 +30,12 @@ describe('Promo Enrollment Request Entity', () => {
       member: '',
     };
 
+    await expect(
+      makePromoEnrollmentRequest(this.data),
+    ).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+    );
     await expect(
       makePromoEnrollmentRequest(this.data),
     ).to.eventually.rejectedWith('Member must be provided.');
