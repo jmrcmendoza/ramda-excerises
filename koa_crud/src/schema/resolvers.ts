@@ -38,6 +38,13 @@ import {
   selectOnePromoEnrollmentRequest,
 } from '../use-cases/promo-enrollment-requests';
 
+class AuthorizationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AUTHORIZATION_ERROR';
+  }
+}
+
 type Connection<T> = {
   totalCount: number;
   pageInfo: {
@@ -54,7 +61,7 @@ export default {
   Query: {
     vendors: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       const vendors = await listVendors();
@@ -77,14 +84,14 @@ export default {
       ctx: Context,
     ): Promise<Record<string, any>> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return selectVendor(vendor.id);
     },
     members: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       const members = await listMembers();
@@ -107,14 +114,14 @@ export default {
       ctx: Context,
     ): Promise<Record<string, any>> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return selectMember(args.id);
     },
     promos: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       const promos = await listPromos();
@@ -137,14 +144,14 @@ export default {
       ctx: Context,
     ): Promise<Record<string, any>> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return selectPromo(args.id);
     },
     promoEnrollmentRequests: async (_obj, _arg, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       const promoEnrollmentRequests = await listPromoEnrollmentRequests();
@@ -167,7 +174,7 @@ export default {
       ctx: Context,
     ): Promise<Record<string, any>> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return selectOnePromoEnrollmentRequest(args.id);
@@ -205,7 +212,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return insertMember(args.input);
@@ -219,7 +226,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return updateMember(args.id, args.input);
@@ -231,7 +238,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return deleteMember(args.id);
@@ -252,7 +259,7 @@ export default {
       ctx: Context,
     ): Promise<Record<string, any>> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return insertVendor(args.input);
@@ -266,7 +273,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return updateVendor(args.id, args.input);
@@ -278,7 +285,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return deleteVendor(args.id);
@@ -292,7 +299,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.isAdmin) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return insertPromo(args.input);
@@ -307,7 +314,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.isAdmin) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return updatePromo(args.id, args.input);
@@ -319,7 +326,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.isAdmin) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return deletePromo(args.id);
@@ -331,7 +338,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.verified) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       const data = {
@@ -348,7 +355,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.isAdmin) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return processPromoEnrollmentRequest(args.id);
@@ -360,7 +367,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.isAdmin) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return approvePromoEnrollmentRequest(args.id);
@@ -372,7 +379,7 @@ export default {
       ctx: Context,
     ): Promise<boolean> => {
       if (!ctx.isAdmin) {
-        throw new Error('Forbidden');
+        throw new AuthorizationError('Forbidden');
       }
 
       return rejectPromoEnrollmentRequest(args.id);
