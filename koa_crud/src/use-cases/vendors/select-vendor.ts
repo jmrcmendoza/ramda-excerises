@@ -1,9 +1,10 @@
 import { VendorQueries } from '../../data-access/vendors/vendors';
+import { VendorValidationError } from '../../entities/vendors/vendor';
 
 export default function makeSelectVendor(vendorsDB: VendorQueries) {
   return async function selectVendor(id: string): Promise<any> {
     if (!id) {
-      throw new Error('ID must be provided.');
+      throw new VendorValidationError('ID must be provided.');
     }
 
     return vendorsDB.selectOneVendor(id);
