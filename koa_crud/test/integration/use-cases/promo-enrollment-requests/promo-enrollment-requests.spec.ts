@@ -13,6 +13,9 @@ import {
   rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../../../../src/use-cases/promo-enrollment-requests';
+import PromoEnrollmentRequestModel, {
+  PromoEnrollmentRequestStatus,
+} from '../../../../src/models/promo-enrollment-requests';
 import MemberModel from '../../../../src/models/member';
 import PromoModel, {
   PromoStatus,
@@ -29,7 +32,34 @@ describe('Promo Enrollment Request Use Cases', () => {
     this.request = () => chai.request(server);
   });
 
+  after(async function () {
+    await Promise.all([
+      MemberModel.deleteMany({}),
+      PromoModel.deleteMany({}),
+      PromoEnrollmentRequestModel.deleteMany({}),
+    ]);
+  });
+
   describe('Enroll to Promo', () => {
+    beforeEach(async function () {
+      await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
+    });
+
     context('Given incorrect values', () => {
       it('should throw an error for empty promo', async () => {
         const member = await MemberModel.findOne({}).lean({ virtuals: true });
@@ -39,6 +69,12 @@ describe('Promo Enrollment Request Use Cases', () => {
           member: member.id,
         };
 
+        await expect(
+          enrollToPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+        );
         await expect(enrollToPromo(data)).to.eventually.rejectedWith(
           'Promo must be provided.',
         );
@@ -52,6 +88,12 @@ describe('Promo Enrollment Request Use Cases', () => {
           member: '',
         };
 
+        await expect(
+          enrollToPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+        );
         await expect(enrollToPromo(data)).to.eventually.rejectedWith(
           'Member must be provided.',
         );
@@ -61,15 +103,28 @@ describe('Promo Enrollment Request Use Cases', () => {
     context('Given correct values', () => {
       it('should throw an error for enrolling to draft promo', async () => {
         const member = await MemberModel.findOne({}).lean({ virtuals: true });
-        const promo = await PromoModel.findOne({
+        const promo = await PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
           status: PromoStatus.Draft,
-        }).lean({ virtuals: true });
+          minimumBalance: chance.natural(),
+        });
 
         const data = {
           promo: promo.id,
           member: member.id,
         };
 
+        await expect(
+          enrollToPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_PROMO_STATUS_ERROR',
+        );
         await expect(enrollToPromo(data)).to.eventually.rejectedWith(
           'Cannot enroll to Inactive/Draft promo.',
         );
@@ -94,6 +149,12 @@ describe('Promo Enrollment Request Use Cases', () => {
           member: member._id,
         };
 
+        await expect(
+          enrollToPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_FIELD_MISSING',
+        );
         await expect(enrollToPromo(data)).to.eventually.rejectedWith(
           'EMAIL member field is missing.',
         );
@@ -153,22 +214,46 @@ describe('Promo Enrollment Request Use Cases', () => {
   });
 
   describe('Process Enrollment Request', () => {
-    it('should throw and error for empty id', async () => {
+    before(async function () {
+      const [member, promo] = await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
+
+      this.promoEnrollmentRequest = await PromoEnrollmentRequestModel.create({
+        promo: promo.id,
+        member: member.id,
+        status: PromoEnrollmentRequestStatus.Pending,
+      });
+    });
+
+    it('should throw and error for empty id', async function () {
+      await expect(
+        processPromoEnrollmentRequest(''),
+      ).to.eventually.rejected.and.to.have.property(
+        'name',
+        'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+      );
       await expect(
         processPromoEnrollmentRequest(''),
       ).to.eventually.rejectedWith('ID must be provided.');
     });
 
-    it('should process request and return true', async () => {
-      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
-
-      const lastPromoEnrollmentRequestId = R.compose(
-        R.prop('id'),
-        R.last,
-      )(promoEnrollmentRequests);
-
+    it('should process request and return true', async function () {
       const result = await processPromoEnrollmentRequest(
-        lastPromoEnrollmentRequestId,
+        this.promoEnrollmentRequest.id,
       );
 
       expect(result).to.be.true;
@@ -176,22 +261,46 @@ describe('Promo Enrollment Request Use Cases', () => {
   });
 
   describe('Approve Enrollment Request', () => {
-    it('should throw and error for empty id', async () => {
+    before(async function () {
+      const [member, promo] = await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
+
+      this.promoEnrollmentRequest = await PromoEnrollmentRequestModel.create({
+        promo: promo.id,
+        member: member.id,
+        status: PromoEnrollmentRequestStatus.Pending,
+      });
+    });
+
+    it('should throw and error for empty id', async function () {
+      await expect(
+        processPromoEnrollmentRequest(''),
+      ).to.eventually.rejected.and.to.have.property(
+        'name',
+        'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+      );
       await expect(
         approvePromoEnrollmentRequest(''),
       ).to.eventually.rejectedWith('ID must be provided.');
     });
 
-    it('should approve request and return true', async () => {
-      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
-
-      const lastPromoEnrollmentRequestId = R.compose(
-        R.prop('id'),
-        R.last,
-      )(promoEnrollmentRequests);
-
+    it('should approve request and return true', async function () {
       const result = await approvePromoEnrollmentRequest(
-        lastPromoEnrollmentRequestId,
+        this.promoEnrollmentRequest.id,
       );
 
       expect(result).to.be.true;
@@ -199,22 +308,46 @@ describe('Promo Enrollment Request Use Cases', () => {
   });
 
   describe('Reject Enrollment Request', () => {
-    it('should throw and error for empty id', async () => {
+    before(async function () {
+      const [member, promo] = await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
+
+      this.promoEnrollmentRequest = await PromoEnrollmentRequestModel.create({
+        promo: promo.id,
+        member: member.id,
+        status: PromoEnrollmentRequestStatus.Pending,
+      });
+    });
+
+    it('should throw and error for empty id', async function () {
+      await expect(
+        processPromoEnrollmentRequest(''),
+      ).to.eventually.rejected.and.to.have.property(
+        'name',
+        'PROMO_ENROLLMENT_REQUEST_VALIDATION_ERROR',
+      );
       await expect(rejectPromoEnrollmentRequest('')).to.eventually.rejectedWith(
         'ID must be provided.',
       );
     });
 
-    it('should reject request and return true', async () => {
-      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
-
-      const lastPromoEnrollmentRequestId = R.compose(
-        R.prop('id'),
-        R.last,
-      )(promoEnrollmentRequests);
-
+    it('should reject request and return true', async function () {
       const result = await rejectPromoEnrollmentRequest(
-        lastPromoEnrollmentRequestId,
+        this.promoEnrollmentRequest.id,
       );
 
       expect(result).to.be.true;
