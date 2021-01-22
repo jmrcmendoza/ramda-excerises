@@ -32,6 +32,12 @@ describe('Member Use Case', () => {
           realName: chance.name(),
         };
 
+        await expect(
+          insertMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_VALIDATION_ERROR',
+        );
         await expect(insertMember(data)).to.eventually.rejectedWith(
           'Username must be provided.',
         );
@@ -44,6 +50,12 @@ describe('Member Use Case', () => {
           realName: chance.name(),
         };
 
+        await expect(
+          insertMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_VALIDATION_ERROR',
+        );
         await expect(insertMember(data)).to.eventually.rejectedWith(
           'Password must be provided.',
         );
@@ -115,6 +127,12 @@ describe('Member Use Case', () => {
         };
 
         await expect(
+          insertMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_VALIDATION_ERROR',
+        );
+        await expect(
           updateMember(lastMember._id, data),
         ).to.eventually.rejectedWith('Username must be provided.');
       });
@@ -130,6 +148,12 @@ describe('Member Use Case', () => {
           realName: lastMember.realName,
         };
 
+        await expect(
+          insertMember(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'MEMBER_VALIDATION_ERROR',
+        );
         await expect(
           updateMember(lastMember._id, data),
         ).to.eventually.rejectedWith('Password must be provided.');
