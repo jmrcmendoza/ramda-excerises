@@ -17,16 +17,12 @@ describe('Member Use Case', () => {
   before(async function () {
     this.request = () => chai.request(server);
 
-    try {
-      await insertMember({
-        username: 'Jason',
-        password: '1234',
-        realName: 'Jason Marc',
-        email: 'test@gmail.com',
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await insertMember({
+      username: 'Jason',
+      password: '1234',
+      realName: 'Jason Marc',
+      email: 'test@gmail.com',
+    });
   });
 
   describe('Authenticate Member', () => {

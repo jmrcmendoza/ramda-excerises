@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
@@ -6,14 +7,13 @@ const mongod = new MongoMemoryServer();
 export const initializeDatabase = async (): Promise<void> => {
   const uri =
     process.env.NODE_ENV === 'test'
-      ? await mongod.getConnectionString()
-      : 'mongodb://mongo:27017/onboarding';
+      ? await mongod.getUri()
+      : 'mongodb://mongo:27017';
 
   const mongooseOpts = {
     useNewUrlParser: true,
-    autoReconnect: true,
-    reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 1000,
+    useUnifiedTopology: true,
+    useFindAndModify: true,
   };
 
   await mongoose.connect(uri, mongooseOpts);

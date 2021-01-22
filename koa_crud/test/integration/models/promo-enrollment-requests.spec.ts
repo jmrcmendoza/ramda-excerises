@@ -2,22 +2,55 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
-import server from '../../../src';
 import MemberModel from '../../../src/models/member';
-import PromoModel from '../../../src/models/promo';
+import PromoModel, {
+  PromoStatus,
+  PromoTemplate,
+} from '../../../src/models/promo';
 import PromoEnrollmentRequestModel, {
   PromoEnrollmentRequestStatus,
 } from '../../../src/models/promo-enrollment-requests';
+import chance from '../../helpers/chance';
+import DBManager from '../tear-down';
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 describe('Promo Enrollment Request Model', () => {
-  before(function () {
-    this.request = () => chai.request(server);
+  before(async function () {
+    this.dbManager = new DBManager();
+
+    await this.dbManager.start();
   });
 
   describe('Enroll to Promo', () => {
+    beforeEach(async function () {
+      await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
+    });
+
+    afterEach(async function () {
+      await Promise.all([
+        MemberModel.deleteMany({}),
+        PromoModel.deleteMany({}),
+        PromoEnrollmentRequestModel.deleteMany({}),
+      ]);
+    });
+
     context('Given incorrect values', () => {
       it('should throw an error for empty promo', async () => {
         const member = await MemberModel.findOne({}).lean({ virtuals: true });
@@ -63,13 +96,34 @@ describe('Promo Enrollment Request Model', () => {
   });
 
   describe('Process Promo Enrollment Request', () => {
-    it('should process promo enrollment request', async () => {
-      const promoEnrollmentRequest = await PromoEnrollmentRequestModel.findOne(
-        {},
-      ).lean({ virtuals: true });
+    before(async function () {
+      const [member, promo] = await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
 
+      this.promoEnrollmentRequest = await PromoEnrollmentRequestModel.create({
+        promo: promo.id,
+        member: member.id,
+        status: PromoEnrollmentRequestStatus.Pending,
+      });
+    });
+
+    it('should process promo enrollment request', async function () {
       const result = await PromoEnrollmentRequestModel.findById(
-        promoEnrollmentRequest.id,
+        this.promoEnrollmentRequest.id,
         {
           status: PromoEnrollmentRequestStatus.Processing,
         },
