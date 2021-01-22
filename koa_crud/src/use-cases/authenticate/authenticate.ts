@@ -3,6 +3,13 @@ import { makeMember } from '../../entities/members';
 import { MemberQueries } from '../../data-access/members/members';
 import { createToken } from '../../middleware/authorization';
 
+class AuthenticateError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AUTHENTICATE_ERROR';
+  }
+}
+
 export default function makeAuthenticateMember(membersDB: MemberQueries) {
   return async function authenticateMember(
     memberInfo: MemberDocument,
@@ -17,6 +24,6 @@ export default function makeAuthenticateMember(membersDB: MemberQueries) {
       return { token };
     }
 
-    throw new Error('Authenticate failed.');
+    throw new AuthenticateError('Authenticate failed.');
   };
 }
