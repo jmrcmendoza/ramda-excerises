@@ -13,8 +13,7 @@ import {
   selectVendor,
   updateVendor,
 } from '../../../../src/use-cases/vendors';
-
-import { VendorType } from '../../../../src/models/vendor';
+import VendorModel, { VendorType } from '../../../../src/models/vendor';
 
 const chance = new Chance();
 
@@ -26,6 +25,10 @@ describe('Vendor Use Case', () => {
     this.request = () => chai.request(server);
   });
 
+  after(async function () {
+    await VendorModel.deleteMany({});
+  });
+
   describe('Add Vendor', () => {
     context('Given incorrect values', () => {
       it('should throw an error for null vendor name', async () => {
@@ -34,6 +37,12 @@ describe('Vendor Use Case', () => {
           type: VendorType.Seamless,
         };
 
+        await expect(
+          insertVendor(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'VENDOR_VALIDATION_ERROR',
+        );
         await expect(insertVendor(data)).to.eventually.rejectedWith(
           'Vendor name must be provided.',
         );
@@ -44,6 +53,13 @@ describe('Vendor Use Case', () => {
           name: chance.name(),
           type: '',
         };
+
+        await expect(
+          insertVendor(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'VENDOR_VALIDATION_ERROR',
+        );
 
         await expect(insertVendor(data)).to.eventually.rejectedWith(
           'Vendor type must be provided.',
@@ -88,47 +104,61 @@ describe('Vendor Use Case', () => {
   });
 
   describe('Edit Vendor', () => {
+    before(async function () {
+      this.vendor = await VendorModel.create({
+        name: chance.name(),
+        type: VendorType.Transfer,
+      });
+    });
+
     context('Given invalid values', () => {
-      it('should throw an error for null vendor name', async () => {
-        const vendors = await listVendors();
-
-        const lastVendor = R.last(vendors);
-
+      it('should throw an error for null vendor name', async function () {
         const data = {
           name: '',
-          type: lastVendor.type,
+          type: this.vendor.type,
         };
 
         await expect(
-          updateVendor(lastVendor._id, data),
+          updateVendor(this.vendor.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'VENDOR_VALIDATION_ERROR',
+        );
+        await expect(
+          updateVendor(this.vendor.id, data),
         ).to.eventually.rejectedWith('Vendor name must be provided.');
       });
 
-      it('should throw an error for null vendor type', async () => {
-        const vendors = await listVendors();
-
-        const lastVendor = R.last(vendors);
-
+      it('should throw an error for null vendor type', async function () {
         const data = {
-          name: lastVendor.name,
+          name: this.vendor.name,
           type: '',
         };
 
         await expect(
-          updateVendor(lastVendor._id, data),
+          updateVendor(this.vendor.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'VENDOR_VALIDATION_ERROR',
+        );
+        await expect(
+          updateVendor(this.vendor.id, data),
         ).to.eventually.rejectedWith('Vendor type must be provided.');
       });
     });
   });
 
   describe('Delete Vendor', () => {
+    before(async function () {
+      this.vendor = await VendorModel.create({
+        name: chance.name(),
+        type: VendorType.Transfer,
+      });
+    });
+
     context('Given correct values', () => {
-      it('should delete one vendor', async () => {
-        const vendors = await listVendors();
-
-        const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
-
-        await expect(deleteVendor(lastVendorId)).to.be.eventually.true;
+      it('should delete one vendor', async function () {
+        await expect(deleteVendor(this.vendor.id)).to.be.eventually.true;
       });
     });
   });

@@ -1,5 +1,12 @@
 import { MemberDocument } from '../../models/member';
 
+export class MemberValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'MEMBER_VALIDATION_ERROR';
+  }
+}
+
 export default function () {
   return async function makeVendor(
     member: MemberDocument,
@@ -7,11 +14,11 @@ export default function () {
     const { username, password } = member;
 
     if (!username) {
-      throw new Error('Username must be provided.');
+      throw new MemberValidationError('Username must be provided.');
     }
 
     if (!password) {
-      throw new Error('Password must be provided.');
+      throw new MemberValidationError('Password must be provided.');
     }
   };
 }

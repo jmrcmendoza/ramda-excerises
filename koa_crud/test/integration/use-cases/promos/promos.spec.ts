@@ -12,7 +12,7 @@ import {
   selectPromo,
   updatePromo,
 } from '../../../../src/use-cases/promos';
-import {
+import PromoModel, {
   MemberFields,
   PromoStatus,
   PromoTemplate,
@@ -39,6 +39,12 @@ describe('Promo Use Case', () => {
           minimumBalance: chance.prime(),
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Promo name must be provided.',
         );
@@ -53,6 +59,12 @@ describe('Promo Use Case', () => {
           minimumBalance: chance.prime(),
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Template must be provided.',
         );
@@ -67,6 +79,12 @@ describe('Promo Use Case', () => {
           minimumBalance: chance.prime(),
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_PROMO_TYPE',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Invalid template.',
         );
@@ -81,6 +99,12 @@ describe('Promo Use Case', () => {
           minimumBalance: chance.prime(),
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Promo title must be provided',
         );
@@ -95,6 +119,12 @@ describe('Promo Use Case', () => {
           minimumBalance: chance.prime(),
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Description must be provided.',
         );
@@ -109,6 +139,12 @@ describe('Promo Use Case', () => {
           minimumBalance: null,
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Minimum balance must be provided.',
         );
@@ -123,6 +159,12 @@ describe('Promo Use Case', () => {
           requiredMemberFields: [],
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Members fields must be provided.',
         );
@@ -137,6 +179,12 @@ describe('Promo Use Case', () => {
           requiredMemberFields: ['Test'],
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_MEMBER_FIELD',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Test is an invalid field.',
         );
@@ -152,6 +200,12 @@ describe('Promo Use Case', () => {
           status: 'Test',
         };
 
+        await expect(
+          insertPromo(data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_PROMO_STATUS',
+        );
         await expect(insertPromo(data)).to.eventually.rejectedWith(
           'Invalid status.',
         );
@@ -199,167 +253,198 @@ describe('Promo Use Case', () => {
   });
 
   describe('Update Promo', () => {
+    before(async function () {
+      this.promo = await PromoModel.create({
+        name: chance.first(),
+        template: PromoTemplate.Deposit,
+        title: chance.first(),
+        description: chance.sentence(),
+        submitted: true,
+        enabled: true,
+        status: PromoStatus.Active,
+        minimumBalance: chance.natural(),
+      });
+    });
+
     context('Given incorrect values', () => {
-      it('should throw an error for empty name', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for empty name', async function () {
         const data = {
           name: '',
           template: PromoTemplate.Deposit,
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           minimumBalance: chance.prime(),
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Promo name must be provided.');
       });
 
-      it('should throw an error for empty template', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for empty template', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: null,
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           minimumBalance: chance.prime(),
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Template must be provided.');
       });
 
-      it('should throw an error for invalid template', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for invalid template', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: 'Test',
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           minimumBalance: chance.prime(),
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_PROMO_TYPE',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Invalid template.');
       });
 
-      it('should throw an error for empty title', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for empty title', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: PromoTemplate.Deposit,
           title: '',
-          description: lastPromo.description,
+          description: this.promo.description,
           minimumBalance: chance.prime(),
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Promo title must be provided');
       });
 
-      it('should throw an error for empty description', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for empty description', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: PromoTemplate.Deposit,
-          title: lastPromo.title,
+          title: this.promo.title,
           description: '',
           minimumBalance: chance.prime(),
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Description must be provided.');
       });
 
-      it('should throw an error for empty minimum balance given the template is deposit', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for empty minimum balance given the template is deposit', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: PromoTemplate.Deposit,
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           minimumBalance: null,
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Minimum balance must be provided.');
       });
 
-      it('should throw an error for empty member fields given the template is sign up', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for empty member fields given the template is sign up', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: PromoTemplate.SignUp,
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           requiredMemberFields: [],
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'PROMO_VALIDATION_ERROR',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Members fields must be provided.');
       });
 
-      it('should throw an error for invalid member fields given the template is sign up', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for invalid member fields given the template is sign up', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: PromoTemplate.SignUp,
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           requiredMemberFields: ['Test'],
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_MEMBER_FIELD',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Test is an invalid field.');
       });
 
-      it('should throw an error for invalid status', async () => {
-        const promos = await listPromos();
-
-        const lastPromo = R.last(promos);
-
+      it('should throw an error for invalid status', async function () {
         const data = {
-          name: lastPromo.name,
+          name: this.promo.name,
           template: PromoTemplate.SignUp,
-          title: lastPromo.title,
-          description: lastPromo.description,
+          title: this.promo.title,
+          description: this.promo.description,
           requiredMemberFields: [MemberFields.REAL_NAME],
           status: 'Test',
         };
 
         await expect(
-          updatePromo(lastPromo.id, data),
+          updatePromo(this.promo.id, data),
+        ).to.eventually.rejected.and.to.have.property(
+          'name',
+          'INVALID_PROMO_STATUS',
+        );
+        await expect(
+          updatePromo(this.promo.id, data),
         ).to.eventually.rejectedWith('Invalid status.');
       });
     });
@@ -407,7 +492,7 @@ describe('Promo Use Case', () => {
       expect(result).to.be.true;
     });
 
-    it('should delete one promo', async () => {
+    it('should throw error for delete active promo', async () => {
       const data = {
         name: chance.name(),
         template: PromoTemplate.Deposit,
@@ -423,6 +508,12 @@ describe('Promo Use Case', () => {
 
       const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
 
+      await expect(
+        deletePromo(lastPromoId),
+      ).to.eventually.rejected.and.to.have.property(
+        'name',
+        'PROMO_STATUS_ERROR',
+      );
       await expect(deletePromo(lastPromoId)).to.eventually.rejectedWith(
         'Cannot delete active promo.',
       );

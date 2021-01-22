@@ -14,6 +14,10 @@ describe('Entities - Members', () => {
       password: chance.string({ length: 5 }),
     };
 
+    await expect(makeMember(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'MEMBER_VALIDATION_ERROR',
+    );
     await expect(makeMember(data)).to.eventually.rejectedWith(
       'Username must be provided.',
     );
@@ -25,6 +29,10 @@ describe('Entities - Members', () => {
       password: '',
     };
 
+    await expect(makeMember(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'MEMBER_VALIDATION_ERROR',
+    );
     await expect(makeMember(data)).to.eventually.rejectedWith(
       'Password must be provided.',
     );

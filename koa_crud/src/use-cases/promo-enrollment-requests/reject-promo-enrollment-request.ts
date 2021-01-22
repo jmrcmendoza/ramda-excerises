@@ -1,4 +1,5 @@
 import { PromoEnrollmentRequestQueries } from '../../data-access/promo-enrollment-requests/promo-enrollment-requests';
+import { PromoEnrollmentRequestValidationError } from '../../entities/promo-enrollment-requests/promo-enrollment-request';
 
 export default function makeRejectPromoEnrollmentRequest(
   promoEnrollmentRequestsDB: PromoEnrollmentRequestQueries,
@@ -7,7 +8,7 @@ export default function makeRejectPromoEnrollmentRequest(
     id: string,
   ): Promise<boolean> {
     if (!id) {
-      throw new Error('ID must be provided.');
+      throw new PromoEnrollmentRequestValidationError('ID must be provided.');
     }
 
     return promoEnrollmentRequestsDB.rejectPromoEnrollmentRequest(id);

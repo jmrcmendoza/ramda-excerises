@@ -1,6 +1,7 @@
 import { MemberDocument } from '../../models/member';
 import { makeMember } from '../../entities/members';
 import { MemberQueries } from '../../data-access/members/members';
+import { MemberValidationError } from '../../entities/members/member';
 
 export default function makeUpdateMember(membersDB: MemberQueries) {
   return async function updateMember(
@@ -10,7 +11,7 @@ export default function makeUpdateMember(membersDB: MemberQueries) {
     await makeMember(memberInfo);
 
     if (!id) {
-      throw new Error('ID must be provided.');
+      throw new MemberValidationError('ID must be provided.');
     }
 
     return membersDB.updateMember(id, memberInfo);

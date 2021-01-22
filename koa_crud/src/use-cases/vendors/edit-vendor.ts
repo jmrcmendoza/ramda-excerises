@@ -1,6 +1,7 @@
 import { VendorDocument } from '../../models/vendor';
 import { makeVendor } from '../../entities/vendors';
 import { VendorQueries } from '../../data-access/vendors/vendors';
+import { VendorValidationError } from '../../entities/vendors/vendor';
 
 export default function makeUpdateVendor(vendorsDB: VendorQueries) {
   return async function updateVendor(
@@ -10,7 +11,7 @@ export default function makeUpdateVendor(vendorsDB: VendorQueries) {
     await makeVendor(vendorInfo);
 
     if (!id) {
-      throw new Error('ID must be provided.');
+      throw new VendorValidationError('ID must be provided.');
     }
 
     return vendorsDB.updateVendor(id, vendorInfo);

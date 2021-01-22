@@ -15,6 +15,10 @@ describe('Entities - Vendor', () => {
       type: VendorType.Seamless,
     };
 
+    await expect(makeVendor(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'VENDOR_VALIDATION_ERROR',
+    );
     await expect(makeVendor(data)).to.eventually.rejectedWith(
       'Vendor name must be provided.',
     );
@@ -26,6 +30,10 @@ describe('Entities - Vendor', () => {
       type: '',
     };
 
+    await expect(makeVendor(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'VENDOR_VALIDATION_ERROR',
+    );
     await expect(makeVendor(data)).to.eventually.rejectedWith(
       'Vendor type must be provided.',
     );

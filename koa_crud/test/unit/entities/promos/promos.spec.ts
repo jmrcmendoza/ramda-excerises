@@ -18,6 +18,10 @@ describe('Promo Entity', () => {
       minimumBalance: chance.prime(),
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_VALIDATION_ERROR',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Promo name must be provided.',
     );
@@ -32,6 +36,10 @@ describe('Promo Entity', () => {
       minimumBalance: chance.prime(),
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_VALIDATION_ERROR',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Template must be provided.',
     );
@@ -46,6 +54,10 @@ describe('Promo Entity', () => {
       minimumBalance: chance.prime(),
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'INVALID_PROMO_TYPE',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Invalid template.',
     );
@@ -60,6 +72,10 @@ describe('Promo Entity', () => {
       minimumBalance: chance.prime(),
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_VALIDATION_ERROR',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Promo title must be provided',
     );
@@ -74,6 +90,10 @@ describe('Promo Entity', () => {
       minimumBalance: chance.prime(),
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_VALIDATION_ERROR',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Description must be provided.',
     );
@@ -88,6 +108,10 @@ describe('Promo Entity', () => {
       minimumBalance: null,
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_VALIDATION_ERROR',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Minimum balance must be provided.',
     );
@@ -102,6 +126,10 @@ describe('Promo Entity', () => {
       requiredMemberFields: [],
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'PROMO_VALIDATION_ERROR',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Members fields must be provided.',
     );
@@ -116,6 +144,10 @@ describe('Promo Entity', () => {
       requiredMemberFields: ['Test'],
     };
 
+    await expect(makePromo(data)).to.eventually.rejected.and.to.have.property(
+      'name',
+      'INVALID_MEMBER_FIELD',
+    );
     await expect(makePromo(data)).to.eventually.rejectedWith(
       'Test is an invalid field.',
     );

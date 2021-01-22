@@ -7,6 +7,20 @@ import { PromoQueries } from '../../data-access/promos/promos';
 import { PromoStatus, PromoTemplate } from '../../models/promo';
 import { MemberQueries } from '../../data-access/members/members';
 
+class PromoStatusError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'INVALID_PROMO_STATUS_ERROR';
+  }
+}
+
+class MemberFieldError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'MEMBER_FIELD_MISSING';
+  }
+}
+
 export default function makeEnrollToPromo({
   promoEnrollmentRequestsDB,
   promosDB,
@@ -28,7 +42,7 @@ export default function makeEnrollToPromo({
     );
 
     if (promoDetails.status !== PromoStatus.Active) {
-      throw new Error('Cannot enroll to Inactive/Draft promo.');
+      throw new PromoStatusError('Cannot enroll to Inactive/Draft promo.');
     }
 
     if (promoDetails.template === PromoTemplate.SignUp) {
@@ -38,7 +52,7 @@ export default function makeEnrollToPromo({
       )(promoDetails.requiredMemberFields);
 
       if (memberField) {
-        throw new Error(`${memberField} member field is missing.`);
+        throw new MemberFieldError(`${memberField} member field is missing.`);
       }
     }
 
