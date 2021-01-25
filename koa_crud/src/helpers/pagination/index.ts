@@ -18,7 +18,7 @@ export const fromCursorHash = (string) =>
   Buffer.from(string, 'base64').toString('ascii');
 
 export const paginate = (
-  limit: string,
+  limit: number,
   data,
 ): Connection<Record<string, any>> => {
   const hasNextPage = R.length(data) > limit;
