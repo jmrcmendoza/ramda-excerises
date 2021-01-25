@@ -8,7 +8,7 @@ export const initializeDatabase = async (): Promise<void> => {
   const uri =
     process.env.NODE_ENV === 'test'
       ? await mongod.getUri()
-      : 'mongodb://mongo:27017';
+      : 'mongodb://localhost:27017';
 
   const mongooseOpts = {
     useNewUrlParser: true,
