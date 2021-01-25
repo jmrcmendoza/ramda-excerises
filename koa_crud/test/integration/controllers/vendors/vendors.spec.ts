@@ -80,23 +80,35 @@ describe('Vendor Controller', () => {
 
   describe('List Vendors', () => {
     it('should retrieve all vendors and return 200 status code', async () => {
-      const result = await getVendors();
-
-      expect(result).property('status', 200);
-      expect(result.body).length.greaterThan(0);
-    });
-
-    it('should retrieve one vendors and return 200 status code', async () => {
-      const vendors = await getVendors();
-
       const data = {
-        params: { id: R.compose(R.prop('_id'), R.last)(vendors.body) },
+        query: {},
         headers: {
           'Content-Type': null,
           Referer: null,
           'User-Agent': null,
         },
       };
+
+      const result = await getVendors(data);
+
+      expect(result).property('status', 200);
+      expect(result.body).length.greaterThan(0);
+    });
+
+    it('should retrieve one vendors and return 200 status code', async () => {
+      const data = {
+        query: {},
+        params: {},
+        headers: {
+          'Content-Type': null,
+          Referer: null,
+          'User-Agent': null,
+        },
+      };
+
+      const vendors = await getVendors(data);
+
+      data.params = { id: R.compose(R.prop('_id'), R.last)(vendors.body) };
 
       await expect(getOneVendor(data)).to.eventually.fulfilled.property(
         'status',
@@ -109,6 +121,7 @@ describe('Vendor Controller', () => {
     context('Given incorrect values', async () => {
       it('should return 400 status code for empty type', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -121,7 +134,7 @@ describe('Vendor Controller', () => {
           },
         };
 
-        const vendors = await getVendors();
+        const vendors = await getVendors(data);
 
         const lastVendor = R.last(vendors.body);
 
@@ -139,6 +152,7 @@ describe('Vendor Controller', () => {
 
       it('should return 400 status code for empty name', async () => {
         const data = {
+          query: {},
           params: {},
           body: {},
           headers: {
@@ -148,7 +162,7 @@ describe('Vendor Controller', () => {
           },
         };
 
-        const vendors = await getVendors();
+        const vendors = await getVendors(data);
 
         const lastVendor = R.last(vendors.body);
 
@@ -168,6 +182,7 @@ describe('Vendor Controller', () => {
     context('Given correct values', () => {
       it('should update last vendor', async () => {
         const data = {
+          query: {},
           params: {},
           body: {},
           headers: {
@@ -177,7 +192,7 @@ describe('Vendor Controller', () => {
           },
         };
 
-        const vendors = await getVendors();
+        const vendors = await getVendors(data);
 
         const lastVendor = R.last(vendors.body);
 
@@ -197,17 +212,19 @@ describe('Vendor Controller', () => {
 
   describe('Delete Vendor', () => {
     it('should delete last vendor and return status code of 200', async () => {
-      const vendors = await getVendors();
-
       const data = {
-        params: { id: R.compose(R.prop('_id'), R.last)(vendors.body) },
-
+        query: {},
+        params: {},
+        body: {},
         headers: {
           'Content-Type': 'application/json',
           Referer: null,
           'User-Agent': null,
         },
       };
+      const vendors = await getVendors(data);
+
+      data.params = { id: R.compose(R.prop('_id'), R.last)(vendors.body) };
 
       await expect(delVendor(data)).to.eventually.fulfilled.property(
         'status',
