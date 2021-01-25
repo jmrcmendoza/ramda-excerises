@@ -1,3 +1,4 @@
+import { Context } from 'koa';
 import { VendorDocument } from '../../models/vendor';
 
 export default function listVendorsController({
@@ -9,7 +10,7 @@ export default function listVendorsController({
   ) => Promise<VendorDocument>;
 }) {
   return async function getListVendors(
-    httpRequest,
+    httpRequest: Context,
   ): Promise<Record<string, any>> {
     try {
       const {
