@@ -37,7 +37,7 @@ import {
   rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../use-cases/promo-enrollment-requests';
-import { fromCursorHash, toCursorHash } from '../helpers/opaque-cursor';
+import { paginate, fromCursorHash } from '../helpers/pagination';
 
 class AuthorizationError extends Error {
   constructor(message) {
@@ -69,20 +69,7 @@ export default {
 
       const vendors = await listVendors(limit ? limit + 1 : null, cursor);
 
-      const hasNextPage = R.length(vendors) > limit;
-      const nodes = hasNextPage ? R.slice(0, -1, vendors) : vendors;
-
-      const edges = await R.map((vendor: any) => {
-        return { node: vendor, cursor: toCursorHash(vendor.createdAt) };
-      })(nodes);
-
-      const endCursor: any = R.compose(R.prop('cursor'), R.last)(edges);
-
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(vendors),
-        pageInfo: { hasNextPage, endCursor },
-        edges,
-      };
+      const result = paginate(limit, vendors);
 
       return result;
     },
