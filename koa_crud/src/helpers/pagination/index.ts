@@ -24,7 +24,7 @@ export const paginate = (
   const hasNextPage = R.length(data) > limit;
   const nodes = hasNextPage ? R.slice(0, -1, data) : data;
 
-  const edges = await R.map((node: any) => {
+  const edges: any = R.map((node: any) => {
     return { node, cursor: toCursorHash(node.createdAt) };
   })(nodes);
 
