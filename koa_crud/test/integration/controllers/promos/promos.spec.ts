@@ -256,23 +256,34 @@ describe('Promo Controller', () => {
 
   describe('List Promos', () => {
     it('should retrieve all promos and return 200 status code', async () => {
-      const result = await getPromos();
-
-      expect(result).property('status', 200);
-      expect(result.body).length.greaterThan(0);
-    });
-
-    it('should retrieve one promos and return 200 status code', async () => {
-      const promos = await getPromos();
-
       const data = {
-        params: { id: R.compose(R.prop('_id'), R.last)(promos.body) },
+        query: {},
         headers: {
           'Content-Type': null,
           Referer: null,
           'User-Agent': null,
         },
       };
+
+      const result = await getPromos(data);
+
+      expect(result).property('status', 200);
+      expect(result.body).length.greaterThan(0);
+    });
+
+    it('should retrieve one promos and return 200 status code', async () => {
+      const data = {
+        query: {},
+        params: {},
+        headers: {
+          'Content-Type': null,
+          Referer: null,
+          'User-Agent': null,
+        },
+      };
+      const promos = await getPromos(data);
+
+      data.params = { id: R.compose(R.prop('_id'), R.last)(promos.body) };
 
       await expect(getOnePromo(data)).to.eventually.fulfilled.property(
         'status',
@@ -286,6 +297,7 @@ describe('Promo Controller', () => {
       it('should return 400 status code for empty name', async () => {
         const data = {
           params: {},
+          query: {},
           body: {
             name: '',
             template: PromoTemplate.Deposit,
@@ -301,7 +313,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -318,6 +330,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for empty template', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -334,7 +347,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -351,6 +364,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for invalid template', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -367,7 +381,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -381,6 +395,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for empty title', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -397,7 +412,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -414,6 +429,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for empty description', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -430,7 +446,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -447,6 +463,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for empty balance given the template is deposit', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -462,7 +479,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -479,6 +496,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for empty member fields the template is sign up', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -495,7 +513,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -512,6 +530,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for invalid member fields the template is sign up', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -528,7 +547,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -545,6 +564,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for invalid member fields the template is sign up', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -561,7 +581,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -578,6 +598,7 @@ describe('Promo Controller', () => {
 
       it('should return 400 status code for invalid status', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -594,7 +615,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -610,6 +631,7 @@ describe('Promo Controller', () => {
     context('Given correct values', () => {
       it('should update last promo', async () => {
         const data = {
+          query: {},
           params: {},
           body: {
             name: chance.name(),
@@ -626,7 +648,7 @@ describe('Promo Controller', () => {
           },
         };
 
-        const promos = await getPromos();
+        const promos = await getPromos(data);
 
         const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -643,6 +665,7 @@ describe('Promo Controller', () => {
   describe('Delete Promo', () => {
     it('should delete last promo and return status code of 200', async () => {
       const data = {
+        query: {},
         params: {},
         body: {
           name: chance.name(),
@@ -660,7 +683,7 @@ describe('Promo Controller', () => {
 
       await postPromo(data);
 
-      const promos = await getPromos();
+      const promos = await getPromos(data);
 
       const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
@@ -674,6 +697,7 @@ describe('Promo Controller', () => {
 
     it('should throw an error for deleting active promo', async () => {
       const data = {
+        query: {},
         params: {},
         body: {
           name: chance.name(),
@@ -692,7 +716,7 @@ describe('Promo Controller', () => {
 
       await postPromo(data);
 
-      const promos = await getPromos();
+      const promos = await getPromos(data);
 
       const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
 
