@@ -37,6 +37,7 @@ import {
   rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '../use-cases/promo-enrollment-requests';
+import { paginate, fromCursorHash } from '../helpers/pagination';
 
 class AuthorizationError extends Error {
   constructor(message) {
@@ -59,22 +60,16 @@ type Connection<T> = {
 
 export default {
   Query: {
-    vendors: async (_obj, _arg, ctx: Context): Promise<any> => {
+    vendors: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      const vendors = await listVendors();
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const edges = await R.map((vendor) => {
-        return { node: vendor, cursor: 'not implemented' };
-      })(vendors);
+      const vendors = await listVendors(limit ? limit + 1 : null, cursor);
 
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(vendors),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
+      const result = paginate(limit, vendors);
 
       return result;
     },

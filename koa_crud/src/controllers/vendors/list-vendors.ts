@@ -1,13 +1,23 @@
+import { Context } from 'koa';
 import { VendorDocument } from '../../models/vendor';
 
 export default function listVendorsController({
   listVendors,
 }: {
-  listVendors: () => Promise<VendorDocument>;
+  listVendors: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<VendorDocument>;
 }) {
-  return async function getListVendors(): Promise<Record<string, any>> {
+  return async function getListVendors(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
-      const result = await listVendors();
+      const {
+        query: { limit, cursor },
+      } = httpRequest;
+
+      const result = await listVendors(limit, cursor);
 
       return {
         headers: {

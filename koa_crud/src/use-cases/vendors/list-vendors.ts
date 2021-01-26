@@ -1,7 +1,10 @@
 import { VendorQueries } from '../../data-access/vendors/vendors';
 
 export default function makeListVendors(vendorsDB: VendorQueries) {
-  return async function listVendors(): Promise<any> {
-    return vendorsDB.listVendors();
+  return async function listVendors(
+    limit: number | null,
+    cursor: string | null,
+  ): Promise<any> {
+    return vendorsDB.listVendors(limit, cursor);
   };
 }

@@ -31,7 +31,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    vendors: VendorConnection
+    vendors(limit: Int, after: String): VendorConnection
     vendor(id: ID!): Vendor
   }
 

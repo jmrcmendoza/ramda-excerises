@@ -1,7 +1,10 @@
 import VendorModel, { VendorDocument } from '../../models/vendor';
 
 export type VendorQueries = {
-  listVendors: () => Promise<VendorDocument>;
+  listVendors: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<VendorDocument>;
   selectOneVendor: (id: string) => Promise<VendorDocument>;
   createVendor: (document: VendorDocument) => Promise<boolean>;
   updateVendor: (id: string, document: VendorDocument) => Promise<boolean>;
@@ -14,8 +17,15 @@ export default function ({
   vendors: typeof VendorModel;
 }): VendorQueries {
   return Object.freeze({
-    listVendors() {
-      return vendors.find({}).lean({ virtuals: true });
+    listVendors(limit: number | null, cursor: string | null) {
+      return cursor
+        ? vendors
+            .find({})
+            .lean({ virtuals: true })
+            .where('createdAt')
+            .gt(cursor)
+            .limit(limit)
+        : vendors.find({}).lean({ virtuals: true }).limit(limit);
     },
     selectOneVendor(id: string) {
       return vendors.findById(id).lean({ virtuals: true });
