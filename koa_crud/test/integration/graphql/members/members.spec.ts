@@ -1,9 +1,12 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-unused-expressions */
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
 import server from '../../../../src';
+
+import MemberModel from '../../../../src/models/member';
 
 const chance = new Chance();
 
@@ -92,6 +95,17 @@ describe('Members', function () {
   });
 
   describe('List Members', () => {
+    before(async function () {
+      await MemberModel.create(
+        R.times(() => ({
+          username: chance.word(),
+          password: chance.string({ length: 5 }),
+          realName: chance.name(),
+          createdAt: chance.date(),
+        }))(3),
+      );
+    });
+
     it('should return all members', async function () {
       const data = {
         query: `{ members { 
@@ -113,6 +127,74 @@ describe('Members', function () {
       expect(response.body.data).to.exist;
       expect(response.body.data.members.totalCount).to.be.greaterThan(0);
       expect(response.body.data.members.edges).to.be.an('array');
+    });
+
+    it('should return true on next page given totalCount is greater than limit', async function () {
+      const limit = 2;
+
+      const data = {
+        query: `{ members(limit:${limit}) { 
+          totalCount
+          edges {
+            node {
+              id
+              username
+              realName
+            }
+            cursor            
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        } 
+      }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data).to.exist;
+      expect(response.body.data.members.totalCount).to.be.equal(limit);
+      expect(response.body.data.members.pageInfo.hasNextPage).to.be.true;
+    });
+
+    it('should return false on next page given last cursor is used', async function () {
+      let data = {
+        query: `{ members { 
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        } 
+      }`,
+      };
+
+      const members = await this.request().post('/graphql').send(data);
+
+      data = {
+        query: `{ members(after:"${members.body.data.members.pageInfo.endCursor}") { 
+          totalCount
+          edges {
+            node {
+              id
+              username
+              realName
+            }
+            cursor            
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        } 
+      }`,
+      };
+
+      const response = await this.request().post('/graphql').send(data);
+
+      expect(response.body.data).to.exist;
+      expect(response.body.data.members.totalCount).to.be.equal(1);
+      expect(response.body.data.members.pageInfo.hasNextPage).to.be.false;
     });
 
     it('should return one member', async function () {
