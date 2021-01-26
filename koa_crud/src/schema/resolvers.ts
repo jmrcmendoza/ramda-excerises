@@ -84,23 +84,15 @@ export default {
 
       return selectVendor(vendor.id);
     },
-    members: async (_obj, _arg, ctx: Context): Promise<any> => {
+    members: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const members = await listMembers();
+      const members = await listMembers(limit ? limit + 1 : null, cursor);
 
-      const edges = await R.map((member) => {
-        return { node: member, cursor: 'not implemented' };
-      })(members);
-
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(members),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
-
+      const result = paginate(limit, members);
       return result;
     },
     member: async (
@@ -336,7 +328,7 @@ export default {
         throw new AuthorizationError('Forbidden');
       }
 
-      const data = {
+      const data: any = {
         promo: args.promo,
         member: ctx.userId,
       };
