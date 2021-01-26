@@ -93,6 +93,7 @@ export default {
       const members = await listMembers(limit ? limit + 1 : null, cursor);
 
       const result = paginate(limit, members);
+
       return result;
     },
     member: async (
@@ -106,22 +107,16 @@ export default {
 
       return selectMember(args.id);
     },
-    promos: async (_obj, _arg, ctx: Context): Promise<any> => {
+    promos: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      const promos = await listPromos();
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const edges = await R.map((promo) => {
-        return { node: promo, cursor: 'not implemented' };
-      })(promos);
+      const promos = await listPromos(limit ? limit + 1 : null, cursor);
 
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(promos),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
+      const result = paginate(limit, promos);
 
       return result;
     },
