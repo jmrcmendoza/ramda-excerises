@@ -1,5 +1,12 @@
 import R from 'ramda';
 
+class PaginateValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'PAGINATE_VALIDATION_ERROR';
+  }
+}
+
 type Connection<T> = {
   totalCount: number;
   pageInfo: {
@@ -18,11 +25,15 @@ export const fromCursorHash = (string) =>
   Buffer.from(string, 'base64').toString('ascii');
 
 export const paginate = (
-  limit: number,
+  limit: number | null,
   data,
 ): Connection<Record<string, any>> => {
-  const hasNextPage = R.length(data) > limit;
+  const hasNextPage = limit ? R.length(data) > limit : false;
   const nodes = hasNextPage ? R.slice(0, -1, data) : data;
+
+  if (R.find((node) => !R.includes('createdAt', R.keys(node)))(nodes)) {
+    throw new PaginateValidationError('Created At field is missing.');
+  }
 
   const edges: any = R.map((node: any) => {
     return { node, cursor: toCursorHash(node.createdAt) };
