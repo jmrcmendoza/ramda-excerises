@@ -1,15 +1,23 @@
+import { Context } from 'koa';
 import { PromoEnrollmentRequestDocument } from '../../models/promo-enrollment-requests';
 
 export default function listPromoEnrollmentRequestsController({
   listPromoEnrollmentRequests,
 }: {
-  listPromoEnrollmentRequests: () => Promise<PromoEnrollmentRequestDocument>;
+  listPromoEnrollmentRequests: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<PromoEnrollmentRequestDocument>;
 }) {
-  return async function getListPromoEnrollmentRequests(): Promise<
-    Record<string, any>
-  > {
+  return async function getListPromoEnrollmentRequests(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
-      const result = await listPromoEnrollmentRequests();
+      const {
+        query: { limit, cursor },
+      } = httpRequest;
+
+      const result = await listPromoEnrollmentRequests(limit, cursor);
 
       return {
         headers: {
