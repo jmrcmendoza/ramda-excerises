@@ -1,11 +1,13 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-unused-expressions */
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
 import MemberModel from '../../../../src/models/member';
+import VendorModel, { VendorType } from '../../../../src/models/vendor';
 import { createHash } from '../../../../src/encryption';
-import { VendorType } from '../../../../src/models/vendor';
+
 import server from '../../../../src';
 
 const chance = new Chance();
@@ -114,6 +116,16 @@ describe('Vendors', function () {
   });
 
   describe('List Vendors', () => {
+    before(async function () {
+      await VendorModel.create(
+        R.times(() => ({
+          name: chance.name(),
+          type: VendorType.Seamless,
+          createdAt: chance.date(),
+        }))(3),
+      );
+    });
+
     context('Given valid token', () => {
       it('should return all vendors', async function () {
         const token = await this.getToken();
@@ -140,6 +152,85 @@ describe('Vendors', function () {
         expect(response.body.data).to.exist;
         expect(response.body.data.vendors.totalCount).to.be.greaterThan(0);
         expect(response.body.data.vendors.edges).to.be.an('array');
+      });
+
+      it('should return true on next page given totalCount is greater than limit', async function () {
+        const token = await this.getToken();
+
+        const limit = 2;
+
+        const data = {
+          query: `{ vendors(limit: ${limit}) { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          } 
+        }`,
+        };
+
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(response.body.data).to.exist;
+        expect(response.body.data.vendors.totalCount).to.be.equal(limit);
+        expect(response.body.data.vendors.pageInfo.hasNextPage).to.be.true;
+      });
+
+      it('should return false on next page given last cursor is used', async function () {
+        const token = await this.getToken();
+
+        let data = {
+          query: `{ vendors{ 
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          } 
+        }`,
+        };
+
+        const vendors = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        data = {
+          query: `{ vendors(after:"${vendors.body.data.vendors.pageInfo.endCursor}") { 
+            totalCount
+            edges {
+              node {
+                id 
+                name 
+                type                
+              }
+            } 
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          } 
+        }`,
+        };
+
+        const response = await this.request()
+          .post('/graphql')
+          .send(data)
+          .set('authorization', `Bearer ${token}`);
+
+        expect(response.body.data).to.exist;
+        expect(response.body.data.vendors.totalCount).to.be.equal(1);
+        expect(response.body.data.vendors.pageInfo.hasNextPage).to.be.false;
       });
 
       it('should return one vendor', async function () {
