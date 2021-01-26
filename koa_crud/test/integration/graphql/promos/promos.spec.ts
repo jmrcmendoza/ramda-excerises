@@ -3,7 +3,10 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import { PromoStatus, PromoTemplate } from '../../../../src/models/promo';
+import PromoModel, {
+  PromoStatus,
+  PromoTemplate,
+} from '../../../../src/models/promo';
 import server from '../../../../src';
 
 const chance = new Chance();
@@ -226,6 +229,19 @@ describe('Promos Graphql', function () {
   });
 
   describe('List Promos', () => {
+    before(async function () {
+      await PromoModel.create(
+        R.times(() => ({
+          name: chance.name(),
+          template: PromoTemplate.Deposit,
+          title: chance.word(),
+          description: chance.sentence(),
+          minimumBalance: chance.natural(),
+          createdAt: chance.date(),
+        }))(3),
+      );
+    });
+
     it('should return all promos', async function () {
       const data = {
         query: `{ promos { 
@@ -255,6 +271,90 @@ describe('Promos Graphql', function () {
       expect(result.body.data).to.exist;
       expect(result.body.data.promos.totalCount).to.be.greaterThan(0);
       expect(result.body.data.promos.edges).to.be.an('array');
+    });
+
+    it('should return true on next page given totalCount is greater than limit', async function () {
+      const limit = 2;
+
+      const data = {
+        query: `{ promos(limit: ${limit}) { 
+          totalCount
+          edges { 
+            node {
+              id
+              name
+              template
+              title
+              description
+              ...on SignUpPromo {
+                requiredMemberFields
+              }    
+              ...on DepositPromo{
+                minimumBalance
+              }
+              status                
+            }           
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data).to.exist;
+      expect(result.body.data.promos.totalCount).to.be.equal(limit);
+      expect(result.body.data.promos.pageInfo.hasNextPage).to.be.true;
+    });
+
+    it('should return false on next page given last cursor is used', async function () {
+      let data = {
+        query: `{ promos { 
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        } 
+      }`,
+      };
+
+      const promos = await this.request().post('/graphql').send(data);
+
+      data = {
+        query: `{ promos(after:"${promos.body.data.promos.pageInfo.endCursor}") { 
+          totalCount
+          edges { 
+            node {
+              id
+              name
+              template
+              title
+              description
+              ...on SignUpPromo {
+                requiredMemberFields
+              }    
+              ...on DepositPromo{
+                minimumBalance
+              }
+              status                
+            }           
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data).to.exist;
+      expect(result.body.data.promos.totalCount).to.be.equal(1);
+      expect(result.body.data.promos.pageInfo.hasNextPage).to.be.false;
     });
 
     it('should return one promo', async function () {
@@ -827,6 +927,9 @@ describe('Promos Graphql', function () {
   });
 
   describe('Delete Member', () => {
+    before(async function () {
+      await PromoModel.deleteMany({});
+    });
     it('should delete one member', async function () {
       let data = {
         query: `mutation { createPromo(
@@ -878,6 +981,7 @@ describe('Promos Graphql', function () {
       };
 
       const result = await this.request().post('/graphql').send(data);
+      console.log(result.body);
 
       expect(result.body.data).to.have.property('deletePromo', true);
     });
