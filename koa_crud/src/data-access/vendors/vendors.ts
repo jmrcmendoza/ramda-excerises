@@ -24,8 +24,13 @@ export default function ({
             .lean({ virtuals: true })
             .where('createdAt')
             .gt(cursor)
+            .sort({ createdAt: 'asc' })
             .limit(limit)
-        : vendors.find({}).lean({ virtuals: true }).limit(limit);
+        : vendors
+            .find({})
+            .lean({ virtuals: true })
+            .sort({ createdAt: 'asc' })
+            .limit(limit);
     },
     selectOneVendor(id: string) {
       return vendors.findById(id).lean({ virtuals: true });
