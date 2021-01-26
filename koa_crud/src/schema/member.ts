@@ -33,7 +33,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    members: MemberConnection
+    members(limit: Int, after: String): MemberConnection
     member(id: ID!): Member
   }
 

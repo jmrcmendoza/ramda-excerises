@@ -3,7 +3,10 @@ import { compareHash, createHash } from '../../encryption';
 import MemberModel, { MemberDocument } from '../../models/member';
 
 export type MemberQueries = {
-  listMembers: () => Promise<MemberDocument>;
+  listMembers: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<MemberDocument>;
   selectOneMember: (id: string) => Promise<MemberDocument>;
   createMember: (document: MemberDocument) => Promise<boolean>;
   updateMember: (id: string, document: MemberDocument) => Promise<boolean>;
@@ -19,8 +22,18 @@ export default function ({
   member: typeof MemberModel;
 }): MemberQueries {
   return Object.freeze({
-    listMembers() {
-      return member.find({}, { password: 0 }).lean({ virtuals: true });
+    listMembers(limit: number | null, cursor: string | null) {
+      return cursor
+        ? member
+            .find({}, { password: 0 })
+            .lean({ virtuals: true })
+            .where('createdAt')
+            .gt(cursor)
+            .limit(limit)
+        : member
+            .find({}, { password: 0 })
+            .lean({ virtuals: true })
+            .limit(limit);
     },
     async selectOneMember(id: string) {
       const result = await member

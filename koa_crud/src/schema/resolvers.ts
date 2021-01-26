@@ -1,5 +1,4 @@
 import { Context } from 'koa';
-import R from 'ramda';
 import { MemberDocument } from '../models/member';
 
 import {
@@ -46,18 +45,6 @@ class AuthorizationError extends Error {
   }
 }
 
-type Connection<T> = {
-  totalCount: number;
-  pageInfo: {
-    endCursor: string;
-    hasNextPage: boolean;
-  };
-  edges: {
-    node: T;
-    cursor: Buffer;
-  }[];
-};
-
 export default {
   Query: {
     vendors: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
@@ -84,22 +71,15 @@ export default {
 
       return selectVendor(vendor.id);
     },
-    members: async (_obj, _arg, ctx: Context): Promise<any> => {
+    members: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const members = await listMembers();
+      const members = await listMembers(limit ? limit + 1 : null, cursor);
 
-      const edges = await R.map((member) => {
-        return { node: member, cursor: 'not implemented' };
-      })(members);
-
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(members),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
+      const result = paginate(limit, members);
 
       return result;
     },
@@ -114,22 +94,16 @@ export default {
 
       return selectMember(args.id);
     },
-    promos: async (_obj, _arg, ctx: Context): Promise<any> => {
+    promos: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      const promos = await listPromos();
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const edges = await R.map((promo) => {
-        return { node: promo, cursor: 'not implemented' };
-      })(promos);
+      const promos = await listPromos(limit ? limit + 1 : null, cursor);
 
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(promos),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
+      const result = paginate(limit, promos);
 
       return result;
     },
@@ -144,22 +118,23 @@ export default {
 
       return selectPromo(args.id);
     },
-    promoEnrollmentRequests: async (_obj, _arg, ctx: Context): Promise<any> => {
+    promoEnrollmentRequests: async (
+      _obj,
+      { limit, after },
+      ctx: Context,
+    ): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const edges = await R.map((promoEnrollmentRequest) => {
-        return { node: promoEnrollmentRequest, cursor: 'not implemented' };
-      })(promoEnrollmentRequests);
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests(
+        limit ? limit + 1 : null,
+        cursor,
+      );
 
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(promoEnrollmentRequests),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
+      const result = paginate(limit, promoEnrollmentRequests);
 
       return result;
     },
@@ -336,7 +311,7 @@ export default {
         throw new AuthorizationError('Forbidden');
       }
 
-      const data = {
+      const data: any = {
         promo: args.promo,
         member: ctx.userId,
       };

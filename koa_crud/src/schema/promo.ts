@@ -76,7 +76,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    promos: PromoConnection
+    promos(limit: Int, after: String): PromoConnection
     promo(id: ID!): Promo
   }
 

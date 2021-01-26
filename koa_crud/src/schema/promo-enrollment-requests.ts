@@ -34,7 +34,10 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    promoEnrollmentRequests: PromoEnrollmentRequestConnection
+    promoEnrollmentRequests(
+      limit: Int
+      after: String
+    ): PromoEnrollmentRequestConnection
     promoEnrollmentRequest(id: ID!): PromoEnrollmentRequest
   }
 

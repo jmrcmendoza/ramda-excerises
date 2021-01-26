@@ -1,13 +1,23 @@
+import { Context } from 'koa';
 import { MemberDocument } from '../../models/member';
 
 export default function listMembersController({
   listMembers,
 }: {
-  listMembers: () => Promise<MemberDocument>;
+  listMembers: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<MemberDocument>;
 }) {
-  return async function getListMembers(): Promise<Record<string, any>> {
+  return async function getListMembers(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
-      const result = await listMembers();
+      const {
+        query: { limit, cursor },
+      } = httpRequest;
+
+      const result = await listMembers(limit, cursor);
 
       return {
         headers: {
