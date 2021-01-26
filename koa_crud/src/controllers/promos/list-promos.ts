@@ -1,13 +1,23 @@
+import { Context } from 'koa';
 import { PromoDocument } from '../../models/promo';
 
 export default function listPromosController({
   listPromos,
 }: {
-  listPromos: () => Promise<PromoDocument>;
+  listPromos: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<PromoDocument>;
 }) {
-  return async function getListPromos(): Promise<Record<string, any>> {
+  return async function getListPromos(
+    httpRequest: Context,
+  ): Promise<Record<string, any>> {
     try {
-      const result = await listPromos();
+      const {
+        query: { limit, cursor },
+      } = httpRequest;
+
+      const result = await listPromos(limit, cursor);
 
       return {
         headers: {
