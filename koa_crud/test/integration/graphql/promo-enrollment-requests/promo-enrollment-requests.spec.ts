@@ -7,7 +7,11 @@ import promoDB from '../../../../src/data-access/promos';
 import server from '../../../../src';
 import MemberModel from '../../../../src/models/member';
 import { createHash } from '../../../../src/encryption';
-import { PromoStatus, PromoTemplate } from '../../../../src/models/promo';
+import PromoModel, {
+  PromoStatus,
+  PromoTemplate,
+} from '../../../../src/models/promo';
+import PromoEnrollmentRequestModel from '../../../../src/models/promo-enrollment-requests';
 
 const chance = new Chance();
 
@@ -223,6 +227,32 @@ describe('Promos Graphql', function () {
   });
 
   describe('List Promo Enrollment Requests', () => {
+    before(async function () {
+      const [member, promo] = await Promise.all([
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.string(),
+        }),
+        PromoModel.create({
+          name: chance.first(),
+          template: PromoTemplate.Deposit,
+          title: chance.first(),
+          description: chance.sentence(),
+          submitted: true,
+          enabled: true,
+          status: PromoStatus.Active,
+          minimumBalance: chance.natural(),
+        }),
+      ]);
+
+      R.times(async () => {
+        await PromoEnrollmentRequestModel.create({
+          promo: promo.id,
+          member: member.id,
+          createdAt: chance.date(),
+        });
+      }, 3);
+    });
     it('should return all promo enrollment requests', async function () {
       const data = {
         query: `{ promoEnrollmentRequests {
@@ -265,6 +295,69 @@ describe('Promos Graphql', function () {
         result.body.data.promoEnrollmentRequests.totalCount,
       ).to.be.greaterThan(0);
       expect(result.body.data.promoEnrollmentRequests.edges).to.be.an('array');
+    });
+
+    it('should return true on next page given totalCount is greater than limit', async function () {
+      let data = {
+        query: `{ promoEnrollmentRequests {
+          pageInfo {
+              hasNextPage
+              endCursor
+          }       
+        } 
+      }`,
+      };
+
+      const promoEnrollmentRequests = await this.request()
+        .post('/graphql')
+        .send(data);
+
+      data = {
+        query: `{ promoEnrollmentRequests(after:"${promoEnrollmentRequests.body.data.promoEnrollmentRequests.pageInfo.endCursor}") {
+          totalCount
+          edges {
+            node {
+              id
+              promo { 
+                id
+                name
+                template
+                title
+                description
+                ...on SignUpPromo {
+                  requiredMemberFields
+                }    
+                ...on DepositPromo{
+                  minimumBalance
+                }
+                status
+              }
+              member {
+                id
+                username
+                realName
+                email
+                bankAccount
+              }
+              status
+            }
+          }   
+          pageInfo {
+            hasNextPage
+            endCursor
+          }       
+        } 
+      }`,
+      };
+
+      const result = await this.request().post('/graphql').send(data);
+
+      expect(result.body.data).to.exist;
+      expect(result.body.data.promoEnrollmentRequests.totalCount).to.be.equal(
+        1,
+      );
+      expect(result.body.data.promoEnrollmentRequests.pageInfo.hasNextPage).to
+        .be.false;
     });
 
     it('should return one promo enrollment request', async function () {

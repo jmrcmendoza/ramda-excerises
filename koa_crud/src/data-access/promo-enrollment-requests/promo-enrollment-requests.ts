@@ -32,12 +32,14 @@ export default function ({
             .lean({ virtuals: true })
             .where('createdAt')
             .gt(cursor)
+            .sort({ createdAt: 'asc' })
             .limit(limit)
         : promoEnrollmentRequests
             .find({})
             .populate('promo')
             .populate({ path: 'member', select: '-password' })
             .lean({ virtuals: true })
+            .sort({ createdAt: 'asc' })
             .limit(limit);
     },
     selectOnePromoEnrollmentRequest(id: string) {

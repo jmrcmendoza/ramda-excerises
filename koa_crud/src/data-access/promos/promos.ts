@@ -25,8 +25,13 @@ export default function ({
             .lean({ virtuals: true })
             .where('createdAt')
             .gt(cursor)
+            .sort({ createdAt: 'asc' })
             .limit(limit)
-        : promo.find({}).lean({ virtuals: true }).limit(limit);
+        : promo
+            .find({})
+            .sort({ createdAt: 'asc' })
+            .lean({ virtuals: true })
+            .limit(limit);
     },
     async selectOnePromo(id: string) {
       const result = await promo

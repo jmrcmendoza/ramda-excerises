@@ -29,10 +29,12 @@ export default function ({
             .lean({ virtuals: true })
             .where('createdAt')
             .gt(cursor)
+            .sort({ createdAt: 'asc' })
             .limit(limit)
         : member
             .find({}, { password: 0 })
             .lean({ virtuals: true })
+            .sort({ createdAt: 'asc' })
             .limit(limit);
     },
     async selectOneMember(id: string) {
