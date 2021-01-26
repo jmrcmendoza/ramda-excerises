@@ -3,7 +3,10 @@ import { PromoEnrollmentRequestQueries } from '../../data-access/promo-enrollmen
 export default function makeListPromoEnrollmentRequests(
   promoEnrollmentRequestsDB: PromoEnrollmentRequestQueries,
 ) {
-  return async function listPromoEnrollmentRequests(): Promise<any> {
-    return promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
+  return async function listPromoEnrollmentRequests(
+    limit: number | null,
+    cursor: string | null,
+  ): Promise<any> {
+    return promoEnrollmentRequestsDB.listPromoEnrollmentRequests(limit, cursor);
   };
 }
