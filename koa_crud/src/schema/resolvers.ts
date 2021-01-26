@@ -1,5 +1,4 @@
 import { Context } from 'koa';
-import R from 'ramda';
 import { MemberDocument } from '../models/member';
 
 import {
@@ -45,18 +44,6 @@ class AuthorizationError extends Error {
     this.name = 'AUTHORIZATION_ERROR';
   }
 }
-
-type Connection<T> = {
-  totalCount: number;
-  pageInfo: {
-    endCursor: string;
-    hasNextPage: boolean;
-  };
-  edges: {
-    node: T;
-    cursor: Buffer;
-  }[];
-};
 
 export default {
   Query: {
@@ -131,22 +118,23 @@ export default {
 
       return selectPromo(args.id);
     },
-    promoEnrollmentRequests: async (_obj, _arg, ctx: Context): Promise<any> => {
+    promoEnrollmentRequests: async (
+      _obj,
+      { limit, after },
+      ctx: Context,
+    ): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      const promoEnrollmentRequests = await listPromoEnrollmentRequests();
+      const cursor = after ? fromCursorHash(after) : null;
 
-      const edges = await R.map((promoEnrollmentRequest) => {
-        return { node: promoEnrollmentRequest, cursor: 'not implemented' };
-      })(promoEnrollmentRequests);
+      const promoEnrollmentRequests = await listPromoEnrollmentRequests(
+        limit ? limit + 1 : null,
+        cursor,
+      );
 
-      const result: Connection<Record<string, any>> = {
-        totalCount: R.length(promoEnrollmentRequests),
-        pageInfo: { hasNextPage: false, endCursor: 'not implemented' },
-        edges,
-      };
+      const result = paginate(limit, promoEnrollmentRequests);
 
       return result;
     },
