@@ -2,7 +2,10 @@
 import PromoModel, { PromoDocument } from '../../models/promo';
 
 export type PromoQueries = {
-  listPromos: () => Promise<PromoDocument>;
+  listPromos: (
+    limit: number | null,
+    cursor: string | null,
+  ) => Promise<PromoDocument>;
   selectOnePromo: (id: string) => Promise<PromoDocument>;
   createPromo: (document: PromoDocument) => Promise<boolean>;
   updatePromo: (id: string, document: PromoDocument) => Promise<boolean>;
@@ -15,8 +18,15 @@ export default function ({
   promo: typeof PromoModel;
 }): PromoQueries {
   return Object.freeze({
-    listPromos() {
-      return promo.find({}).lean({ virtuals: true });
+    listPromos(limit: number | null, cursor: string | null) {
+      return cursor
+        ? promo
+            .find({})
+            .lean({ virtuals: true })
+            .where('createdAt')
+            .gt(cursor)
+            .limit(limit)
+        : promo.find({}).lean({ virtuals: true }).limit(limit);
     },
     async selectOnePromo(id: string) {
       const result = await promo
