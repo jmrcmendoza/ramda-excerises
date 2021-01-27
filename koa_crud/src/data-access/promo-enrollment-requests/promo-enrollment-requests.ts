@@ -1,7 +1,7 @@
 import PromoEnrollmentRequestModel, {
   PromoEnrollmentRequestDocument,
   PromoEnrollmentRequestStatus,
-} from '../../models/promo-enrollment-requests';
+} from '@Models/promo-enrollment-requests';
 
 export type PromoEnrollmentRequestQueries = {
   listPromoEnrollmentRequests: (
