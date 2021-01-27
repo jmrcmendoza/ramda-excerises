@@ -4,7 +4,7 @@ import {
   insertVendor,
   updateVendor,
   deleteVendor,
-} from '../../use-cases/vendors/index';
+} from '@UseCases/vendors';
 
 import listVendorsController from './list-vendors';
 import selectVendorController from './select-vendor';

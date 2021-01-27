@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { VendorDocument } from '../../models/vendor';
+import { VendorDocument } from '@Models/vendor';
 
 export default function deleteVendorController({
   deleteVendor,
