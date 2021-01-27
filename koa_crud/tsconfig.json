@@ -14,17 +14,17 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@Routes/*": ["src/routes/*"],
-      "@Models/*": ["src/models/*"],
-      "@UseCases/*": ["src/use-cases/*"],
-      "@Entities/*": ["src/entities/*"],
-      "@DataAccess/*": ["src/data-access/*"],
-      "@Encryption": ["src/encryption"],
-      "@Controllers/*": ["src/controllers/*"],
-      "@Serialize": ["src/serialize"],
-      "@Helpers/*": ["src/helpers/*"],
-      "@Middlewares/*": ["src/middleware/*"],
-      "@Server": ["src/index.ts"]
+      "@routes/*": ["src/routes/*"],
+      "@models/*": ["src/models/*"],
+      "@useCases/*": ["src/use-cases/*"],
+      "@entities/*": ["src/entities/*"],
+      "@dataAccess/*": ["src/data-access/*"],
+      "@encryption": ["src/encryption"],
+      "@controllers/*": ["src/controllers/*"],
+      "@serialize": ["src/serialize"],
+      "@helpers/*": ["src/helpers/*"],
+      "@middlewares/*": ["src/middleware/*"],
+      "@server": ["src/index.ts"]
     }
   }
 }
