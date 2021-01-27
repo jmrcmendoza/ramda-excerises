@@ -3,7 +3,7 @@ import {
   PromoDocument,
   PromoStatus,
   PromoTemplate,
-} from '../../models/promo';
+} from '@Models/promo';
 
 export class PromoValidationError extends Error {
   constructor(message) {
