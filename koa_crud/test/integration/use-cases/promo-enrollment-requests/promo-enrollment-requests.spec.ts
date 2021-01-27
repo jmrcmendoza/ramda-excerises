@@ -4,7 +4,7 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
 import Chance from 'chance';
-import server from '../../../../src';
+import server from '@Server';
 import {
   approvePromoEnrollmentRequest,
   enrollToPromo,
@@ -12,15 +12,12 @@ import {
   processPromoEnrollmentRequest,
   rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
-} from '../../../../src/use-cases/promo-enrollment-requests';
+} from '@UseCases/promo-enrollment-requests';
 import PromoEnrollmentRequestModel, {
   PromoEnrollmentRequestStatus,
-} from '../../../../src/models/promo-enrollment-requests';
-import MemberModel from '../../../../src/models/member';
-import PromoModel, {
-  PromoStatus,
-  PromoTemplate,
-} from '../../../../src/models/promo';
+} from '@Models/promo-enrollment-requests';
+import MemberModel from '@Models/member';
+import PromoModel, { PromoStatus, PromoTemplate } from '@Models/promo';
 
 const chance = new Chance();
 
