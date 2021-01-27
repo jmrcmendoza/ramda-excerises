@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import VendorModel, { VendorType } from '../../../src/models/vendor';
+import VendorModel, { VendorType } from '@Models/vendor';
 import DBManager from '../tear-down';
 
 const chance = new Chance();
