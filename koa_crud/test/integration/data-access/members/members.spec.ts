@@ -4,8 +4,8 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../../src';
-import memberDB from '../../../../src/data-access/members';
+import server from '@Server';
+import memberDB from '@DataAccess/members';
 
 const chance = new Chance();
 
