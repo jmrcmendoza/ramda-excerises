@@ -2,14 +2,11 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
-import MemberModel from '../../../src/models/member';
-import PromoModel, {
-  PromoStatus,
-  PromoTemplate,
-} from '../../../src/models/promo';
+import MemberModel from '@Models/member';
+import PromoModel, { PromoStatus, PromoTemplate } from '@Models/promo';
 import PromoEnrollmentRequestModel, {
   PromoEnrollmentRequestStatus,
-} from '../../../src/models/promo-enrollment-requests';
+} from '@Models/promo-enrollment-requests';
 import chance from '../../helpers/chance';
 import DBManager from '../tear-down';
 
