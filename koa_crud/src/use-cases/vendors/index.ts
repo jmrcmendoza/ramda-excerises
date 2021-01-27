@@ -1,4 +1,4 @@
-import vendorsDB from '@DataAccess/vendors';
+import vendorsDB from '@dataAccess/vendors';
 
 import makeListVendors from './list-vendors';
 import makeSelectVendor from './select-vendor';

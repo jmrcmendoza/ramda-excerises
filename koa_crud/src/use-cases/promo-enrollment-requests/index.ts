@@ -1,6 +1,6 @@
-import promoEnrollmentRequestsDB from '@DataAccess/promo-enrollment-requests';
-import promosDB from '@DataAccess/promos';
-import membersDB from '@DataAccess/members';
+import promoEnrollmentRequestsDB from '@dataAccess/promo-enrollment-requests';
+import promosDB from '@dataAccess/promos';
+import membersDB from '@dataAccess/members';
 
 import makeListPromoEnrollmentRequests from './list-promo-enrollment-requests';
 import makeSelectPromoEnrollmentRequest from './select-promo-enrollment-request';

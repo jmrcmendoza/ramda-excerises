@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { PromoDocument } from '@Models/promo';
+import { PromoDocument } from '@models/promo';
 
 export default function selectPromoController({
   selectPromo,

@@ -1,4 +1,4 @@
-import { PromoEnrollmentRequestQueries } from '@DataAccess/promo-enrollment-requests/promo-enrollment-requests';
+import { PromoEnrollmentRequestQueries } from '@dataAccess/promo-enrollment-requests/promo-enrollment-requests';
 
 export default function makeListPromoEnrollmentRequests(
   promoEnrollmentRequestsDB: PromoEnrollmentRequestQueries,

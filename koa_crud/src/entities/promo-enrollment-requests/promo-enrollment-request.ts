@@ -1,4 +1,4 @@
-import { PromoEnrollmentRequestDocument } from '@Models/promo-enrollment-requests';
+import { PromoEnrollmentRequestDocument } from '@models/promo-enrollment-requests';
 
 export class PromoEnrollmentRequestValidationError extends Error {
   constructor(message) {

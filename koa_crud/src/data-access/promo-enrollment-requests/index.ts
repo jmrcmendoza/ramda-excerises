@@ -1,4 +1,4 @@
-import PromoEnrollmentRequestModel from '@Models/promo-enrollment-requests';
+import PromoEnrollmentRequestModel from '@models/promo-enrollment-requests';
 
 import promoEnrollmentRequestQueries from './promo-enrollment-requests';
 

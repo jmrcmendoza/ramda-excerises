@@ -1,4 +1,4 @@
-import VendorModel from '@Models/vendor';
+import VendorModel from '@models/vendor';
 
 import vendorsQueries from './vendors';
 

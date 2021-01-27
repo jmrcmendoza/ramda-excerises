@@ -1,6 +1,6 @@
-import { PromoEnrollmentRequestQueries } from '@DataAccess/promo-enrollment-requests/promo-enrollment-requests';
-import { PromoEnrollmentRequestValidationError } from '@Entities/promo-enrollment-requests/promo-enrollment-request';
-import { PromoEnrollmentRequestDocument } from '@Models/promo-enrollment-requests';
+import { PromoEnrollmentRequestQueries } from '@dataAccess/promo-enrollment-requests/promo-enrollment-requests';
+import { PromoEnrollmentRequestValidationError } from '@entities/promo-enrollment-requests/promo-enrollment-request';
+import { PromoEnrollmentRequestDocument } from '@models/promo-enrollment-requests';
 
 export default function makeSelectPromoEnrollmentRequest(
   promoEnrollmentRequestsDB: PromoEnrollmentRequestQueries,

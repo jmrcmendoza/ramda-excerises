@@ -6,9 +6,9 @@ import {
   postPromo,
   putPromo,
   delPromo,
-} from '@Controllers/promos';
+} from '@controllers/promos';
 
-import { serialize } from '@Serialize';
+import { serialize } from '@serialize';
 
 const router = new Router();
 

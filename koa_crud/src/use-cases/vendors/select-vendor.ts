@@ -1,5 +1,5 @@
-import { VendorQueries } from '@DataAccess/vendors/vendors';
-import { VendorValidationError } from '@Entities/vendors/vendor';
+import { VendorQueries } from '@dataAccess/vendors/vendors';
+import { VendorValidationError } from '@entities/vendors/vendor';
 
 export default function makeSelectVendor(vendorsDB: VendorQueries) {
   return async function selectVendor(id: string): Promise<any> {

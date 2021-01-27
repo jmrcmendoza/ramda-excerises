@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import MemberModel, { MemberDocument } from '@Models/member';
-import { compareHash, createHash } from '@Encryption';
+import MemberModel, { MemberDocument } from '@models/member';
+import { compareHash, createHash } from '@encryption';
 
 export type MemberQueries = {
   listMembers: (

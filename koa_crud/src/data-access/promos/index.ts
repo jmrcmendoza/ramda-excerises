@@ -1,4 +1,4 @@
-import PromoModel from '@Models/promo';
+import PromoModel from '@models/promo';
 
 import promoQueries from './promos';
 

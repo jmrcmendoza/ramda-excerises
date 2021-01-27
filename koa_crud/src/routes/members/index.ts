@@ -6,9 +6,9 @@ import {
   postMember,
   putMember,
   delMember,
-} from '@Controllers/members';
+} from '@controllers/members';
 
-import { serialize } from '@Serialize';
+import { serialize } from '@serialize';
 
 const router = new Router();
 

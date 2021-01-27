@@ -1,4 +1,4 @@
-import { MemberDocument } from '@Models/member';
+import { MemberDocument } from '@models/member';
 
 export class MemberValidationError extends Error {
   constructor(message) {

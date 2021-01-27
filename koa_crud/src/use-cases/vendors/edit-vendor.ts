@@ -1,7 +1,7 @@
-import { VendorDocument } from '@Models/vendor';
-import { makeVendor } from '@Entities/vendors';
-import { VendorQueries } from '@DataAccess/vendors/vendors';
-import { VendorValidationError } from '@Entities/vendors/vendor';
+import { VendorDocument } from '@models/vendor';
+import { makeVendor } from '@entities/vendors';
+import { VendorQueries } from '@dataAccess/vendors/vendors';
+import { VendorValidationError } from '@entities/vendors/vendor';
 
 export default function makeUpdateVendor(vendorsDB: VendorQueries) {
   return async function updateVendor(

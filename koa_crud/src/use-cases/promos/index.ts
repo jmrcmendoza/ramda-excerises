@@ -1,4 +1,4 @@
-import promosDB from '@DataAccess/promos';
+import promosDB from '@dataAccess/promos';
 
 import makeListPromos from './list-promos';
 import makeSelectPromo from './select-promo';

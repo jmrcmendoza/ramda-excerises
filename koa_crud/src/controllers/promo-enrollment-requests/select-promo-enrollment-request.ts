@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { PromoEnrollmentRequestDocument } from '@Models/promo-enrollment-requests';
+import { PromoEnrollmentRequestDocument } from '@models/promo-enrollment-requests';
 
 export default function selectPromoEnrollmentRequestController({
   selectOnePromoEnrollmentRequest,

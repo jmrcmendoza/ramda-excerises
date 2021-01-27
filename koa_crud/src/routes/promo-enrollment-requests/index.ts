@@ -7,9 +7,9 @@ import {
   putProcessPromoEnrollmentRequest,
   putApprovePromoEnrollmentRequest,
   putRejectPromoEnrollmentRequest,
-} from '@Controllers/promo-enrollment-requests';
+} from '@controllers/promo-enrollment-requests';
 
-import { serialize } from '@Serialize';
+import { serialize } from '@serialize';
 
 const router = new Router();
 

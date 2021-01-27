@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { VendorDocument } from '@Models/vendor';
+import { VendorDocument } from '@models/vendor';
 
 export default function insertVendorController({
   insertVendor,

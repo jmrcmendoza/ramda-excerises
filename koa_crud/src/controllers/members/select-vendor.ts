@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { MemberDocument } from '@Models/member';
+import { MemberDocument } from '@models/member';
 
 export default function selectMemberController({
   selectMember,

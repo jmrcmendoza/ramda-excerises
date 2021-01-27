@@ -1,4 +1,4 @@
-import { VendorDocument } from '@Models/vendor';
+import { VendorDocument } from '@models/vendor';
 
 export class VendorValidationError extends Error {
   constructor(message) {

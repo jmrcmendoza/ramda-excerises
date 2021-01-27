@@ -1,4 +1,4 @@
-import membersDB from '@DataAccess/members';
+import membersDB from '@dataAccess/members';
 
 import makeListMembers from './list-members';
 import makeSelectMember from './select-vendor';

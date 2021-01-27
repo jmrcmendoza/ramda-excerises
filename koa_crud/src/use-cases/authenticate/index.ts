@@ -1,4 +1,4 @@
-import membersDB from '@DataAccess/members';
+import membersDB from '@dataAccess/members';
 
 import makeAuthenticateMember from './authenticate';
 

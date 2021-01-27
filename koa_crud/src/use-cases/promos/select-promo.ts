@@ -1,5 +1,5 @@
-import { PromoQueries } from '@DataAccess/promos/promos';
-import { PromoValidationError } from '@Entities/promos/promo';
+import { PromoQueries } from '@dataAccess/promos/promos';
+import { PromoValidationError } from '@entities/promos/promo';
 
 export default function makeSelectPromo(promosDB: PromoQueries) {
   return async function selectPromo(id: string): Promise<any> {

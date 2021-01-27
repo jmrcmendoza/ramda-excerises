@@ -1,6 +1,6 @@
-import { MemberDocument } from '@Models/member';
-import { makeMember } from '@Entities/members';
-import { MemberQueries } from '@DataAccess/members/members';
+import { MemberDocument } from '@models/member';
+import { makeMember } from '@entities/members';
+import { MemberQueries } from '@dataAccess/members/members';
 
 export default function makeInsertMember(membersDB: MemberQueries) {
   return async function insertMember(
