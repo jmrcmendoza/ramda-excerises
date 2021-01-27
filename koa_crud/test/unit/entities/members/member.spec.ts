@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import { makeMember } from '../../../../src/entities/members';
+import { makeMember } from '@Entities/members';
 
 const chance = new Chance();
 
