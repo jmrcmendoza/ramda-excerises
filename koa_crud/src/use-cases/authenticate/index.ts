@@ -1,5 +1,5 @@
-import makeAuthenticateMember from './authenticate';
+import membersDB from '@DataAccess/members';
 
-import membersDB from '../../data-access/members';
+import makeAuthenticateMember from './authenticate';
 
 export const authenticateMember = makeAuthenticateMember(membersDB);
