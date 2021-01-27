@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import { makePromo } from '../../../../src/entities/promos';
-import { MemberFields, PromoTemplate } from '../../../../src/models/promo';
+import { makePromo } from '@Entities/promos';
+import { MemberFields, PromoTemplate } from '@Models/promo';
 
 const chance = new Chance();
 
