@@ -1,4 +1,4 @@
-import { authenticateMember } from '../../use-cases/authenticate';
+import { authenticateMember } from '@useCases/authenticate';
 
 import authenticateMemberController from './authenticate';
 

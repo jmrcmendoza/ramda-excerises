@@ -1,11 +1,11 @@
 import { find, includes, keys } from 'ramda';
 import camelcase from 'camelcase';
-import { PromoEnrollmentRequestDocument } from '../../models/promo-enrollment-requests';
-import { makePromoEnrollmentRequest } from '../../entities/promo-enrollment-requests';
-import { PromoEnrollmentRequestQueries } from '../../data-access/promo-enrollment-requests/promo-enrollment-requests';
-import { PromoQueries } from '../../data-access/promos/promos';
-import { PromoStatus, PromoTemplate } from '../../models/promo';
-import { MemberQueries } from '../../data-access/members/members';
+import { PromoEnrollmentRequestDocument } from '@models/promo-enrollment-requests';
+import { makePromoEnrollmentRequest } from '@entities/promo-enrollment-requests';
+import { PromoEnrollmentRequestQueries } from '@dataAccess/promo-enrollment-requests/promo-enrollment-requests';
+import { PromoQueries } from '@dataAccess/promos/promos';
+import { PromoStatus, PromoTemplate } from '@models/promo';
+import { MemberQueries } from '@dataAccess/members/members';
 
 class PromoStatusError extends Error {
   constructor(message) {

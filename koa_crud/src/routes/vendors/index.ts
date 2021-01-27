@@ -6,9 +6,9 @@ import {
   postVendor,
   putVendor,
   delVendor,
-} from '../../controllers/vendors';
+} from '@controllers/vendors';
 
-import { serialize } from '../../serialize';
+import { serialize } from '@serialize';
 
 const router = new Router();
 

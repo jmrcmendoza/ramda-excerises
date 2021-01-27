@@ -1,4 +1,4 @@
-import { VendorQueries } from '../../data-access/vendors/vendors';
+import { VendorQueries } from '@dataAccess/vendors/vendors';
 
 export default function makeListVendors(vendorsDB: VendorQueries) {
   return async function listVendors(

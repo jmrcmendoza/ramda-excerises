@@ -4,7 +4,7 @@ import {
   insertMember,
   updateMember,
   deleteMember,
-} from '../../use-cases/members';
+} from '@useCases/members';
 
 import listMembersController from './list-members';
 import selectMemberController from './select-vendor';

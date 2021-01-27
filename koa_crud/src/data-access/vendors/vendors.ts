@@ -1,4 +1,4 @@
-import VendorModel, { VendorDocument } from '../../models/vendor';
+import VendorModel, { VendorDocument } from '@models/vendor';
 
 export type VendorQueries = {
   listVendors: (

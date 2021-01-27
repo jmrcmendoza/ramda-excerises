@@ -3,10 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import PromoModel, {
-  PromoStatus,
-  PromoTemplate,
-} from '../../../src/models/promo';
+import PromoModel, { PromoStatus, PromoTemplate } from '@models/promo';
 
 import DBManager from '../tear-down';
 

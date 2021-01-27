@@ -1,7 +1,7 @@
-import { MemberDocument } from '../../models/member';
-import { makeMember } from '../../entities/members';
-import { MemberQueries } from '../../data-access/members/members';
-import { MemberValidationError } from '../../entities/members/member';
+import { MemberDocument } from '@models/member';
+import { makeMember } from '@entities/members';
+import { MemberQueries } from '@dataAccess/members/members';
+import { MemberValidationError } from '@entities/members/member';
 
 export default function makeUpdateMember(membersDB: MemberQueries) {
   return async function updateMember(

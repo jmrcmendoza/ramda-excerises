@@ -4,19 +4,15 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../../src';
+import server from '@server';
 import {
   delPromo,
   getOnePromo,
   getPromos,
   postPromo,
   putPromo,
-} from '../../../../src/controllers/promos';
-import {
-  MemberFields,
-  PromoStatus,
-  PromoTemplate,
-} from '../../../../src/models/promo';
+} from '@controllers/promos';
+import { MemberFields, PromoStatus, PromoTemplate } from '@models/promo';
 
 const chance = new Chance();
 

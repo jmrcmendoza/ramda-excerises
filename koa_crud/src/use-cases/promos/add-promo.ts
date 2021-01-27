@@ -1,6 +1,6 @@
-import { PromoDocument } from '../../models/promo';
-import { makePromo } from '../../entities/promos';
-import { PromoQueries } from '../../data-access/promos/promos';
+import { PromoDocument } from '@models/promo';
+import { makePromo } from '@entities/promos';
+import { PromoQueries } from '@dataAccess/promos/promos';
 
 export default function makeInsertPromo(promosDB: PromoQueries) {
   return async function insertPromo(promoInfo: PromoDocument): Promise<any> {

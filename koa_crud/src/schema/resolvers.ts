@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { MemberDocument } from '../models/member';
+import { MemberDocument } from '@models/member';
 
 import {
   insertMember,
@@ -7,9 +7,9 @@ import {
   selectMember,
   updateMember,
   deleteMember,
-} from '../use-cases/members';
+} from '@useCases/members';
 
-import { VendorDocument } from '../models/vendor';
+import { VendorDocument } from '@models/vendor';
 
 import {
   insertVendor,
@@ -17,17 +17,17 @@ import {
   selectVendor,
   updateVendor,
   deleteVendor,
-} from '../use-cases/vendors';
+} from '@useCases/vendors';
 
-import { authenticateMember } from '../use-cases/authenticate';
-import { PromoDocument } from '../models/promo';
+import { authenticateMember } from '@useCases/authenticate';
+import { PromoDocument } from '@models/promo';
 import {
   deletePromo,
   insertPromo,
   listPromos,
   selectPromo,
   updatePromo,
-} from '../use-cases/promos';
+} from '@useCases/promos';
 import {
   approvePromoEnrollmentRequest,
   enrollToPromo,
@@ -35,8 +35,8 @@ import {
   processPromoEnrollmentRequest,
   rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
-} from '../use-cases/promo-enrollment-requests';
-import { paginate, fromCursorHash } from '../helpers/pagination';
+} from '@useCases/promo-enrollment-requests';
+import { paginate, fromCursorHash } from '@helpers/pagination';
 
 class AuthorizationError extends Error {
   constructor(message) {

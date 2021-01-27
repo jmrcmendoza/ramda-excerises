@@ -1,4 +1,4 @@
-import MemberModel from '../../models/member';
+import MemberModel from '@models/member';
 
 import memberQueries from './members';
 

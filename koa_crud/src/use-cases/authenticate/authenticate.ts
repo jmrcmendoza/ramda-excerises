@@ -1,7 +1,7 @@
-import { MemberDocument } from '../../models/member';
-import { makeMember } from '../../entities/members';
-import { MemberQueries } from '../../data-access/members/members';
-import { createToken } from '../../middleware/authorization';
+import { MemberDocument } from '@models/member';
+import { makeMember } from '@entities/members';
+import { MemberQueries } from '@dataAccess/members/members';
+import { createToken } from '@middlewares/authorization';
 
 class AuthenticateError extends Error {
   constructor(message) {

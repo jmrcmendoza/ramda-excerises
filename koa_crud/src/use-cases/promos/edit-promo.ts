@@ -1,7 +1,7 @@
-import { PromoDocument } from '../../models/promo';
-import { makePromo } from '../../entities/promos';
-import { PromoQueries } from '../../data-access/promos/promos';
-import { PromoValidationError } from '../../entities/promos/promo';
+import { PromoDocument } from '@models/promo';
+import { makePromo } from '@entities/promos';
+import { PromoQueries } from '@dataAccess/promos/promos';
+import { PromoValidationError } from '@entities/promos/promo';
 
 export default function makeUpdatePromo(promosDB: PromoQueries) {
   return async function updatePromo(

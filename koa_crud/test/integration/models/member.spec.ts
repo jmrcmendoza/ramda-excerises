@@ -4,7 +4,7 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import MemberModel, { MemberDocument } from '../../../src/models/member';
+import MemberModel, { MemberDocument } from '@models/member';
 import DBManager from '../tear-down';
 
 const chance = new Chance();

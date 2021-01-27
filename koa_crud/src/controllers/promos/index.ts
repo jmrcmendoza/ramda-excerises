@@ -4,7 +4,7 @@ import {
   insertPromo,
   updatePromo,
   deletePromo,
-} from '../../use-cases/promos';
+} from '@useCases/promos';
 
 import listPromosController from './list-promos';
 import selectPromoController from './select-promo';
