@@ -5,7 +5,7 @@ import {
   processPromoEnrollmentRequest,
   approvePromoEnrollmentRequest,
   rejectPromoEnrollmentRequest,
-} from '../../use-cases/promo-enrollment-requests';
+} from '@UseCases/promo-enrollment-requests';
 
 import listPromoEnrollmentRequestsController from './list-promo-enrollment-requests';
 import selectOnePromoEnrollmentRequestController from './select-promo-enrollment-request';
