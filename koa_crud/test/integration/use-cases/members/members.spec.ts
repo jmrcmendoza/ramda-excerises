@@ -4,14 +4,14 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
 import Chance from 'chance';
-import server from '../../../../src';
+import server from '@Server';
 import {
   insertMember,
   listMembers,
   selectMember,
   updateMember,
   deleteMember,
-} from '../../../../src/use-cases/members';
+} from '@UseCases/members';
 
 const chance = new Chance();
 
