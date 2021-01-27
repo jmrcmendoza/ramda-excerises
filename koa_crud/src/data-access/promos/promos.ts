@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import PromoModel, { PromoDocument } from '../../models/promo';
+import PromoModel, { PromoDocument } from '@Models/promo';
 
 export type PromoQueries = {
   listPromos: (
