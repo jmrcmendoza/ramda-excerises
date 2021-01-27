@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { PromoDocument } from '../../models/promo';
+import { PromoDocument } from '@Models/promo';
 
 export default function deletePromoController({
   deletePromo,
