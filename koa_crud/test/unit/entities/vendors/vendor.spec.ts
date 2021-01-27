@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import { makeVendor } from '../../../../src/entities/vendors';
-import { VendorType } from '../../../../src/models/vendor';
+import { makeVendor } from '@Entities/vendors';
+import { VendorType } from '@Models/vendor';
 
 const chance = new Chance();
 
