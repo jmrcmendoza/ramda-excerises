@@ -3,12 +3,12 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import promoDB from '@DataAccess/promos';
-import server from '@Server';
-import MemberModel from '@Models/member';
-import { createHash } from '@Encryption';
-import PromoModel, { PromoStatus, PromoTemplate } from '@Models/promo';
-import PromoEnrollmentRequestModel from '@Models/promo-enrollment-requests';
+import promoDB from '@dataAccess/promos';
+import server from '@server';
+import MemberModel from '@models/member';
+import { createHash } from '@encryption';
+import PromoModel, { PromoStatus, PromoTemplate } from '@models/promo';
+import PromoEnrollmentRequestModel from '@models/promo-enrollment-requests';
 
 const chance = new Chance();
 

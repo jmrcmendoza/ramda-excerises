@@ -2,9 +2,9 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
-import server from '@Server';
-import MemberModel from '@Models/member';
-import { createHash } from '@Encryption';
+import server from '@server';
+import MemberModel from '@models/member';
+import { createHash } from '@encryption';
 
 const chance = new Chance();
 

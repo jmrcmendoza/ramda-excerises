@@ -4,11 +4,11 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import MemberModel from '@Models/member';
-import VendorModel, { VendorType } from '@Models/vendor';
-import { createHash } from '@Encryption';
+import MemberModel from '@models/member';
+import VendorModel, { VendorType } from '@models/vendor';
+import { createHash } from '@encryption';
 
-import server from '@Server';
+import server from '@server';
 
 const chance = new Chance();
 

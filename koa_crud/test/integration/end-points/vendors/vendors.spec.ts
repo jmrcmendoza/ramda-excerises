@@ -3,8 +3,8 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import { VendorType } from '@Models/vendor';
-import server from '@Server';
+import { VendorType } from '@models/vendor';
+import server from '@server';
 
 const chance = new Chance();
 

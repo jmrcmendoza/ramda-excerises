@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import Chance from 'chance';
 import R from 'ramda';
 // import chai, { expect } from 'chai';
-import { fromCursorHash, paginate, toCursorHash } from '@Helpers/pagination';
+import { fromCursorHash, paginate, toCursorHash } from '@helpers/pagination';
 
 const chance = new Chance();
 

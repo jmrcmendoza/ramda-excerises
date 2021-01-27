@@ -3,9 +3,9 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
-import server from '@Server';
-import { authMember } from '@Controllers/authenticate';
-import { insertMember } from '@UseCases/members';
+import server from '@server';
+import { authMember } from '@controllers/authenticate';
+import { insertMember } from '@useCases/members';
 
 const chance = new Chance();
 
