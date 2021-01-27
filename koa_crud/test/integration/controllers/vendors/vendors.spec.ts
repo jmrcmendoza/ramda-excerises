@@ -4,15 +4,15 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../../src';
-import { VendorType } from '../../../../src/models/vendor';
+import server from '@Server';
+import { VendorType } from '@Models/vendor';
 import {
   delVendor,
   getOneVendor,
   getVendors,
   postVendor,
   putVendor,
-} from '../../../../src/controllers/vendors';
+} from '@Controllers/vendors';
 
 const chance = new Chance();
 
