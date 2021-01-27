@@ -4,7 +4,7 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
 import Chance from 'chance';
-import server from '../../../../src';
+import server from '@Server';
 
 import {
   deleteVendor,
@@ -12,8 +12,8 @@ import {
   listVendors,
   selectVendor,
   updateVendor,
-} from '../../../../src/use-cases/vendors';
-import VendorModel, { VendorType } from '../../../../src/models/vendor';
+} from '@UseCases/vendors';
+import VendorModel, { VendorType } from '@Models/vendor';
 
 const chance = new Chance();
 
