@@ -3,10 +3,10 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import R from 'ramda';
-import server from '../../../../src';
-import promoEnrollmentRequestsDB from '../../../../src/data-access/promo-enrollment-requests';
-import memberDB from '../../../../src/data-access/members';
-import promoDB from '../../../../src/data-access/promos';
+import server from '@Server';
+import promoEnrollmentRequestsDB from '@DataAccess/promo-enrollment-requests';
+import memberDB from '@DataAccess/members';
+import promoDB from '@DataAccess/promos';
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
