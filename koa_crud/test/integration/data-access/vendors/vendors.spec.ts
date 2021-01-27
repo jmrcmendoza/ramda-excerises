@@ -4,9 +4,9 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../../src';
-import vendorsDB from '../../../../src/data-access/vendors';
-import { VendorType } from '../../../../src/models/vendor';
+import server from '@Server';
+import vendorsDB from '@DataAccess/vendors';
+import { VendorType } from '@Models/vendor';
 
 const chance = new Chance();
 
