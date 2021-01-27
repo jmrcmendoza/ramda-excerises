@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { makePromoEnrollmentRequest } from '../../../../src/entities/promo-enrollment-requests';
+import { makePromoEnrollmentRequest } from '@Entities/promo-enrollment-requests';
 import chance from '../../../helpers/chance';
 
 chai.use(chaiAsPromised);
