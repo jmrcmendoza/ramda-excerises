@@ -1,4 +1,4 @@
-import { PromoQueries } from '../../data-access/promos/promos';
+import { PromoQueries } from '@DataAccess/promos/promos';
 
 export default function makeListPromos(promosDB: PromoQueries) {
   return async function listPromos(

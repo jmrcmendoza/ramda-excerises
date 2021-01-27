@@ -1,6 +1,6 @@
 import R from 'ramda';
-import { PromoQueries } from '../../data-access/promos/promos';
-import { PromoValidationError } from '../../entities/promos/promo';
+import { PromoQueries } from '@DataAccess/promos/promos';
+import { PromoValidationError } from '@Entities/promos/promo';
 
 class PromoDeleteError extends Error {
   constructor(message) {
