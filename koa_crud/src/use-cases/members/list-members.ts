@@ -1,4 +1,4 @@
-import { MemberQueries } from '../../data-access/members/members';
+import { MemberQueries } from '@DataAccess/members/members';
 
 export default function makeListMembers(membersDB: MemberQueries) {
   return async function listMembers(
