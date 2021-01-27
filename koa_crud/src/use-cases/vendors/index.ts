@@ -1,10 +1,10 @@
+import vendorsDB from '@DataAccess/vendors';
+
 import makeListVendors from './list-vendors';
 import makeSelectVendor from './select-vendor';
 import makeInsertVendor from './add-vendor';
 import makeUpdateVendor from './edit-vendor';
 import makeDeleteVendor from './delete-vendor';
-
-import vendorsDB from '../../data-access/vendors';
 
 export const listVendors = makeListVendors(vendorsDB);
 export const selectVendor = makeSelectVendor(vendorsDB);

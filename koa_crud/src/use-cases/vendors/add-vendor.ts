@@ -1,6 +1,6 @@
-import { VendorDocument } from '../../models/vendor';
-import { makeVendor } from '../../entities/vendors';
-import { VendorQueries } from '../../data-access/vendors/vendors';
+import { VendorDocument } from '@Models/vendor';
+import { makeVendor } from '@Entities/vendors';
+import { VendorQueries } from '@DataAccess/vendors/vendors';
 
 export default function makeInsertVendor(vendorsDB: VendorQueries) {
   return async function insertVendor(vendorInfo: VendorDocument): Promise<any> {
