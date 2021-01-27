@@ -4,9 +4,9 @@ import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../../src';
-import promoDB from '../../../../src/data-access/promos';
-import { PromoStatus, PromoTemplate } from '../../../../src/models/promo';
+import server from '@Server';
+import promoDB from '@DataAccess/promos';
+import { PromoStatus, PromoTemplate } from '@Models/promo';
 
 const chance = new Chance();
 
