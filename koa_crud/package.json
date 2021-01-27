@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test mocha",
-    "start": "ts-node src/index.ts",
+    "clean": "rimraf /build",
+    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "build": "npm run clean && tsc && tscpaths -p tsconfig.json -s ./src -o ./build",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
@@ -25,7 +27,9 @@
     "mongoose": "^5.11.10",
     "mongoose-lean-virtuals": "^0.7.6",
     "pino": "^6.11.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.1",
+    "tsconfig-paths": "^3.9.0",
+    "tscpaths": "0.0.9"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
