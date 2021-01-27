@@ -1,8 +1,8 @@
 import Router from 'koa-router';
 
-import { authMember } from '../../controllers/authenticate';
+import { authMember } from '@Controllers/authenticate';
 
-import { serialize } from '../../serialize';
+import { serialize } from '@Serialize';
 
 const router = new Router();
 
