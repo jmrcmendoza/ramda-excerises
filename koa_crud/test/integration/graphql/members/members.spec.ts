@@ -4,9 +4,9 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import server from '../../../../src';
+import server from '@Server';
 
-import MemberModel from '../../../../src/models/member';
+import MemberModel from '@Models/member';
 
 const chance = new Chance();
 
