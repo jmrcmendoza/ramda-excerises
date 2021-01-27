@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { MemberDocument } from '../../models/member';
+import { MemberDocument } from '@Models/member';
 
 export default function updateMemberController({
   updateMember,
