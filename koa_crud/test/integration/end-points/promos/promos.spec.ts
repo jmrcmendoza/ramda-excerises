@@ -3,12 +3,8 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
-import {
-  MemberFields,
-  PromoStatus,
-  PromoTemplate,
-} from '../../../../src/models/promo';
-import server from '../../../../src';
+import { MemberFields, PromoStatus, PromoTemplate } from '@Models/promo';
+import server from '@Server';
 
 const chance = new Chance();
 
