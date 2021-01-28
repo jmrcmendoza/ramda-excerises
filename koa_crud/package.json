@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test mocha",
+    "coverage": "nyc --reporter=html npm run test",
     "clean": "rimraf /build",
     "start": "ts-node -r tsconfig-paths/register src/index.ts",
     "build": "npm run clean && tsc && tscpaths -p tsconfig.json -s ./src -o ./build",
@@ -62,6 +63,7 @@
     "lint-staged": "^10.5.3",
     "mocha": "^8.2.1",
     "mongodb-memory-server": "^6.9.3",
+    "nyc": "^15.1.0",
     "prettier": "^2.2.1",
     "sinon": "^9.2.3",
     "ts-node": "^9.1.1",
