@@ -1,3 +1,4 @@
+import { Connection, paginate } from '@helpers/pagination';
 import PromoEnrollmentRequestModel, {
   PromoEnrollmentRequestDocument,
   PromoEnrollmentRequestStatus,
@@ -7,7 +8,7 @@ export type PromoEnrollmentRequestQueries = {
   listPromoEnrollmentRequests: (
     limit: number | null,
     cursor: string | null,
-  ) => Promise<PromoEnrollmentRequestDocument>;
+  ) => Promise<Connection<Record<string, any>>>;
   selectOnePromoEnrollmentRequest: (
     id: string,
   ) => Promise<PromoEnrollmentRequestDocument>;
@@ -24,23 +25,7 @@ export default function ({
 }): PromoEnrollmentRequestQueries {
   return Object.freeze({
     listPromoEnrollmentRequests(limit: number | null, cursor: string | null) {
-      return cursor
-        ? promoEnrollmentRequests
-            .find({})
-            .populate('promo')
-            .populate({ path: 'member', select: '-password' })
-            .lean({ virtuals: true })
-            .where('createdAt')
-            .gt(cursor)
-            .sort({ createdAt: 'asc' })
-            .limit(limit)
-        : promoEnrollmentRequests
-            .find({})
-            .populate('promo')
-            .populate({ path: 'member', select: '-password' })
-            .lean({ virtuals: true })
-            .sort({ createdAt: 'asc' })
-            .limit(limit);
+      return paginate(promoEnrollmentRequests, limit, cursor, null);
     },
     selectOnePromoEnrollmentRequest(id: string) {
       return promoEnrollmentRequests

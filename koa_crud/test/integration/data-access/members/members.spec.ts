@@ -56,8 +56,7 @@ describe('Member Data Access', () => {
       it('should throw error for duplicate username', async () => {
         const members = await memberDB.listMembers();
 
-        const lastMember = R.last(members);
-
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
         const data = {
           username: lastMember.username,
           password: chance.string({ length: 5 }),
@@ -73,14 +72,14 @@ describe('Member Data Access', () => {
     it('should return all members', async () => {
       const result = await memberDB.listMembers();
 
-      expect(result).to.be.an('array');
-      expect(result).has.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrive on member', async () => {
       const members = await memberDB.listMembers();
 
-      const lastMember = R.last(members);
+      const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
       const result = await memberDB.selectOneMember(lastMember._id);
 
@@ -94,7 +93,7 @@ describe('Member Data Access', () => {
       it('should update member password', async () => {
         const members = await memberDB.listMembers();
 
-        const lastMember = R.last(members);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         const password = chance.string({ lenght: 5 });
 
@@ -114,8 +113,8 @@ describe('Member Data Access', () => {
 
         const members = await memberDB.listMembers();
 
-        const firstMember = R.head(members);
-        const lastMember = R.last(members);
+        const firstMember = R.compose(R.prop('node'), R.head)(members.edges);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         data = {
           username: firstMember.username,
@@ -133,7 +132,11 @@ describe('Member Data Access', () => {
     it('should delete one member ', async () => {
       const members = await memberDB.listMembers();
 
-      const lastMemberId = R.compose(R.prop('_id'), R.last)(members);
+      const lastMemberId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(members.edges);
 
       const result = await memberDB.deleteMember(lastMemberId);
 

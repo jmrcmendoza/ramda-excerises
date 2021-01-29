@@ -87,14 +87,18 @@ describe('Vendor Use Case', () => {
       const result = await listVendors();
 
       expect(result).to.exist;
-      expect(result).to.be.an('array');
-      expect(result).to.have.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should return one vendors', async () => {
       const vendors = await listVendors();
 
-      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
+      const lastVendorId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(vendors.edges);
 
       const result = await selectVendor(lastVendorId);
 

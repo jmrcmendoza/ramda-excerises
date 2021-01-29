@@ -4,6 +4,7 @@ import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
 import server from '@server';
+import { getLastData } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -73,7 +74,9 @@ describe('Member End-Points', () => {
       const response = await this.request().get('/api/members');
 
       expect(response.body).to.exist;
-      expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
+      expect(response.body.edges)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
     });
 
     it('should return one member', async function () {
@@ -93,7 +96,7 @@ describe('Member End-Points', () => {
       it('should throw error for empty username', async function () {
         const members = await this.request().get('/api/members');
 
-        const lastMember = R.last(members.body);
+        const lastMember = getLastData(members.body.edges);
 
         const data = {
           username: '',
@@ -112,7 +115,7 @@ describe('Member End-Points', () => {
       it('should throw error for empty password', async function () {
         const members = await this.request().get('/api/members');
 
-        const lastMember = R.last(members.body);
+        const lastMember = getLastData(members.body.edges);
 
         const data = {
           username: lastMember.username,
@@ -133,7 +136,7 @@ describe('Member End-Points', () => {
       it('should update member', async function () {
         const members = await this.request().get('/api/members');
 
-        const lastMember = R.last(members.body);
+        const lastMember = getLastData(members.body.edges);
 
         const data = {
           username: lastMember.username,
@@ -155,7 +158,11 @@ describe('Member End-Points', () => {
     it('should delete one member', async function () {
       const members = await this.request().get('/api/members');
 
-      const lastMemberId = R.compose(R.prop('_id'), R.last)(members.body);
+      const lastMemberId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(members.body.edges);
 
       const response = await this.request().delete(
         `/api/members/${lastMemberId}`,

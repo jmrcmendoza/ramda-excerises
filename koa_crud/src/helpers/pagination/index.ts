@@ -1,3 +1,4 @@
+import { Model } from 'mongoose';
 import R from 'ramda';
 
 class PaginateValidationError extends Error {
@@ -7,7 +8,7 @@ class PaginateValidationError extends Error {
   }
 }
 
-type Connection<T> = {
+export type Connection<T> = {
   totalCount: number;
   pageInfo: {
     endCursor: string;
@@ -24,12 +25,30 @@ export const toCursorHash = (string) => Buffer.from(string).toString('base64');
 export const fromCursorHash = (string) =>
   Buffer.from(string, 'base64').toString('ascii');
 
-export const paginate = (
+export const paginate = async (
+  model: Model<any>,
   limit: number | null,
-  data,
-): Connection<Record<string, any>> => {
-  const hasNextPage = limit ? R.length(data) > limit : false;
-  const nodes = hasNextPage ? R.slice(0, -1, data) : data;
+  after: string | null,
+  fieldOptions: any,
+): Promise<Connection<Record<string, any>>> => {
+  const cursor = after ? fromCursorHash(after) : null;
+
+  const result = cursor
+    ? await model
+        .find({}, { ...fieldOptions })
+        .lean({ virtuals: true })
+        .where('createdAt')
+        .gt(cursor)
+        .sort({ createdAt: 'asc' })
+        .limit(limit ? limit + 1 : null)
+    : await model
+        .find({}, { ...fieldOptions })
+        .lean({ virtuals: true })
+        .sort({ createdAt: 'asc' })
+        .limit(limit ? limit + 1 : null);
+
+  const hasNextPage = limit ? R.length(result) > limit : false;
+  const nodes = hasNextPage ? R.slice(0, -1, result) : result;
 
   if (R.find((node) => !R.includes('createdAt', R.keys(node)))(nodes)) {
     throw new PaginateValidationError('Created At field is missing.');

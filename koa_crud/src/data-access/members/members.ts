@@ -1,12 +1,13 @@
 /* eslint-disable no-param-reassign */
 import MemberModel, { MemberDocument } from '@models/member';
 import { compareHash, createHash } from '@encryption';
+import { paginate, Connection } from '@helpers/pagination';
 
 export type MemberQueries = {
   listMembers: (
     limit: number | null,
     cursor: string | null,
-  ) => Promise<MemberDocument>;
+  ) => Promise<Connection<Record<string, any>>>;
   selectOneMember: (id: string) => Promise<MemberDocument>;
   createMember: (document: MemberDocument) => Promise<boolean>;
   updateMember: (id: string, document: MemberDocument) => Promise<boolean>;
@@ -23,19 +24,7 @@ export default function ({
 }): MemberQueries {
   return Object.freeze({
     listMembers(limit: number | null, cursor: string | null) {
-      return cursor
-        ? member
-            .find({}, { password: 0 })
-            .lean({ virtuals: true })
-            .where('createdAt')
-            .gt(cursor)
-            .sort({ createdAt: 'asc' })
-            .limit(limit)
-        : member
-            .find({}, { password: 0 })
-            .lean({ virtuals: true })
-            .sort({ createdAt: 'asc' })
-            .limit(limit);
+      return paginate(member, limit, cursor, { password: 0 });
     },
     async selectOneMember(id: string) {
       const result = await member

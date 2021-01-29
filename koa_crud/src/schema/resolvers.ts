@@ -36,7 +36,6 @@ import {
   rejectPromoEnrollmentRequest,
   selectOnePromoEnrollmentRequest,
 } from '@useCases/promo-enrollment-requests';
-import { paginate, fromCursorHash } from '@helpers/pagination';
 
 class AuthorizationError extends Error {
   constructor(message) {
@@ -52,13 +51,7 @@ export default {
         throw new AuthorizationError('Forbidden');
       }
 
-      const cursor = after ? fromCursorHash(after) : null;
-
-      const vendors = await listVendors(limit ? limit + 1 : null, cursor);
-
-      const result = paginate(limit, vendors);
-
-      return result;
+      return listVendors(limit, after);
     },
     vendor: async (
       _obj,
@@ -75,13 +68,8 @@ export default {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
-      const cursor = after ? fromCursorHash(after) : null;
 
-      const members = await listMembers(limit ? limit + 1 : null, cursor);
-
-      const result = paginate(limit, members);
-
-      return result;
+      return listMembers(limit, after);
     },
     member: async (
       _obj,
@@ -99,13 +87,7 @@ export default {
         throw new AuthorizationError('Forbidden');
       }
 
-      const cursor = after ? fromCursorHash(after) : null;
-
-      const promos = await listPromos(limit ? limit + 1 : null, cursor);
-
-      const result = paginate(limit, promos);
-
-      return result;
+      return listPromos(limit, after);
     },
     promo: async (
       _obj,
@@ -127,16 +109,7 @@ export default {
         throw new AuthorizationError('Forbidden');
       }
 
-      const cursor = after ? fromCursorHash(after) : null;
-
-      const promoEnrollmentRequests = await listPromoEnrollmentRequests(
-        limit ? limit + 1 : null,
-        cursor,
-      );
-
-      const result = paginate(limit, promoEnrollmentRequests);
-
-      return result;
+      return listPromoEnrollmentRequests(limit, after);
     },
     promoEnrollmentRequest: async (
       _obj,
@@ -170,6 +143,16 @@ export default {
     __resolveType(obj: { template: string }): string {
       if (obj.template === 'SIGN_UP') return 'SignUpPromo';
       return 'DepositPromo';
+    },
+  },
+
+  PromoEnrollmentRequest: {
+    async promo(obj: { promo: string }): Promise<PromoDocument> {
+      return selectPromo(obj.promo);
+    },
+
+    async member(obj: { member: string }): Promise<PromoDocument> {
+      return selectMember(obj.member);
     },
   },
 

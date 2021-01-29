@@ -28,7 +28,7 @@ describe('Member Use Case', () => {
       it('should throw an error for empty username', async () => {
         const data = {
           username: '',
-          password: chance.string({ lenght: 5 }),
+          password: chance.string({ length: 5 }),
           realName: chance.name(),
         };
 
@@ -66,7 +66,7 @@ describe('Member Use Case', () => {
       it('should insert member and return true', async () => {
         const data = {
           username: chance.last(),
-          password: chance.string({ lenght: 5 }),
+          password: chance.string({ length: 5 }),
           realName: chance.name(),
         };
 
@@ -79,11 +79,11 @@ describe('Member Use Case', () => {
       it('should throw error for duplicate username', async () => {
         const members = await listMembers();
 
-        const lastMember = R.last(members);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         const data = {
           username: lastMember.username,
-          password: chance.string({ lenght: 5 }),
+          password: chance.string({ length: 5 }),
           realName: chance.name(),
         };
 
@@ -97,14 +97,18 @@ describe('Member Use Case', () => {
       const result = await listMembers();
 
       expect(result).to.exist;
-      expect(result).to.be.an('array');
-      expect(result).to.have.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should return one member', async () => {
       const member = await listMembers();
 
-      const lastMemberId = R.compose(R.prop('_id'), R.last)(member);
+      const lastMemberId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(member.edges);
 
       const result = await selectMember(lastMemberId);
 
@@ -118,7 +122,7 @@ describe('Member Use Case', () => {
       it('should throw an error for empty username', async () => {
         const members = await listMembers();
 
-        const lastMember = R.last(members);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         const data = {
           username: '',
@@ -140,7 +144,7 @@ describe('Member Use Case', () => {
       it('should throw an error for empty password', async () => {
         const members = await listMembers();
 
-        const lastMember = R.last(members);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         const data = {
           username: lastMember.username,
@@ -164,11 +168,11 @@ describe('Member Use Case', () => {
       it('should update member and return true', async () => {
         const members = await listMembers();
 
-        const lastMember = R.last(members);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         const data = {
           username: lastMember.username,
-          password: chance.string({ lenght: 5 }),
+          password: chance.string({ length: 5 }),
           realName: lastMember.realName,
         };
 
@@ -180,14 +184,14 @@ describe('Member Use Case', () => {
       it('should throw error for duplicate username', async () => {
         let data = {
           username: chance.last(),
-          password: chance.string({ lenght: 5 }),
+          password: chance.string({ length: 5 }),
           realName: chance.name(),
         };
 
         const members = await listMembers();
 
-        const firstMember = R.last(members);
-        const lastMember = R.last(members);
+        const firstMember = R.compose(R.prop('node'), R.head)(members.edges);
+        const lastMember = R.compose(R.prop('node'), R.last)(members.edges);
 
         data = {
           username: firstMember.username,
@@ -204,7 +208,11 @@ describe('Member Use Case', () => {
     it('should delete one vendor', async () => {
       const members = await listMembers();
 
-      const lastMemberId = R.compose(R.prop('_id'), R.last)(members);
+      const lastMemberId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(members.edges);
 
       const result = await deleteMember(lastMemberId);
 

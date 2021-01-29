@@ -5,6 +5,7 @@ import Chance from 'chance';
 import R from 'ramda';
 import PromoModel, { PromoStatus, PromoTemplate } from '@models/promo';
 import server from '@server';
+import { getLastData } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -439,10 +440,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -491,10 +489,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -539,10 +534,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -587,10 +579,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -639,10 +628,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -691,10 +677,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -743,10 +726,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -795,10 +775,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -847,10 +824,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -898,10 +872,7 @@ describe('Promos Graphql', function () {
 
         const promos = await this.request().post('/graphql').send(data);
 
-        const lastPromo = R.compose(
-          R.prop('node'),
-          R.last,
-        )(promos.body.data.promos.edges);
+        const lastPromo = getLastData(promos.body.data.promos.edges);
 
         data = {
           query: `mutation { updatePromo(id:"${lastPromo.id}", 
@@ -978,7 +949,6 @@ describe('Promos Graphql', function () {
       };
 
       const result = await this.request().post('/graphql').send(data);
-      console.log(result.body);
 
       expect(result.body.data).to.have.property('deletePromo', true);
     });

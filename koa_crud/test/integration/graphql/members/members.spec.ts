@@ -7,6 +7,7 @@ import R from 'ramda';
 import server from '@server';
 
 import MemberModel from '@models/member';
+import { getFirstData, getLastData, getLastDataId } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -74,10 +75,7 @@ describe('Members', function () {
 
         const members = await this.request().post('/graphql').send(data);
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.data.members.edges);
+        const lastMember = getLastData(members.body.data.members.edges);
 
         data = {
           query: `mutation { createMember(input:{ username:"${
@@ -252,11 +250,7 @@ describe('Members', function () {
 
         const members = await this.request().post('/graphql').send(data);
 
-        const lastMemberId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(members.body.data.members.edges);
+        const lastMemberId = getLastDataId(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${lastMemberId}", input:{ username:null, password:"${chance.string(
@@ -287,11 +281,7 @@ describe('Members', function () {
 
         const members = await this.request().post('/graphql').send(data);
 
-        const lastMemberId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(members.body.data.members.edges);
+        const lastMemberId = getLastDataId(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${lastMemberId}", input:{ username:"${chance.name()}", password:null }) }`,
@@ -322,10 +312,7 @@ describe('Members', function () {
 
         const members = await this.request().post('/graphql').send(data);
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.data.members.edges);
+        const lastMember = getLastData(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${
@@ -366,14 +353,8 @@ describe('Members', function () {
 
         const members = await this.request().post('/graphql').send(data);
 
-        const firstMember = R.compose(
-          R.prop('node'),
-          R.head,
-        )(members.body.data.members.edges);
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.data.members.edges);
+        const firstMember = getFirstData(members.body.data.members.edges);
+        const lastMember = getLastData(members.body.data.members.edges);
 
         data = {
           query: `mutation { updateMember(id:"${

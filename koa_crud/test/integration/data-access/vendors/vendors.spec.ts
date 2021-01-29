@@ -66,14 +66,14 @@ describe('Vendor Data Access', () => {
     it('should retrieve all vendors', async () => {
       const result = await vendorsDB.listVendors();
 
-      expect(result).to.be.an('array');
-      expect(result).has.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrieve one vendor', async () => {
       const vendors = await vendorsDB.listVendors();
 
-      const lastVendor = R.last(vendors);
+      const lastVendor = R.compose(R.prop('node'), R.last)(vendors.edges);
 
       const result = await vendorsDB.selectOneVendor(lastVendor._id);
 
@@ -88,7 +88,7 @@ describe('Vendor Data Access', () => {
       it('should update vendor type', async () => {
         const vendors = await vendorsDB.listVendors();
 
-        const lastVendor = R.last(vendors);
+        const lastVendor = R.compose(R.prop('node'), R.last)(vendors.edges);
 
         const data = {
           name: lastVendor.name,
@@ -106,7 +106,11 @@ describe('Vendor Data Access', () => {
     it('should delete one vendor', async () => {
       const vendors = await vendorsDB.listVendors();
 
-      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
+      const lastVendorId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(vendors.edges);
 
       const result = await vendorsDB.deleteVendor(lastVendorId);
 

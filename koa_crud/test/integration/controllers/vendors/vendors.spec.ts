@@ -13,6 +13,7 @@ import {
   postVendor,
   putVendor,
 } from '@controllers/vendors';
+import { getLastData } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -92,7 +93,7 @@ describe('Vendor Controller', () => {
       const result = await getVendors(data);
 
       expect(result).property('status', 200);
-      expect(result.body).length.greaterThan(0);
+      expect(result.body.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrieve one vendors and return 200 status code', async () => {
@@ -108,7 +109,13 @@ describe('Vendor Controller', () => {
 
       const vendors = await getVendors(data);
 
-      data.params = { id: R.compose(R.prop('_id'), R.last)(vendors.body) };
+      data.params = {
+        id: R.compose(
+          R.prop('_id'),
+          R.prop('node'),
+          R.last,
+        )(vendors.body.edges),
+      };
 
       await expect(getOneVendor(data)).to.eventually.fulfilled.property(
         'status',
@@ -136,7 +143,7 @@ describe('Vendor Controller', () => {
 
         const vendors = await getVendors(data);
 
-        const lastVendor = R.last(vendors.body);
+        const lastVendor = getLastData(vendors.body.edges);
 
         data.params = { id: lastVendor._id };
         data.body = {
@@ -164,7 +171,7 @@ describe('Vendor Controller', () => {
 
         const vendors = await getVendors(data);
 
-        const lastVendor = R.last(vendors.body);
+        const lastVendor = getLastData(vendors.body.edges);
 
         data.params = { id: lastVendor._id };
         data.body = {
@@ -194,7 +201,7 @@ describe('Vendor Controller', () => {
 
         const vendors = await getVendors(data);
 
-        const lastVendor = R.last(vendors.body);
+        const lastVendor = getLastData(vendors.body.edges);
 
         data.params = { id: lastVendor._id };
         data.body = {
@@ -224,7 +231,13 @@ describe('Vendor Controller', () => {
       };
       const vendors = await getVendors(data);
 
-      data.params = { id: R.compose(R.prop('_id'), R.last)(vendors.body) };
+      data.params = {
+        id: R.compose(
+          R.prop('_id'),
+          R.prop('node'),
+          R.last,
+        )(vendors.body.edges),
+      };
 
       await expect(delVendor(data)).to.eventually.fulfilled.property(
         'status',

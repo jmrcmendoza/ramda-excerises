@@ -68,7 +68,9 @@ describe('Vendors', () => {
       const response = await this.request().get('/api/vendors');
 
       expect(response.body).to.exist;
-      expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
+      expect(response.body.edges)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
     });
 
     it('should return one vendor', async function () {
@@ -87,7 +89,7 @@ describe('Vendors', () => {
     it('should return error for null vendor name', async function () {
       const vendors = await this.request().get('/api/vendors');
 
-      const lastVendor = R.last(vendors.body);
+      const lastVendor = R.compose(R.prop('node'), R.last)(vendors.body.edges);
 
       const data = {
         name: '',
@@ -105,7 +107,7 @@ describe('Vendors', () => {
     it('should return error for null vendor type', async function () {
       const vendors = await this.request().get('/api/vendors');
 
-      const lastVendor = R.last(vendors.body);
+      const lastVendor = R.compose(R.prop('node'), R.last)(vendors.body.edges);
 
       const data = {
         name: lastVendor.name,
@@ -123,7 +125,7 @@ describe('Vendors', () => {
     it('should update vendor type', async function () {
       const vendors = await this.request().get('/api/vendors');
 
-      const lastVendor = R.last(vendors.body);
+      const lastVendor = R.compose(R.prop('node'), R.last)(vendors.body.edges);
 
       const data = {
         name: lastVendor.name,
@@ -144,7 +146,11 @@ describe('Vendors', () => {
     it('should delete one vendor', async function () {
       const vendors = await this.request().get('/api/vendors');
 
-      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors.body);
+      const lastVendorId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(vendors.body.edges);
 
       const response = await this.request().delete(
         `/api/vendors/${lastVendorId}`,
