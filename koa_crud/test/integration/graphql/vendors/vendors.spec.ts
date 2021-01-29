@@ -9,6 +9,7 @@ import VendorModel, { VendorType } from '@models/vendor';
 import { createHash } from '@encryption';
 
 import server from '@server';
+import { getLastData, getLastDataId } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -252,11 +253,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
@@ -290,11 +287,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `{ vendor(id:"${lastVendorId}") { id name type } }`,
@@ -331,11 +324,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:null, type:${VendorType.Seamless}}) }`,
@@ -368,11 +357,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:null }) }`,
@@ -404,11 +389,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendorId}", input:{ name:"${chance.name()}", type:"TEST" }) }`,
@@ -443,10 +424,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendor = R.compose(
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendor = getLastData(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
@@ -480,10 +458,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendor = R.compose(
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendor = getLastData(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { updateVendor(id:"${lastVendor.id}", input:{ name:"${lastVendor.name}", type:${VendorType.Transfer}}) }`,
@@ -523,11 +498,7 @@ describe('Vendors', function () {
           .send(data)
           .set('authorization', `Bearer ${token}`);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { deleteVendor(id:"${lastVendorId}") }`,
@@ -560,11 +531,7 @@ describe('Vendors', function () {
 
         const vendors = await this.request().post('/graphql').send(data);
 
-        const lastVendorId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(vendors.body.data.vendors.edges);
+        const lastVendorId = getLastDataId(vendors.body.data.vendors.edges);
 
         data = {
           query: `mutation { deleteVendor(id:"${lastVendorId}") }`,

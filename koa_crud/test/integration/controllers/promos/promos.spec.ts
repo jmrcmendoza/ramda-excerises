@@ -13,6 +13,7 @@ import {
   putPromo,
 } from '@controllers/promos';
 import { MemberFields, PromoStatus, PromoTemplate } from '@models/promo';
+import { getLastDataId } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -313,11 +314,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -351,11 +348,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -389,11 +382,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -424,11 +413,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -462,11 +447,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -499,11 +480,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -537,11 +514,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -575,11 +548,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -613,11 +582,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -651,11 +616,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -688,11 +649,7 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.body.edges);
+        const lastPromoId = getLastDataId(promos.body.edges);
 
         data.params = { id: lastPromoId };
 

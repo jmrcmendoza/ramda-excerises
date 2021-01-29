@@ -9,6 +9,7 @@ import MemberModel from '@models/member';
 import { createHash } from '@encryption';
 import PromoModel, { PromoStatus, PromoTemplate } from '@models/promo';
 import PromoEnrollmentRequestModel from '@models/promo-enrollment-requests';
+import { getLastDataId } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -67,11 +68,7 @@ describe('Promos Graphql', function () {
       it('should return error for empty member', async function () {
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
+        const lastPromoId = getLastDataId(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -107,11 +104,7 @@ describe('Promos Graphql', function () {
 
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
+        const lastPromoId = getLastDataId(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -147,11 +140,7 @@ describe('Promos Graphql', function () {
 
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
+        const lastPromoId = getLastDataId(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -190,11 +179,7 @@ describe('Promos Graphql', function () {
 
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
+        const lastPromoId = getLastDataId(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -216,11 +201,7 @@ describe('Promos Graphql', function () {
       it('should throw forbidden', async function () {
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
+        const lastPromoId = getLastDataId(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(

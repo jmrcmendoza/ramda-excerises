@@ -13,6 +13,7 @@ import {
   postVendor,
   putVendor,
 } from '@controllers/vendors';
+import { getLastData } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -142,10 +143,7 @@ describe('Vendor Controller', () => {
 
         const vendors = await getVendors(data);
 
-        const lastVendor = R.compose(
-          R.prop('node'),
-          R.last,
-        )(vendors.body.edges);
+        const lastVendor = getLastData(vendors.body.edges);
 
         data.params = { id: lastVendor._id };
         data.body = {
@@ -173,10 +171,7 @@ describe('Vendor Controller', () => {
 
         const vendors = await getVendors(data);
 
-        const lastVendor = R.compose(
-          R.prop('node'),
-          R.last,
-        )(vendors.body.edges);
+        const lastVendor = getLastData(vendors.body.edges);
 
         data.params = { id: lastVendor._id };
         data.body = {
@@ -206,10 +201,7 @@ describe('Vendor Controller', () => {
 
         const vendors = await getVendors(data);
 
-        const lastVendor = R.compose(
-          R.prop('node'),
-          R.last,
-        )(vendors.body.edges);
+        const lastVendor = getLastData(vendors.body.edges);
 
         data.params = { id: lastVendor._id };
         data.body = {

@@ -7,6 +7,7 @@ import server from '@server';
 import promoEnrollmentRequestsDB from '@dataAccess/promo-enrollment-requests';
 import memberDB from '@dataAccess/members';
 import promoDB from '@dataAccess/promos';
+import { getLastDataId } from 'test/helpers/ramda';
 
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
@@ -20,11 +21,7 @@ describe('Promo Data Access', () => {
       it('should throw a validation error for empty promo', async () => {
         const members = await memberDB.listMembers();
 
-        const lastMemberId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(members.edges);
+        const lastMemberId = getLastDataId(members.edges);
 
         const data = {
           promo: '',
@@ -38,11 +35,7 @@ describe('Promo Data Access', () => {
       it('should throw a validation error for empty member', async () => {
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
+        const lastPromoId = getLastDataId(promos.edges);
 
         const data = {
           promo: lastPromoId,
@@ -59,16 +52,8 @@ describe('Promo Data Access', () => {
         const promos = await promoDB.listPromos();
         const members = await memberDB.listMembers();
 
-        const lastPromoId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(promos.edges);
-        const lastMemberId = R.compose(
-          R.prop('id'),
-          R.prop('node'),
-          R.last,
-        )(members.edges);
+        const lastPromoId = getLastDataId(promos.edges);
+        const lastMemberId = getLastDataId(members.edges);
 
         const data = {
           promo: lastPromoId,

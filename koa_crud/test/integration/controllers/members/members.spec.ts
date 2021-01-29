@@ -12,6 +12,7 @@ import {
   postMember,
   putMember,
 } from '@controllers/members';
+import { getFirstData, getLastData } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -101,10 +102,7 @@ describe('Member Controller', () => {
         };
         const members = await getMembers(data);
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         data.body = {
           username: lastMember.username,
@@ -178,10 +176,7 @@ describe('Member Controller', () => {
         };
         const members = await getMembers(data);
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         data.params = { id: lastMember._id };
         data.body = {
@@ -210,10 +205,7 @@ describe('Member Controller', () => {
         };
         const members = await getMembers(data);
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         data.params = { id: lastMember._id };
         data.body = {
@@ -248,14 +240,8 @@ describe('Member Controller', () => {
 
         const members = await getMembers(data);
 
-        const firstMember = R.compose(
-          R.prop('node'),
-          R.head,
-        )(members.body.edges);
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const firstMember = getFirstData(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         data = {
           query: {},

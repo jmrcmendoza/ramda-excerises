@@ -4,6 +4,7 @@ import chaiHttp from 'chai-http';
 import Chance from 'chance';
 import R from 'ramda';
 import server from '@server';
+import { getLastData } from 'test/helpers/ramda';
 
 const chance = new Chance();
 
@@ -95,10 +96,7 @@ describe('Member End-Points', () => {
       it('should throw error for empty username', async function () {
         const members = await this.request().get('/api/members');
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         const data = {
           username: '',
@@ -117,10 +115,7 @@ describe('Member End-Points', () => {
       it('should throw error for empty password', async function () {
         const members = await this.request().get('/api/members');
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         const data = {
           username: lastMember.username,
@@ -141,10 +136,7 @@ describe('Member End-Points', () => {
       it('should update member', async function () {
         const members = await this.request().get('/api/members');
 
-        const lastMember = R.compose(
-          R.prop('node'),
-          R.last,
-        )(members.body.edges);
+        const lastMember = getLastData(members.body.edges);
 
         const data = {
           username: lastMember.username,
