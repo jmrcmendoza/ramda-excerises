@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
+import { Connection, paginate } from '@helpers/pagination';
 import PromoModel, { PromoDocument } from '@models/promo';
 
 export type PromoQueries = {
   listPromos: (
     limit: number | null,
     cursor: string | null,
-  ) => Promise<PromoDocument>;
+  ) => Promise<Connection<Record<string, any>>>;
   selectOnePromo: (id: string) => Promise<PromoDocument>;
   createPromo: (document: PromoDocument) => Promise<boolean>;
   updatePromo: (id: string, document: PromoDocument) => Promise<boolean>;
@@ -19,19 +20,7 @@ export default function ({
 }): PromoQueries {
   return Object.freeze({
     listPromos(limit: number | null, cursor: string | null) {
-      return cursor
-        ? promo
-            .find({})
-            .lean({ virtuals: true })
-            .where('createdAt')
-            .gt(cursor)
-            .sort({ createdAt: 'asc' })
-            .limit(limit)
-        : promo
-            .find({})
-            .sort({ createdAt: 'asc' })
-            .lean({ virtuals: true })
-            .limit(limit);
+      return paginate(promo, limit, cursor, null);
     },
     async selectOnePromo(id: string) {
       const result = await promo
