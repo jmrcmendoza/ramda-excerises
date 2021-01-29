@@ -101,7 +101,10 @@ describe('Member Controller', () => {
         };
         const members = await getMembers(data);
 
-        const lastMember = R.last(members.body);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.edges);
 
         data.body = {
           username: lastMember.username,
@@ -129,7 +132,7 @@ describe('Member Controller', () => {
       const result = await getMembers(data);
 
       expect(result).to.have.property('status', 200);
-      expect(result.body).to.have.length.greaterThan(0);
+      expect(result.body.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrieve one member and return 200 status code', async () => {
@@ -145,7 +148,13 @@ describe('Member Controller', () => {
 
       const members = await getMembers(data);
 
-      data.params = { id: R.compose(R.prop('_id'), R.last)(members.body) };
+      data.params = {
+        id: R.compose(
+          R.prop('_id'),
+          R.prop('node'),
+          R.last,
+        )(members.body.edges),
+      };
 
       const result = await getOneMember(data);
 
@@ -169,7 +178,10 @@ describe('Member Controller', () => {
         };
         const members = await getMembers(data);
 
-        const lastMember = R.last(members.body);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.edges);
 
         data.params = { id: lastMember._id };
         data.body = {
@@ -198,7 +210,10 @@ describe('Member Controller', () => {
         };
         const members = await getMembers(data);
 
-        const lastMember = R.last(members.body);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.edges);
 
         data.params = { id: lastMember._id };
         data.body = {
@@ -233,8 +248,14 @@ describe('Member Controller', () => {
 
         const members = await getMembers(data);
 
-        const firstMember = R.head(members.body);
-        const lastMember = R.last(members.body);
+        const firstMember = R.compose(
+          R.prop('node'),
+          R.head,
+        )(members.body.edges);
+        const lastMember = R.compose(
+          R.prop('node'),
+          R.last,
+        )(members.body.edges);
 
         data = {
           query: {},
@@ -277,7 +298,13 @@ describe('Member Controller', () => {
 
       const members = await getMembers(data);
 
-      data.params = { id: R.compose(R.prop('_id'), R.last)(members.body) };
+      data.params = {
+        id: R.compose(
+          R.prop('_id'),
+          R.prop('node'),
+          R.last,
+        )(members.body.edges),
+      };
 
       const result = await delMember(data);
 

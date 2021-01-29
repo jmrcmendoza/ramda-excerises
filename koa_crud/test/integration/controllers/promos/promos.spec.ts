@@ -264,7 +264,7 @@ describe('Promo Controller', () => {
       const result = await getPromos(data);
 
       expect(result).property('status', 200);
-      expect(result.body).length.greaterThan(0);
+      expect(result.body.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrieve one promos and return 200 status code', async () => {
@@ -279,7 +279,9 @@ describe('Promo Controller', () => {
       };
       const promos = await getPromos(data);
 
-      data.params = { id: R.compose(R.prop('_id'), R.last)(promos.body) };
+      data.params = {
+        id: R.compose(R.prop('_id'), R.prop('node'), R.last)(promos.body.edges),
+      };
 
       await expect(getOnePromo(data)).to.eventually.fulfilled.property(
         'status',
@@ -311,7 +313,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -345,7 +351,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -379,7 +389,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -410,7 +424,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -444,7 +462,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -477,7 +499,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -511,7 +537,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -545,7 +575,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -579,7 +613,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -613,7 +651,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -646,7 +688,11 @@ describe('Promo Controller', () => {
 
         const promos = await getPromos(data);
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.body.edges);
 
         data.params = { id: lastPromoId };
 
@@ -681,7 +727,11 @@ describe('Promo Controller', () => {
 
       const promos = await getPromos(data);
 
-      const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.prop('node'),
+        R.last,
+      )(promos.body.edges);
 
       data.params = { id: lastPromoId };
 
@@ -714,7 +764,11 @@ describe('Promo Controller', () => {
 
       const promos = await getPromos(data);
 
-      const lastPromoId = R.compose(R.prop('id'), R.last)(promos.body);
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.prop('node'),
+        R.last,
+      )(promos.body.edges);
 
       data.params = { id: lastPromoId };
 
