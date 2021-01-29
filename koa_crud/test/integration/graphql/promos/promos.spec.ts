@@ -978,7 +978,6 @@ describe('Promos Graphql', function () {
       };
 
       const result = await this.request().post('/graphql').send(data);
-      console.log(result.body);
 
       expect(result.body.data).to.have.property('deletePromo', true);
     });

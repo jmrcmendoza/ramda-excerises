@@ -67,7 +67,11 @@ describe('Promos Graphql', function () {
       it('should return error for empty member', async function () {
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -103,7 +107,11 @@ describe('Promos Graphql', function () {
 
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -139,7 +147,11 @@ describe('Promos Graphql', function () {
 
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -178,7 +190,11 @@ describe('Promos Graphql', function () {
 
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
@@ -200,7 +216,11 @@ describe('Promos Graphql', function () {
       it('should throw forbidden', async function () {
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
 
         const data = {
           query: `mutation { enrollToPromo(
