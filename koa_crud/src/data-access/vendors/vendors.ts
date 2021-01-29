@@ -1,10 +1,11 @@
+import { Connection, paginate } from '@helpers/pagination';
 import VendorModel, { VendorDocument } from '@models/vendor';
 
 export type VendorQueries = {
   listVendors: (
     limit: number | null,
     cursor: string | null,
-  ) => Promise<VendorDocument>;
+  ) => Promise<Connection<Record<string, any>>>;
   selectOneVendor: (id: string) => Promise<VendorDocument>;
   createVendor: (document: VendorDocument) => Promise<boolean>;
   updateVendor: (id: string, document: VendorDocument) => Promise<boolean>;
@@ -18,19 +19,7 @@ export default function ({
 }): VendorQueries {
   return Object.freeze({
     listVendors(limit: number | null, cursor: string | null) {
-      return cursor
-        ? vendors
-            .find({})
-            .lean({ virtuals: true })
-            .where('createdAt')
-            .gt(cursor)
-            .sort({ createdAt: 'asc' })
-            .limit(limit)
-        : vendors
-            .find({})
-            .lean({ virtuals: true })
-            .sort({ createdAt: 'asc' })
-            .limit(limit);
+      return paginate(vendors, limit, cursor, null);
     },
     selectOneVendor(id: string) {
       return vendors.findById(id).lean({ virtuals: true });
