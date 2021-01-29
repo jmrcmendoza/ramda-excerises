@@ -214,13 +214,19 @@ describe('Member End-Points', () => {
       const response = await this.request().get('/api/promos');
 
       expect(response.body).to.exist;
-      expect(response.body).to.be.an('array').that.has.length.greaterThan(0);
+      expect(response.body.edges)
+        .to.be.an('array')
+        .that.has.length.greaterThan(0);
     });
 
     it('should return one promo', async function () {
       const promos = await this.request().get('/api/promos');
 
-      const lastPromoId = R.compose(R.prop('_id'), R.last)(promos.body);
+      const lastPromoId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(promos.body.edges);
 
       const response = await this.request().get(`/api/promos/${lastPromoId}`);
 
@@ -234,7 +240,7 @@ describe('Member End-Points', () => {
       it('should return error for empty name', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: '',
@@ -257,7 +263,7 @@ describe('Member End-Points', () => {
       it('should return error for empty template', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -280,7 +286,7 @@ describe('Member End-Points', () => {
       it('should return error for invalid template', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -303,7 +309,7 @@ describe('Member End-Points', () => {
       it('should return error for empty title', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -326,7 +332,7 @@ describe('Member End-Points', () => {
       it('should return error for empty description', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -351,7 +357,7 @@ describe('Member End-Points', () => {
       it('should return error for empty minimum balance given template is deposit', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -376,7 +382,7 @@ describe('Member End-Points', () => {
       it('should return error for empty member fields given template is sign up', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -401,7 +407,7 @@ describe('Member End-Points', () => {
       it('should return error for invalid member fields given template is sign up', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -424,7 +430,7 @@ describe('Member End-Points', () => {
       it('should return error for invalid status', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -449,7 +455,7 @@ describe('Member End-Points', () => {
       it('should return error for empty name', async function () {
         const promos = await this.request().get('/api/promos');
 
-        const lastPromo = R.last(promos.body);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.body.edges);
 
         const data = {
           name: lastPromo.name,
@@ -485,7 +491,11 @@ describe('Member End-Points', () => {
 
       const promos = await this.request().get('/api/promos');
 
-      const lastPromoId = R.compose(R.prop('_id'), R.last)(promos.body);
+      const lastPromoId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(promos.body.edges);
 
       const response = await this.request().delete(
         `/api/promos/${lastPromoId}`,
@@ -509,7 +519,11 @@ describe('Member End-Points', () => {
 
       const promos = await this.request().get('/api/promos');
 
-      const lastPromoId = R.compose(R.prop('_id'), R.last)(promos.body);
+      const lastPromoId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(promos.body.edges);
 
       const response = await this.request().delete(
         `/api/promos/${lastPromoId}`,
