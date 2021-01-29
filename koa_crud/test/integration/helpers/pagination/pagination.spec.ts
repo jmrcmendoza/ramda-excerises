@@ -1,53 +1,49 @@
 /* eslint-disable no-unused-expressions */
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import Chance from 'chance';
 import R from 'ramda';
-// import chai, { expect } from 'chai';
 import { fromCursorHash, paginate, toCursorHash } from '@helpers/pagination';
+import MemberModel from '@models/member';
 
 const chance = new Chance();
 
+chai.use(chaiAsPromised);
+
 describe('Pagination', () => {
-  it('should return false on next page given limit value is equal to data length ', () => {
-    const data = [
-      { name: chance.word(), createdAt: chance.date() },
-      { name: chance.word(), createdAt: chance.date() },
-      { name: chance.word(), createdAt: chance.date() },
-    ];
+  before(async () => {
+    await MemberModel.deleteMany({});
+    R.times(
+      () =>
+        MemberModel.create({
+          username: chance.first(),
+          password: chance.word(),
+        }),
+      3,
+    );
+  });
+  it('should return false on next page given limit value is equal to data length ', async () => {
+    const result = await paginate(MemberModel, 3, null, null);
 
-    const result = paginate(R.length(data), data);
-
-    expect(result).to.have.property('totalCount', R.length(data));
+    expect(result).to.have.property('totalCount', 3);
     expect(result).to.have.property('pageInfo');
     expect(result).to.have.property('edges');
     expect(result.pageInfo.hasNextPage).to.be.false;
   });
 
-  it('should return false on next page given limit value is less than data length ', () => {
-    const data = [
-      { name: chance.word(), createdAt: chance.date() },
-      { name: chance.word(), createdAt: chance.date() },
-      { name: chance.word(), createdAt: chance.date() },
-    ];
+  it('should return true on next page given limit value is less than data length ', async () => {
+    const result = await paginate(MemberModel, 2, null, null);
 
-    const result = paginate(R.length(data) - 1, data);
-
-    expect(result).to.have.property('totalCount', R.length(data) - 1);
+    expect(result).to.have.property('totalCount', 2);
     expect(result).to.have.property('pageInfo');
     expect(result).to.have.property('edges');
     expect(result.pageInfo.hasNextPage).to.be.true;
   });
 
-  it('should thrown error for missing createdAt field', () => {
-    const data = [
-      { name: chance.word(), createdAt: chance.date() },
-      { name: chance.word(), createdAt: chance.date() },
-      { name: chance.word() },
-    ];
-
-    expect(() => paginate(R.length(data), data))
-      .to.throw('Created At field is missing.')
-      .to.have.property('name', 'PAGINATE_VALIDATION_ERROR');
+  it('should thrown error for missing createdAt field', async () => {
+    await expect(paginate(MemberModel, 3, null, { password: 0, createdAt: 0 }))
+      .to.eventually.rejectedWith('Created At field is missing.')
+      .and.to.have.property('name', 'PAGINATE_VALIDATION_ERROR');
   });
 });
 
