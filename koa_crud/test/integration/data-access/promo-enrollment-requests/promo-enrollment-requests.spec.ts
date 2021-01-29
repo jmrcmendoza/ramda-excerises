@@ -20,7 +20,11 @@ describe('Promo Data Access', () => {
       it('should throw a validation error for empty promo', async () => {
         const members = await memberDB.listMembers();
 
-        const lastMemberId = R.compose(R.prop('id'), R.last)(members);
+        const lastMemberId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(members.edges);
 
         const data = {
           promo: '',
@@ -34,7 +38,11 @@ describe('Promo Data Access', () => {
       it('should throw a validation error for empty member', async () => {
         const promos = await promoDB.listPromos();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
 
         const data = {
           promo: lastPromoId,
@@ -51,8 +59,16 @@ describe('Promo Data Access', () => {
         const promos = await promoDB.listPromos();
         const members = await memberDB.listMembers();
 
-        const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
-        const lastMemberId = R.compose(R.prop('id'), R.last)(members);
+        const lastPromoId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(promos.edges);
+        const lastMemberId = R.compose(
+          R.prop('id'),
+          R.prop('node'),
+          R.last,
+        )(members.edges);
 
         const data = {
           promo: lastPromoId,
@@ -70,14 +86,17 @@ describe('Promo Data Access', () => {
     it('should retrieve all promo enrollment requests', async () => {
       const result = await promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
 
-      expect(result).to.be.an('array');
-      expect(result).has.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrieve one promo', async () => {
       const promoEnrollmentRequests = await promoEnrollmentRequestsDB.listPromoEnrollmentRequests();
 
-      const lastPromoEnrollmentRequest = R.last(promoEnrollmentRequests);
+      const lastPromoEnrollmentRequest = R.compose(
+        R.prop('node'),
+        R.last,
+      )(promoEnrollmentRequests.edges);
 
       const result = await promoEnrollmentRequestsDB.selectOnePromoEnrollmentRequest(
         lastPromoEnrollmentRequest.id,
@@ -95,8 +114,9 @@ describe('Promo Data Access', () => {
 
       const lastEnrollmentRequest = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(enrollmentRequests);
+      )(enrollmentRequests.edges);
 
       const result = await promoEnrollmentRequestsDB.processPromoEnrollmentRequest(
         lastEnrollmentRequest,
@@ -112,8 +132,9 @@ describe('Promo Data Access', () => {
 
       const lastEnrollmentRequest = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(enrollmentRequests);
+      )(enrollmentRequests.edges);
 
       const result = await promoEnrollmentRequestsDB.approvePromoEnrollmentRequest(
         lastEnrollmentRequest,
@@ -129,8 +150,9 @@ describe('Promo Data Access', () => {
 
       const lastEnrollmentRequest = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(enrollmentRequests);
+      )(enrollmentRequests.edges);
 
       const result = await promoEnrollmentRequestsDB.rejectPromoEnrollmentRequest(
         lastEnrollmentRequest,

@@ -102,14 +102,14 @@ describe('Promo Data Access', () => {
     it('should retrieve all promos', async () => {
       const result = await promoDB.listPromos();
 
-      expect(result).to.be.an('array');
-      expect(result).has.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should retrieve one promo', async () => {
       const promos = await promoDB.listPromos();
 
-      const lastPromo = R.last(promos);
+      const lastPromo = R.compose(R.prop('node'), R.last)(promos.edges);
 
       const result = await promoDB.selectOnePromo(lastPromo.id);
 
@@ -124,7 +124,7 @@ describe('Promo Data Access', () => {
       it('should update promo type', async () => {
         const vendors = await promoDB.listPromos();
 
-        const lastVendor = R.last(vendors);
+        const lastVendor = R.compose(R.prop('node'), R.last)(vendors.edges);
 
         const data = {
           name: chance.name(),
@@ -146,7 +146,11 @@ describe('Promo Data Access', () => {
     it('should delete one promo', async () => {
       const vendors = await promoDB.listPromos();
 
-      const lastVendorId = R.compose(R.prop('_id'), R.last)(vendors);
+      const lastVendorId = R.compose(
+        R.prop('_id'),
+        R.prop('node'),
+        R.last,
+      )(vendors.edges);
 
       const result = await promoDB.deletePromo(lastVendorId);
 
