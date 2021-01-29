@@ -188,8 +188,8 @@ describe('Promo Enrollment Request Use Cases', () => {
       const result = await listPromoEnrollmentRequests();
 
       expect(result).to.exist;
-      expect(result).to.be.an('array');
-      expect(result).to.have.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should return one promo enrollment request', async () => {
@@ -197,8 +197,9 @@ describe('Promo Enrollment Request Use Cases', () => {
 
       const lastpromoEnrollmentRequestId = R.compose(
         R.prop('id'),
+        R.prop('node'),
         R.last,
-      )(promoEnrollmentRequests);
+      )(promoEnrollmentRequests.edges);
 
       const result = await selectOnePromoEnrollmentRequest(
         lastpromoEnrollmentRequestId,

@@ -235,14 +235,18 @@ describe('Promo Use Case', () => {
       const result = await listPromos();
 
       expect(result).to.exist;
-      expect(result).to.be.an('array');
-      expect(result).to.have.length.greaterThan(0);
+      expect(result.edges).to.be.an('array');
+      expect(result.totalCount).to.be.greaterThan(0);
     });
 
     it('should return one promo', async () => {
       const promo = await listPromos();
 
-      const lastPromoId = R.compose(R.prop('id'), R.last)(promo);
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.prop('node'),
+        R.last,
+      )(promo.edges);
 
       const result = await selectPromo(lastPromoId);
 
@@ -453,7 +457,7 @@ describe('Promo Use Case', () => {
       it('should update promo and return true', async () => {
         const promos = await listPromos();
 
-        const lastPromo = R.last(promos);
+        const lastPromo = R.compose(R.prop('node'), R.last)(promos.edges);
 
         const data = {
           name: lastPromo.name,
@@ -485,7 +489,11 @@ describe('Promo Use Case', () => {
 
       const promos = await listPromos();
 
-      const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.prop('node'),
+        R.last,
+      )(promos.edges);
 
       const result = await deletePromo(lastPromoId);
 
@@ -506,7 +514,11 @@ describe('Promo Use Case', () => {
 
       const promos = await listPromos();
 
-      const lastPromoId = R.compose(R.prop('id'), R.last)(promos);
+      const lastPromoId = R.compose(
+        R.prop('id'),
+        R.prop('node'),
+        R.last,
+      )(promos.edges);
 
       await expect(
         deletePromo(lastPromoId),
