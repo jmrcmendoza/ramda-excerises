@@ -68,12 +68,16 @@ export default {
 
       return selectVendor(vendor.id);
     },
-    members: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
+    members: async (
+      _obj,
+      { limit, after, filter },
+      ctx: Context,
+    ): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      return listMembers(limit, after);
+      return listMembers(limit, after, filter);
     },
     member: async (
       _obj,
@@ -86,12 +90,16 @@ export default {
 
       return selectMember(args.id);
     },
-    promos: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
+    promos: async (
+      _obj,
+      { limit, after, filter },
+      ctx: Context,
+    ): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      return listPromos(limit, after);
+      return listPromos(limit, after, filter);
     },
     promo: async (
       _obj,
@@ -106,14 +114,14 @@ export default {
     },
     promoEnrollmentRequests: async (
       _obj,
-      { limit, after },
+      { limit, after, filter },
       ctx: Context,
     ): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      return listPromoEnrollmentRequests(limit, after);
+      return listPromoEnrollmentRequests(limit, after, filter);
     },
     promoEnrollmentRequest: async (
       _obj,
