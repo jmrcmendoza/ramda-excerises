@@ -30,20 +30,20 @@ export const paginate = async (
   limit: number | null,
   after: string | null,
   fieldOptions: any,
-  filters: _FilterQuery<any> | null,
+  filters: any,
 ): Promise<Connection<Record<string, any>>> => {
   const cursor = after ? fromCursorHash(after) : null;
 
   const result = cursor
     ? await model
-        .find({ ...filters }, { ...fieldOptions })
+        .find(filters, { ...fieldOptions })
         .lean({ virtuals: true })
         .where('createdAt')
         .gt(cursor)
         .sort({ createdAt: 'asc' })
         .limit(limit ? limit + 1 : null)
     : await model
-        .find({ ...filters }, { ...fieldOptions })
+        .find(filters, { ...fieldOptions })
         .lean({ virtuals: true })
         .sort({ createdAt: 'asc' })
         .limit(limit ? limit + 1 : null);
