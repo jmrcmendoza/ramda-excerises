@@ -30,9 +30,15 @@ export const paginate = async (
   limit: number | null,
   after: string | null,
   fieldOptions: any,
-  filters: any,
+  filter: any,
 ): Promise<Connection<Record<string, any>>> => {
   const cursor = after ? fromCursorHash(after) : null;
+
+  const filters = filter
+    ? R.map((key: any) => {
+        return { $eq: key.eq };
+      })(filter)
+    : {};
 
   const result = cursor
     ? await model
