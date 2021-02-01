@@ -7,6 +7,7 @@ export default function listMembersController({
   listMembers: (
     limit: number | null,
     cursor: string | null,
+    filter: any,
   ) => Promise<MemberDocument>;
 }) {
   return async function getListMembers(
@@ -14,10 +15,10 @@ export default function listMembersController({
   ): Promise<Record<string, any>> {
     try {
       const {
-        query: { limit, cursor },
+        query: { limit, cursor, filter },
       } = httpRequest;
 
-      const result = await listMembers(limit, cursor);
+      const result = await listMembers(limit, cursor, filter);
 
       return {
         headers: {
