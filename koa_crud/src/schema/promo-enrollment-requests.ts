@@ -33,10 +33,19 @@ export const typeDefs = gql`
     pageInfo: PromoEnrollmentRequestPageInfo
   }
 
+  input PromoEnrollmentRequestQueryOperatorInput {
+    eq: String
+  }
+
+  input PromoEnrollmentRequestFilterInput {
+    status: PromoEnrollmentRequestQueryOperatorInput
+  }
+
   extend type Query {
     promoEnrollmentRequests(
       limit: Int
       after: String
+      filter: PromoEnrollmentRequestFilterInput
     ): PromoEnrollmentRequestConnection
     promoEnrollmentRequest(id: ID!): PromoEnrollmentRequest
   }
