@@ -1,12 +1,11 @@
 import { Connection, paginate } from '@helpers/pagination';
 import VendorModel, { VendorDocument } from '@models/vendor';
-import { _FilterQuery } from 'mongoose';
 
 export type VendorQueries = {
   listVendors: (
     limit: number | null,
     cursor: string | null,
-    filter: string | null,
+    filter: any,
   ) => Promise<Connection<Record<string, any>>>;
   selectOneVendor: (id: string) => Promise<VendorDocument>;
   createVendor: (document: VendorDocument) => Promise<boolean>;
@@ -20,16 +19,8 @@ export default function ({
   vendors: typeof VendorModel;
 }): VendorQueries {
   return Object.freeze({
-    listVendors(
-      limit: number | null,
-      cursor: string | null,
-      filter: string | null,
-    ) {
-      const filters: _FilterQuery<any> = filter
-        ? { $or: [{ name: filter }, { type: filter }] }
-        : {};
-
-      return paginate(vendors, limit, cursor, null, filters);
+    listVendors(limit: number | null, cursor: string | null, filter: any) {
+      return paginate(vendors, limit, cursor, null, filter);
     },
     selectOneVendor(id: string) {
       return vendors.findById(id).lean({ virtuals: true });
