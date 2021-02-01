@@ -46,12 +46,16 @@ class AuthorizationError extends Error {
 
 export default {
   Query: {
-    vendors: async (_obj, { limit, after }, ctx: Context): Promise<any> => {
+    vendors: async (
+      _obj,
+      { limit, after, filter },
+      ctx: Context,
+    ): Promise<any> => {
       if (!ctx.verified) {
         throw new AuthorizationError('Forbidden');
       }
 
-      return listVendors(limit, after);
+      return listVendors(limit, after, filter);
     },
     vendor: async (
       _obj,
