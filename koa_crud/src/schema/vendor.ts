@@ -30,8 +30,20 @@ export const typeDefs = gql`
     pageInfo: VendorPageInfo
   }
 
+  input StringQueryOperatorInput {
+    eq: String
+  }
+
+  input VendorFilterInput {
+    name: StringQueryOperatorInput
+  }
+
   extend type Query {
-    vendors(limit: Int, after: String, filter: String): VendorConnection
+    vendors(
+      limit: Int
+      after: String
+      filter: VendorFilterInput
+    ): VendorConnection
     vendor(id: ID!): Vendor
   }
 
