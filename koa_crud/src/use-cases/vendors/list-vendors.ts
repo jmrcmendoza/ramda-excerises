@@ -4,7 +4,8 @@ export default function makeListVendors(vendorsDB: VendorQueries) {
   return async function listVendors(
     limit: number | null,
     cursor: string | null,
+    filter: string | null,
   ): Promise<any> {
-    return vendorsDB.listVendors(limit, cursor);
+    return vendorsDB.listVendors(limit, cursor, filter);
   };
 }

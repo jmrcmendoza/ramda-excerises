@@ -7,6 +7,7 @@ export default function listVendorsController({
   listVendors: (
     limit: number | null,
     cursor: string | null,
+    filter: string | null,
   ) => Promise<VendorDocument>;
 }) {
   return async function getListVendors(
@@ -14,10 +15,10 @@ export default function listVendorsController({
   ): Promise<Record<string, any>> {
     try {
       const {
-        query: { limit, cursor },
+        query: { limit, cursor, filter },
       } = httpRequest;
 
-      const result = await listVendors(limit, cursor);
+      const result = await listVendors(limit, cursor, filter);
 
       return {
         headers: {
