@@ -36,6 +36,7 @@ export const typeDefs = gql`
 
   input VendorFilterInput {
     name: StringQueryOperatorInput
+    type: StringQueryOperatorInput
   }
 
   extend type Query {
