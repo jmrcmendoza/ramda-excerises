@@ -6,7 +6,12 @@ export default function makeListPromoEnrollmentRequests(
   return async function listPromoEnrollmentRequests(
     limit: number | null,
     cursor: string | null,
+    filter: any,
   ): Promise<any> {
-    return promoEnrollmentRequestsDB.listPromoEnrollmentRequests(limit, cursor);
+    return promoEnrollmentRequestsDB.listPromoEnrollmentRequests(
+      limit,
+      cursor,
+      filter,
+    );
   };
 }
