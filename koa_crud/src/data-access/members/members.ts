@@ -2,11 +2,13 @@
 import MemberModel, { MemberDocument } from '@models/member';
 import { compareHash, createHash } from '@encryption';
 import { paginate, Connection } from '@helpers/pagination';
+import { _FilterQuery } from 'mongoose';
 
 export type MemberQueries = {
   listMembers: (
     limit: number | null,
     cursor: string | null,
+    filter: string | null,
   ) => Promise<Connection<Record<string, any>>>;
   selectOneMember: (id: string) => Promise<MemberDocument>;
   createMember: (document: MemberDocument) => Promise<boolean>;
@@ -23,8 +25,12 @@ export default function ({
   member: typeof MemberModel;
 }): MemberQueries {
   return Object.freeze({
-    listMembers(limit: number | null, cursor: string | null) {
-      return paginate(member, limit, cursor, { password: 0 });
+    listMembers(
+      limit: number | null,
+      cursor: string | null,
+      filter: string | null,
+    ) {
+      return paginate(member, limit, cursor, { password: 0 }, filter);
     },
     async selectOneMember(id: string) {
       const result = await member
