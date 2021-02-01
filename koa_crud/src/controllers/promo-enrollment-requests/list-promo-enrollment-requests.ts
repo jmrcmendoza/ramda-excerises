@@ -7,6 +7,7 @@ export default function listPromoEnrollmentRequestsController({
   listPromoEnrollmentRequests: (
     limit: number | null,
     cursor: string | null,
+    filter: any,
   ) => Promise<PromoEnrollmentRequestDocument>;
 }) {
   return async function getListPromoEnrollmentRequests(
@@ -14,10 +15,10 @@ export default function listPromoEnrollmentRequestsController({
   ): Promise<Record<string, any>> {
     try {
       const {
-        query: { limit, cursor },
+        query: { limit, cursor, filter },
       } = httpRequest;
 
-      const result = await listPromoEnrollmentRequests(limit, cursor);
+      const result = await listPromoEnrollmentRequests(limit, cursor, filter);
 
       return {
         headers: {
