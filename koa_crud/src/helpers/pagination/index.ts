@@ -35,8 +35,11 @@ export const paginate = async (
   const cursor = after ? fromCursorHash(after) : null;
 
   const filters = filter
-    ? R.map((key: any) => {
-        return { $eq: key.eq };
+    ? R.map((value: any) => {
+        const operators = R.mapObjIndexed((data: any, index: string) => {
+          return { [`$${index}`]: data };
+        })(value);
+        return R.mergeAll(R.values(operators));
       })(filter)
     : {};
 
