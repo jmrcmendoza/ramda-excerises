@@ -77,6 +77,8 @@ export const typeDefs = gql`
 
   input PromoQueryOperatorInput {
     eq: String
+    gt: Float
+    gte: Float
   }
 
   input PromoFilterInput {
@@ -85,6 +87,7 @@ export const typeDefs = gql`
     title: PromoQueryOperatorInput
     description: PromoQueryOperatorInput
     status: PromoQueryOperatorInput
+    minimumBalance: PromoQueryOperatorInput
   }
 
   extend type Query {
