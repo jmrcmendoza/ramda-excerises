@@ -1,5 +1,7 @@
+import { Buffer } from 'buffer';
 import { Model, _FilterQuery } from 'mongoose';
 import R from 'ramda';
+import { redisClient } from '@helpers/redis';
 
 class PaginateValidationError extends Error {
   constructor(message) {
@@ -32,16 +34,26 @@ export const paginate = async (
   fieldOptions: any,
   filter: any,
 ): Promise<Connection<Record<string, any>>> => {
+  const query: any = await new Promise((resolve) => {
+    redisClient.get('query', function (err, reply: string) {
+      if (reply === JSON.stringify(filter))
+        resolve({ type: { $eq: 'SEAMLESS' } });
+      else resolve(null);
+    });
+  });
+
   const cursor = after ? fromCursorHash(after) : null;
 
-  const filters = filter
-    ? R.map((value: any) => {
-        const operators = R.mapObjIndexed((data: any, index: string) => {
-          return { [`$${index}`]: data };
-        })(value);
-        return R.mergeAll(R.values(operators));
-      })(filter)
-    : {};
+  const filters =
+    query ||
+    (filter
+      ? R.map((value: any) => {
+          const operators = R.mapObjIndexed((data: any, index: string) => {
+            return { [`$${index}`]: data };
+          })(value);
+          return R.mergeAll(R.values(operators));
+        })(filter)
+      : {});
 
   const result = cursor
     ? await model
