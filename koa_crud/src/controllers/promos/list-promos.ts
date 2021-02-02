@@ -7,6 +7,7 @@ export default function listPromosController({
   listPromos: (
     limit: number | null,
     cursor: string | null,
+    filter: any,
   ) => Promise<PromoDocument>;
 }) {
   return async function getListPromos(
@@ -14,10 +15,10 @@ export default function listPromosController({
   ): Promise<Record<string, any>> {
     try {
       const {
-        query: { limit, cursor },
+        query: { limit, cursor, filter },
       } = httpRequest;
 
-      const result = await listPromos(limit, cursor);
+      const result = await listPromos(limit, cursor, filter);
 
       return {
         headers: {

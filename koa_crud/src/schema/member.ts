@@ -32,8 +32,22 @@ export const typeDefs = gql`
     pageInfo: MemberPageInfo
   }
 
+  input MemberQueryOperatorInput {
+    eq: String
+  }
+
+  input MemberFilterInput {
+    username: MemberQueryOperatorInput
+    realName: MemberQueryOperatorInput
+    email: MemberQueryOperatorInput
+  }
+
   extend type Query {
-    members(limit: Int, after: String): MemberConnection
+    members(
+      limit: Int
+      after: String
+      filter: MemberFilterInput
+    ): MemberConnection
     member(id: ID!): Member
   }
 

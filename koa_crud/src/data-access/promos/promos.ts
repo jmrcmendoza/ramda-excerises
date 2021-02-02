@@ -1,11 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { Connection, paginate } from '@helpers/pagination';
 import PromoModel, { PromoDocument } from '@models/promo';
+import { _FilterQuery } from 'mongoose';
 
 export type PromoQueries = {
   listPromos: (
     limit: number | null,
     cursor: string | null,
+    filter: string | null,
   ) => Promise<Connection<Record<string, any>>>;
   selectOnePromo: (id: string) => Promise<PromoDocument>;
   createPromo: (document: PromoDocument) => Promise<boolean>;
@@ -19,8 +21,12 @@ export default function ({
   promo: typeof PromoModel;
 }): PromoQueries {
   return Object.freeze({
-    listPromos(limit: number | null, cursor: string | null) {
-      return paginate(promo, limit, cursor, null);
+    listPromos(
+      limit: number | null,
+      cursor: string | null,
+      filter: string | null,
+    ) {
+      return paginate(promo, limit, cursor, null, filter);
     },
     async selectOnePromo(id: string) {
       const result = await promo

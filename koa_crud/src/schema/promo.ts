@@ -75,8 +75,23 @@ export const typeDefs = gql`
     pageInfo: PromoPageInfo
   }
 
+  input PromoQueryOperatorInput {
+    eq: String
+    gt: Float
+    gte: Float
+  }
+
+  input PromoFilterInput {
+    name: PromoQueryOperatorInput
+    template: PromoQueryOperatorInput
+    title: PromoQueryOperatorInput
+    description: PromoQueryOperatorInput
+    status: PromoQueryOperatorInput
+    minimumBalance: PromoQueryOperatorInput
+  }
+
   extend type Query {
-    promos(limit: Int, after: String): PromoConnection
+    promos(limit: Int, after: String, filter: PromoFilterInput): PromoConnection
     promo(id: ID!): Promo
   }
 

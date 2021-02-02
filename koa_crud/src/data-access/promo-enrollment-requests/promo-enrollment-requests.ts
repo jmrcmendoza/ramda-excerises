@@ -3,11 +3,13 @@ import PromoEnrollmentRequestModel, {
   PromoEnrollmentRequestDocument,
   PromoEnrollmentRequestStatus,
 } from '@models/promo-enrollment-requests';
+import { _FilterQuery } from 'mongoose';
 
 export type PromoEnrollmentRequestQueries = {
   listPromoEnrollmentRequests: (
     limit: number | null,
     cursor: string | null,
+    filter: string | null,
   ) => Promise<Connection<Record<string, any>>>;
   selectOnePromoEnrollmentRequest: (
     id: string,
@@ -24,8 +26,12 @@ export default function ({
   promoEnrollmentRequests: typeof PromoEnrollmentRequestModel;
 }): PromoEnrollmentRequestQueries {
   return Object.freeze({
-    listPromoEnrollmentRequests(limit: number | null, cursor: string | null) {
-      return paginate(promoEnrollmentRequests, limit, cursor, null);
+    listPromoEnrollmentRequests(
+      limit: number | null,
+      cursor: string | null,
+      filter: string | null,
+    ) {
+      return paginate(promoEnrollmentRequests, limit, cursor, null, filter);
     },
     selectOnePromoEnrollmentRequest(id: string) {
       return promoEnrollmentRequests
