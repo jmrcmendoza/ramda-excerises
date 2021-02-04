@@ -8,7 +8,7 @@
     "coverage": "nyc --reporter=html npm run test",
     "clean": "rimraf /build",
     "start": "ts-node -r tsconfig-paths/register src/index.ts",
-    "server": "ts-node src/grpc/server.ts",
+    "server": "ts-node -r tsconfig-paths/register src/grpc/server.ts",
     "build": "npm run clean && tsc && tscpaths -p tsconfig.json -s ./src -o ./build",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
